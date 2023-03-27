@@ -1,8 +1,5 @@
 package Server.EventDispatcher;
 
-public class SocketMessageEvent implements ExecutableEvent<SocketMessage> {
-    @Override
-    public void execute(SocketMessage data) {
-
-    }
+public interface SocketMessageEvent{
+    boolean execute(SocketMessage data);
 }

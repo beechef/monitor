@@ -34,7 +34,7 @@ public class TCPServer {
     private final List<AsynchronousSocketChannel> _clients = new ArrayList<>();
     private final List<SocketMessageEvent> _middleWares = new ArrayList<>();
 
-    public TCPServer(int port) throws IOException {
+    public TCPServer(int port) {
         _port = port;
         _executor = CreateDefaultExecutor();
     }
@@ -101,14 +101,21 @@ public class TCPServer {
         });
     }
 
-    private void emitMiddleWares(SocketMessage msg) {
+    private boolean emitMiddleWares(SocketMessage msg) {
         for (SocketMessageEvent middleWare : _middleWares) {
-            middleWare.execute(msg);
+            if (!middleWare.execute(msg)) return false;
         }
+
+        return true;
     }
 
     private void emitEventDispatcher(SocketMessage msg) {
         EventDispatcher.emitEvent(msg);
+    }
+
+    private void emitMessage(SocketMessage msg) {
+        var canNext = emitMiddleWares(msg);
+        if (canNext) emitEventDispatcher(msg);
     }
 
     private void readData(AsynchronousSocketChannel client, ByteBuffer buffer) {
@@ -128,11 +135,8 @@ public class TCPServer {
 
                 try {
                     SocketMessage msg = new SocketMessage(client, data);
-
-                    emitMiddleWares(msg);
-                    emitEventDispatcher(msg);
-                } catch (IOException | ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                    emitMessage(msg);
+                } catch (IOException | ClassNotFoundException ignored) {
                 }
 
                 buffer.clear();
