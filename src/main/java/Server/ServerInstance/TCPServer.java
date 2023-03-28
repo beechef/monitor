@@ -1,8 +1,6 @@
 package Server.ServerInstance;
 
-import Server.EventDispatcher.EventDispatcher;
-import Server.EventDispatcher.SocketMessage;
-import Server.EventDispatcher.SocketMessageEvent;
+import Server.EventDispatcher.*;
 import Server.ServerInstance.Pooling.BufferPooling;
 
 import java.io.IOException;
@@ -32,7 +30,9 @@ public class TCPServer {
     private AsynchronousServerSocketChannel _server;
 
     private final List<AsynchronousSocketChannel> _clients = new ArrayList<>();
-    private final List<SocketMessageEvent> _middleWares = new ArrayList<>();
+    private final List<MiddlewareSocketMessageEvent> _middleWares = new ArrayList<>();
+
+    private final List<Executable> _onStartEvents = new ArrayList<>();
 
     public TCPServer(int port) {
         _port = port;
@@ -67,12 +67,12 @@ public class TCPServer {
         return this;
     }
 
-    public TCPServer addMiddleware(SocketMessageEvent event) {
+    public TCPServer addMiddleware(MiddlewareSocketMessageEvent event) {
         _middleWares.add(event);
         return this;
     }
 
-    public TCPServer removeMiddleware(SocketMessageEvent event) {
+    public TCPServer removeMiddleware(MiddlewareSocketMessageEvent event) {
         _middleWares.remove(event);
         return this;
     }
@@ -102,7 +102,7 @@ public class TCPServer {
     }
 
     private boolean emitMiddleWares(SocketMessage msg) {
-        for (SocketMessageEvent middleWare : _middleWares) {
+        for (MiddlewareSocketMessageEvent middleWare : _middleWares) {
             if (!middleWare.execute(msg)) return false;
         }
 
@@ -171,6 +171,13 @@ public class TCPServer {
     }
 
     public void onStart() {
+        for (Executable event : _onStartEvents) {
+            event.execute();
+        }
+    }
+
+    public void addOnStart(Executable event) {
+        _onStartEvents.add(event);
     }
 
 

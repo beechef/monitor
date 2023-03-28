@@ -1,15 +1,15 @@
 package Client;
 
 import Server.ServerInstance.Message;
+import SocketMessageReceiver.DataType.LoginRequest;
+import SocketMessageReceiver.DataType.RegisterRequest;
 import Utilities.Utilities;
 
 import java.io.*;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.nio.channels.DatagramChannel;
 import java.util.Scanner;
 
 public class Main {
@@ -38,7 +38,7 @@ public class Main {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             ObjectOutputStream out = null;
             try {
-                Message msg = new Message((byte) 10, (byte) 10, message);
+                Message msg = new Message((byte) 1, (byte) 2, new RegisterRequest(message, message, "email"));
 
                 byte[] yourBytes = Utilities.toBytes(msg);
 

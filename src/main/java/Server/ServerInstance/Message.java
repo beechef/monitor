@@ -19,7 +19,7 @@ public class Message implements Serializable {
 
     public byte[] toBytes() {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = null;
+        ObjectOutputStream out;
         try {
             out = new ObjectOutputStream(bos);
             out.writeObject(this);
