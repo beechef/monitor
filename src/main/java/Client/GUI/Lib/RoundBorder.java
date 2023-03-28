@@ -62,7 +62,7 @@ public class RoundBorder implements Border {
             graphics.setColor(Color.CYAN);
         }
         graphics.fillRoundRect(0, 0, width - 1, height - 1, arcs.width, arcs.height); //paint background
-        graphics.setColor(Color.BLACK);
+//        graphics.setColor(Color.BLACK);
         graphics.drawRoundRect(0, 0, width - 1, height - 1, arcs.width, arcs.height); //paint border
     }
 
