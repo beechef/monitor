@@ -237,7 +237,7 @@ public class MainGUI extends javax.swing.JFrame {
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(204, 204, 204));
-        jLabel12.setText("Feature");
+        jLabel12.setText("Profile");
 
         MenuItem5.setOpaque(false);
         MenuItem5.addMouseListener(new java.awt.event.MouseAdapter() {
