@@ -4,7 +4,9 @@ import Server.EventDispatcher.*;
 import Server.ServerInstance.Pooling.BufferPooling;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
@@ -17,7 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class TCPServer {
+public class TCPServer implements Server {
     private static final String LOCAL_HOST = "127.0.0.1";
     private static final int DEFAULT_POOL_SIZE = 3;
     private static final int DEFAULT_MAXIMUM_SIZE = 10;
@@ -200,7 +202,9 @@ public class TCPServer {
     }
 
 
-    public void send(AsynchronousSocketChannel client, Message msg) {
+    public void send(Object target, Message msg) {
+        if (!(target instanceof AsynchronousSocketChannel client)) return;
+
         byte[] msgBytes = msg.toBytes();
         ByteBuffer buffer = _bufferPooling.get();
         buffer.put(msgBytes);

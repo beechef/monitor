@@ -1,12 +1,11 @@
 package Client;
 
+import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.ServerInstance.Message;
 import SocketMessageReceiver.DataType.RegisterRequest;
 import Utilities.Utilities;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -21,6 +20,28 @@ public class Main {
             @Override
             public void completed(Void result, Void attachment) {
                 System.out.println("Connected to server");
+                ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+                client.read(buffer, null, new CompletionHandler<Integer, Void>() {
+                    @Override
+                    public void completed(Integer numBytes, Void attachment) {
+                        if (numBytes == -1) {
+                            return;
+                        }
+
+                        byte[] data = new byte[numBytes];
+                        System.arraycopy(buffer.array(), 0, data, 0, numBytes);
+
+                        System.out.println(new String(data));
+
+                        client.read(buffer, null, this);
+                    }
+
+                    @Override
+                    public void failed(Throwable exc, Void attachment) {
+
+                    }
+                });
             }
 
             @Override
@@ -36,59 +57,14 @@ public class Main {
             String message = scanner.nextLine();
             buffer.clear();
 
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out = null;
-            try {
-                Message msg = new Message((byte) 1, (byte) 2, new RegisterRequest(message, message, "email"));
+            Message msg = new Message(EventHeadByte.CONNECTION, EventHeadByte.Connection.REGISTER, new RegisterRequest(message, message, message));
 
-                byte[] yourBytes = Utilities.toBytes(msg);
+            byte[] yourBytes = Utilities.toBytes(msg);
 
-                buffer.put(yourBytes);
-                buffer.flip();
+            buffer.put(yourBytes);
+            buffer.flip();
 
-                client.write(buffer, null, new CompletionHandler<Integer, Void>() {
-                    @Override
-                    public void completed(Integer result, Void attachment) {
-                        System.out.println("Message sent to server");
-
-                        ByteBuffer buffer = ByteBuffer.allocate(1024);
-
-                        client.read(buffer, null, new CompletionHandler<Integer, Void>() {
-
-                            @Override
-                            public void completed(Integer result, Void attachment) {
-                                byte[] data = new byte[result];
-                                System.arraycopy(buffer.array(), 0, data, 0, result);
-
-                                try {
-                                    Message msg = Utilities.castBytes(data);
-
-                                    System.out.println((String) msg.data);
-                                } catch (IOException | ClassNotFoundException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-
-                            @Override
-                            public void failed(Throwable exc, Void attachment) {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void failed(Throwable exc, Void attachment) {
-                        System.err.println("Failed to send message to server: " + exc.getMessage());
-                    }
-                });
-            } finally {
-                try {
-                    bos.close();
-                } catch (IOException ex) {
-                    // ignore close exception
-                }
-            }
-
+            client.write(buffer);
         }
     }
 }

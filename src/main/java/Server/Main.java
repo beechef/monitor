@@ -15,10 +15,10 @@ public class Main {
         TCPServer server = new TCPServer(4445);
 
         server.addOnStart(DatabaseConnector::connect);
-        server.addOnStart(SocketMessageReceiverController::registerAll);
+        server.addOnStart(() -> SocketMessageReceiverController.registerTCPAll(server));
 
         server.addOnStop(DatabaseConnector::stop);
-        server.addOnStop(SocketMessageReceiverController::unRegisterAll);
+        server.addOnStop(SocketMessageReceiverController::unRegisterTCPAll);
 
         server.addMiddleware(new EncryptPassword("Andel Nguyen :))"));
 
