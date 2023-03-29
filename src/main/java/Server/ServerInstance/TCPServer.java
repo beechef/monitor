@@ -10,6 +10,7 @@ import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,6 +34,7 @@ public class TCPServer {
     private final List<MiddlewareSocketMessageEvent> _middleWares = new ArrayList<>();
 
     private final List<Executable> _onStartEvents = new ArrayList<>();
+    private final List<Executable> _onStopEvents = new ArrayList<>();
 
     public TCPServer(int port) {
         _port = port;
@@ -160,7 +162,7 @@ public class TCPServer {
         System.out.println(client.getLocalAddress() + " is Disconnected");
     }
 
-    public void start() throws IOException {
+    public void start() throws IOException, SQLException, ClassNotFoundException {
         _executor.prestartCoreThread();
         _server = CreateServer(_port, _executor);
         _bufferPooling = new BufferPooling(_buffer);
@@ -170,7 +172,7 @@ public class TCPServer {
         onStart();
     }
 
-    public void onStart() {
+    public void onStart() throws SQLException, ClassNotFoundException {
         for (Executable event : _onStartEvents) {
             event.execute();
         }
@@ -180,14 +182,21 @@ public class TCPServer {
         _onStartEvents.add(event);
     }
 
+    public void addOnStop(Executable event) {
+        _onStopEvents.add(event);
+    }
 
-    public void stop() throws IOException {
+
+    public void stop() throws IOException, SQLException, ClassNotFoundException {
         _server.close();
 
         onStop();
     }
 
-    public void onStop() {
+    public void onStop() throws SQLException, ClassNotFoundException {
+        for (Executable event : _onStopEvents) {
+            event.execute();
+        }
     }
 
 

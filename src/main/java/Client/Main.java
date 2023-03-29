@@ -1,11 +1,12 @@
 package Client;
 
 import Server.ServerInstance.Message;
-import SocketMessageReceiver.DataType.LoginRequest;
 import SocketMessageReceiver.DataType.RegisterRequest;
 import Utilities.Utilities;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
