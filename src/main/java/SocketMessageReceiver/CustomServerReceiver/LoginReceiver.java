@@ -1,14 +1,19 @@
 package SocketMessageReceiver.CustomServerReceiver;
 
 import Server.EventDispatcher.EventHead.EventHeadByte;
-import Server.EventDispatcher.SocketMessageGeneric;
+import Server.EventDispatcher.SocketTCPMessageGeneric;
+import Server.ServerInstance.Server;
 import SocketMessageReceiver.DataType.LoginRequest;
-import SocketMessageReceiver.FilteredSocketMessageReceiver;
+import SocketMessageReceiver.FilteredSocketTCPMessageReceiver;
 
-public class LoginReceiver extends FilteredSocketMessageReceiver<LoginRequest> {
+public class LoginReceiver extends FilteredSocketTCPMessageReceiver<LoginRequest> {
+
+    public LoginReceiver(Server server) {
+        super(server);
+    }
 
     @Override
-    protected void onExecute(SocketMessageGeneric<LoginRequest> socketMsg) {
+    protected void onExecute(SocketTCPMessageGeneric<LoginRequest> socketMsg) {
         System.out.println(socketMsg.msg.username);
         System.out.println(socketMsg.msg.password);
     }
