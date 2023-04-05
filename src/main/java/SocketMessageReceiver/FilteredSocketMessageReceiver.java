@@ -1,15 +1,16 @@
 package SocketMessageReceiver;
 
 import Server.EventDispatcher.SocketMessage;
-import Server.EventDispatcher.SocketTCPMessageGeneric;
+import Server.EventDispatcher.SocketMessageGeneric;
+import Server.ServerInstance.Sender;
 import Server.ServerInstance.Server;
 
 import java.lang.reflect.ParameterizedType;
 
-public abstract class FilteredSocketTCPMessageReceiver<T> extends SocketMessageReceiver {
+public abstract class FilteredSocketMessageReceiver<T> extends SocketMessageReceiver {
 
-    public FilteredSocketTCPMessageReceiver(Server server) {
-        super(server);
+    public FilteredSocketMessageReceiver(Sender sender) {
+        super(sender);
     }
 
     public Class<T> getFilterClass() {
@@ -23,11 +24,11 @@ public abstract class FilteredSocketTCPMessageReceiver<T> extends SocketMessageR
         onExecute(filterMessage(socketMsg));
     }
 
-    private SocketTCPMessageGeneric<T> filterMessage(SocketMessage socketMsg) {
-        return new SocketTCPMessageGeneric<T>(socketMsg.sender, (T) socketMsg.msg.data);
+    private SocketMessageGeneric<T> filterMessage(SocketMessage socketMsg) {
+        return new SocketMessageGeneric<T>(socketMsg.sender, (T) socketMsg.msg.data);
     }
 
-    protected abstract void onExecute(SocketTCPMessageGeneric<T> socketMsg);
+    protected abstract void onExecute(SocketMessageGeneric<T> socketMsg);
 
     private boolean isFilteredMessage(SocketMessage socketMsg) {
         var clazz = getFilterClass();

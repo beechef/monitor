@@ -2,7 +2,6 @@ package SocketMessageReceiver;
 
 import Server.EventDispatcher.EventDispatcher;
 import Server.ServerInstance.Server;
-import Server.ServerInstance.TCPServer;
 import SocketMessageReceiver.CustomServerReceiver.LoginReceiver;
 import SocketMessageReceiver.CustomServerReceiver.RegisterReceiver;
 

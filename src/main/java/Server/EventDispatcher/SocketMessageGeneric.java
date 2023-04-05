@@ -4,16 +4,16 @@ import Utilities.Utilities;
 
 import java.io.IOException;
 
-public class SocketTCPMessageGeneric<T> {
+public class SocketMessageGeneric<T> {
     public Object sender;
     public T msg;
 
-    public SocketTCPMessageGeneric(Object sender, byte[] msg) throws IOException, ClassNotFoundException {
+    public SocketMessageGeneric(Object sender, byte[] msg) throws IOException, ClassNotFoundException {
         this.sender = sender;
         this.msg = castMessage(msg);
     }
 
-    public SocketTCPMessageGeneric(Object sender, T msg) {
+    public SocketMessageGeneric(Object sender, T msg) {
         this.sender = sender;
         this.msg = msg;
     }

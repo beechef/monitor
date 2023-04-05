@@ -2,7 +2,7 @@ package SocketMessageReceiver;
 
 import Server.EventDispatcher.SocketMessage;
 import Server.EventDispatcher.SocketMessageEvent;
-import Server.ServerInstance.Server;
+import Server.ServerInstance.Sender;
 
 public abstract class SocketMessageReceiver implements SocketMessageEvent {
     public abstract byte getHeadByte();
@@ -12,9 +12,9 @@ public abstract class SocketMessageReceiver implements SocketMessageEvent {
     public abstract void execute(SocketMessage socketMsg);
 
 
-    protected Server server;
+    protected Sender server;
 
-    public SocketMessageReceiver(Server server) {
+    public SocketMessageReceiver(Sender server) {
         this.server = server;
     }
 

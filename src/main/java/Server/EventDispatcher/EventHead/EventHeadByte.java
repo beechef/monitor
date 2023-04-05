@@ -9,7 +9,7 @@ public class EventHeadByte {
         public static final byte LOGOUT = 2;
         public static final byte REGISTER = 3;
 
-        public static final byte BINDING_ADMIN = 4;
+        public static final byte REGISTER_RESULT = 4;
     }
 
 

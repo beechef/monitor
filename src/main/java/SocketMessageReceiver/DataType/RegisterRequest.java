@@ -10,10 +10,16 @@ public class RegisterRequest implements Serializable, EncryptPasswordMark {
     public String email;
     public String phoneNumber;
 
-    public RegisterRequest(String username, String password, String email) {
+    public RegisterRequest(String username, String password, String email, String phoneNumber) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public RegisterRequest(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
     @Override

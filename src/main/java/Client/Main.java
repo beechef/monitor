@@ -1,70 +1,24 @@
 package Client;
 
+import Client.GUI.Admin.RegisterGUI;
+import Server.EventDispatcher.EventDispatcher;
 import Server.EventDispatcher.EventHead.EventHeadByte;
-import Server.ServerInstance.Message;
-import SocketMessageReceiver.DataType.RegisterRequest;
-import Utilities.Utilities;
+import SocketMessageReceiver.CustomClientReceiver.RegisterResultReceiver;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousSocketChannel;
-import java.nio.channels.CompletionHandler;
-import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        AsynchronousSocketChannel client = AsynchronousSocketChannel.open();
-        InetSocketAddress serverAddr = new InetSocketAddress("localhost", 4445);
-        client.connect(serverAddr, null, new CompletionHandler<Void, Void>() {
-            @Override
-            public void completed(Void result, Void attachment) {
-                System.out.println("Connected to server");
-                ByteBuffer buffer = ByteBuffer.allocate(1024);
+    public static void main(String[] args) throws IOException, InterruptedException {
+        var client = new ClientTCP("localhost", 4445);
+        client.start();
 
-                client.read(buffer, null, new CompletionHandler<Integer, Void>() {
-                    @Override
-                    public void completed(Integer numBytes, Void attachment) {
-                        if (numBytes == -1) {
-                            return;
-                        }
+        ClientInstance.tcpClient = client;
 
-                        byte[] data = new byte[numBytes];
-                        System.arraycopy(buffer.array(), 0, data, 0, numBytes);
+        java.awt.EventQueue.invokeLater(() -> new RegisterGUI().setVisible(true));
+        EventDispatcher.startListening(EventHeadByte.CONNECTION, EventHeadByte.Connection.REGISTER_RESULT, new RegisterResultReceiver(client, (data -> {
+            System.out.println("Register result: " + data.result);
+        })));
 
-                        System.out.println(new String(data));
-
-                        client.read(buffer, null, this);
-                    }
-
-                    @Override
-                    public void failed(Throwable exc, Void attachment) {
-
-                    }
-                });
-            }
-
-            @Override
-            public void failed(Throwable exc, Void attachment) {
-                System.err.println("Failed to connect to server: " + exc.getMessage());
-            }
-        });
-
-        ByteBuffer buffer = ByteBuffer.allocate(1024);
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.print("Enter message to send to server: ");
-            String message = scanner.nextLine();
-            buffer.clear();
-
-            Message msg = new Message(EventHeadByte.CONNECTION, EventHeadByte.Connection.REGISTER, new RegisterRequest(message, message, message));
-
-            byte[] yourBytes = Utilities.toBytes(msg);
-
-            buffer.put(yourBytes);
-            buffer.flip();
-
-            client.write(buffer);
-        }
+        Thread.currentThread().join();
     }
 }

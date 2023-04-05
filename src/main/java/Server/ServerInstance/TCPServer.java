@@ -1,12 +1,13 @@
 package Server.ServerInstance;
 
-import Server.EventDispatcher.*;
+import Server.EventDispatcher.EventDispatcher;
+import Server.EventDispatcher.Executable;
+import Server.EventDispatcher.MiddlewareSocketMessageEvent;
+import Server.EventDispatcher.SocketMessage;
 import Server.ServerInstance.Pooling.BufferPooling;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
@@ -24,9 +25,10 @@ public class TCPServer implements Server {
     private static final int DEFAULT_POOL_SIZE = 3;
     private static final int DEFAULT_MAXIMUM_SIZE = 10;
     private static final int DEFAULT_ALIVE_TIME = 60 * 5;
+    private static final int DEFAULT_BUFFER = 1024;
 
     private final int _port;
-    private int _buffer = 1024;
+    private int _buffer = DEFAULT_BUFFER;
     private BufferPooling _bufferPooling;
 
     private ThreadPoolExecutor _executor;
