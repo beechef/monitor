@@ -6,8 +6,8 @@ import SocketMessageReceiver.DataType.RegisterResultRequest;
 import SocketMessageSender.SocketMessageSender;
 
 public class RegisterResultSender extends SocketMessageSender<RegisterResultRequest> {
-    public RegisterResultSender(Sender sender) {
-        super(sender);
+    public RegisterResultSender(Sender server) {
+        super(server);
     }
 
     @Override

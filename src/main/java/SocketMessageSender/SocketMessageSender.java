@@ -8,13 +8,13 @@ public abstract class SocketMessageSender<T> {
 
     public abstract byte getSubHeadByte();
 
-    private final Sender sender;
+    private final Sender server;
 
-    public SocketMessageSender(Sender sender) {
-        this.sender = sender;
+    public SocketMessageSender(Sender server) {
+        this.server = server;
     }
 
     public void send(Object target, T data) {
-        sender.send(target, new Message(getHeadByte(), getSubHeadByte(), data));
+        server.send(target, new Message(getHeadByte(), getSubHeadByte(), data));
     }
 }

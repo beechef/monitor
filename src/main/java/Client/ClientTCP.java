@@ -20,10 +20,13 @@ public class ClientTCP implements Client {
     private BufferPooling _bufferPooling;
 
     private int _buffer = DEFAULT_BUFFER;
+    private ClientTCP _this;
 
     public ClientTCP(String hostName, int port) throws IOException {
         serverAddress = new InetSocketAddress(hostName, port);
         socket = AsynchronousSocketChannel.open();
+
+        _this = this;
     }
 
     public ClientTCP setBuffer(int buffer) {
@@ -67,7 +70,7 @@ public class ClientTCP implements Client {
 
                 try {
                     SocketMessage msg = new SocketMessage(client, data);
-                    EventDispatcher.emitEvent(msg);
+                    EventDispatcher.emitEvent(_this, msg);
                 } catch (IOException | ClassNotFoundException ignored) {
                 }
 

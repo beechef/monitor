@@ -10,6 +10,7 @@ public class EventHeadByte {
         public static final byte REGISTER = 3;
 
         public static final byte REGISTER_RESULT = 4;
+        public static final byte LOGIN_RESULT = 5;
     }
 
 

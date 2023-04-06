@@ -1,5 +1,7 @@
 package Server.EventDispatcher;
 
+import Server.ServerInstance.Sender;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -16,7 +18,9 @@ public class EventDispatcher {
         return _events.get(head).get(subHead);
     }
 
-    public static void startListening(byte head, byte subHead, SocketMessageEvent event) {
+    public static void startListening(SocketMessageEvent event) {
+        var head = event.getHeadByte();
+        var subHead = event.getSubHeadByte();
         getEvents(head, subHead).add(event);
     }
 
@@ -24,15 +28,15 @@ public class EventDispatcher {
         getEvents(head, subHead).remove(event);
     }
 
-    public static void emitEvent(SocketMessage data) {
-        emitEvent(data.msg.head, data.msg.subHead, data);
+    public static void emitEvent(Sender server, SocketMessage data) {
+        emitEvent(server, data.msg.head, data.msg.subHead, data);
     }
 
-    public static void emitEvent(byte head, byte subHead, SocketMessage data) {
+    public static void emitEvent(Sender server, byte head, byte subHead, SocketMessage data) {
         ArrayList<SocketMessageEvent> events = getEvents(head, subHead);
 
         for (SocketMessageEvent event : events) {
-            event.execute(data);
+            event.execute(server, data);
         }
     }
 }

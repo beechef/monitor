@@ -4,7 +4,7 @@ import Server.MiddleWare.EncryptPasswordMark;
 
 import java.io.Serializable;
 
-public class RegisterRequest implements Serializable, EncryptPasswordMark {
+public class RegisterRequest implements Serializable {
     public String username;
     public String password;
     public String email;
@@ -22,12 +22,10 @@ public class RegisterRequest implements Serializable, EncryptPasswordMark {
         this.password = password;
     }
 
-    @Override
     public void setPassword(String password) {
         this.password = password;
     }
 
-    @Override
     public String getPassword() {
         return this.password;
     }

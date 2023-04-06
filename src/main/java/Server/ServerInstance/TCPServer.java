@@ -73,14 +73,12 @@ public class TCPServer implements Server {
         return this;
     }
 
-    public TCPServer addMiddleware(MiddlewareSocketMessageEvent event) {
+    public void addMiddleware(MiddlewareSocketMessageEvent event) {
         _middleWares.add(event);
-        return this;
     }
 
-    public TCPServer removeMiddleware(MiddlewareSocketMessageEvent event) {
+    public void removeMiddleware(MiddlewareSocketMessageEvent event) {
         _middleWares.remove(event);
-        return this;
     }
 
     //endregion
@@ -116,7 +114,7 @@ public class TCPServer implements Server {
     }
 
     private void emitEventDispatcher(SocketMessage msg) {
-        EventDispatcher.emitEvent(msg);
+        EventDispatcher.emitEvent(this, msg);
     }
 
     private void emitMessage(SocketMessage msg) {

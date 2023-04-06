@@ -1,9 +1,6 @@
 package Client;
 
-import Client.GUI.Admin.RegisterGUI;
-import Server.EventDispatcher.EventDispatcher;
-import Server.EventDispatcher.EventHead.EventHeadByte;
-import SocketMessageReceiver.CustomClientReceiver.RegisterResultReceiver;
+import Client.GUI.Admin.LoginGUI;
 
 import java.io.IOException;
 
@@ -14,10 +11,7 @@ public class Main {
 
         ClientInstance.tcpClient = client;
 
-        java.awt.EventQueue.invokeLater(() -> new RegisterGUI().setVisible(true));
-        EventDispatcher.startListening(EventHeadByte.CONNECTION, EventHeadByte.Connection.REGISTER_RESULT, new RegisterResultReceiver(client, (data -> {
-            System.out.println("Register result: " + data.result);
-        })));
+        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
 
         Thread.currentThread().join();
     }
