@@ -4,6 +4,12 @@
  */
 package Client.GUI.Admin;
 
+import Client.GUI.Component.ListClientGUI;
+import Client.GUI.Component.HardwareGUI;
+import Client.GUI.Component.OthersGUI;
+import Client.GUI.Component.ProfileGUI;
+import Client.GUI.Component.StreamingGUI;
+import Client.GUI.Component.ProcessGUI;
 import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.RoundBorder;
 import Client.GUI.Lib.SidebarItemDTO;
@@ -40,6 +46,7 @@ public class MainGUI extends javax.swing.JFrame {
         GlobalVariable.streaming = new StreamingGUI();
         GlobalVariable.others = new OthersGUI();
         GlobalVariable.profile = new ProfileGUI();
+
 
 //        this.content.add(icon1)
         //init sidebar item
@@ -338,8 +345,8 @@ public class MainGUI extends javax.swing.JFrame {
         Header.setBackground(new java.awt.Color(255, 255, 255));
         Header.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(204, 204, 204)));
         Header.setMaximumSize(new java.awt.Dimension(32767, 50));
-        Header.setMinimumSize(new java.awt.Dimension(100, 50));
-        Header.setPreferredSize(new java.awt.Dimension(807, 50));
+        Header.setMinimumSize(new java.awt.Dimension(900, 50));
+        Header.setPreferredSize(new java.awt.Dimension(900, 50));
 
         ClientName.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         ClientName.setForeground(new java.awt.Color(51, 51, 51));
@@ -360,7 +367,7 @@ public class MainGUI extends javax.swing.JFrame {
             .addGroup(HeaderLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(ClientName, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 555, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 694, Short.MAX_VALUE)
                 .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(ClientIp, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(ClientLocation, javax.swing.GroupLayout.Alignment.TRAILING))
@@ -383,6 +390,9 @@ public class MainGUI extends javax.swing.JFrame {
         jPanel2.add(Header, java.awt.BorderLayout.PAGE_START);
 
         content.setBackground(new java.awt.Color(255, 255, 255));
+        content.setMinimumSize(new java.awt.Dimension(900, 0));
+        content.setPreferredSize(new java.awt.Dimension(900, 0));
+        content.setRequestFocusEnabled(false);
         content.setLayout(new java.awt.CardLayout());
         jPanel2.add(content, java.awt.BorderLayout.CENTER);
 
