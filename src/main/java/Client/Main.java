@@ -1,94 +1,18 @@
 package Client;
 
-import Server.ServerInstance.Message;
-import SocketMessageReceiver.DataType.RegisterRequest;
-import Utilities.Utilities;
+import Client.GUI.Admin.LoginGUI;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
-import java.nio.channels.AsynchronousSocketChannel;
-import java.nio.channels.CompletionHandler;
-import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws IOException {
-        AsynchronousSocketChannel client = AsynchronousSocketChannel.open();
-        InetSocketAddress serverAddr = new InetSocketAddress("localhost", 4445);
-        client.connect(serverAddr, null, new CompletionHandler<Void, Void>() {
-            @Override
-            public void completed(Void result, Void attachment) {
-                System.out.println("Connected to server");
-            }
+    public static void main(String[] args) throws IOException, InterruptedException {
+        var client = new ClientTCP("localhost", 4445);
+        client.start();
 
-            @Override
-            public void failed(Throwable exc, Void attachment) {
-                System.err.println("Failed to connect to server: " + exc.getMessage());
-            }
-        });
+        ClientInstance.tcpClient = client;
 
-        ByteBuffer buffer = ByteBuffer.allocate(1024);
-        Scanner scanner = new Scanner(System.in);
-        while (true) {
-            System.out.print("Enter message to send to server: ");
-            String message = scanner.nextLine();
-            buffer.clear();
+        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
 
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            ObjectOutputStream out = null;
-            try {
-                Message msg = new Message((byte) 1, (byte) 2, new RegisterRequest(message, message, "email"));
-
-                byte[] yourBytes = Utilities.toBytes(msg);
-
-                buffer.put(yourBytes);
-                buffer.flip();
-
-                client.write(buffer, null, new CompletionHandler<Integer, Void>() {
-                    @Override
-                    public void completed(Integer result, Void attachment) {
-                        System.out.println("Message sent to server");
-
-                        ByteBuffer buffer = ByteBuffer.allocate(1024);
-
-                        client.read(buffer, null, new CompletionHandler<Integer, Void>() {
-
-                            @Override
-                            public void completed(Integer result, Void attachment) {
-                                byte[] data = new byte[result];
-                                System.arraycopy(buffer.array(), 0, data, 0, result);
-
-                                try {
-                                    Message msg = Utilities.castBytes(data);
-
-                                    System.out.println((String) msg.data);
-                                } catch (IOException | ClassNotFoundException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            }
-
-                            @Override
-                            public void failed(Throwable exc, Void attachment) {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void failed(Throwable exc, Void attachment) {
-                        System.err.println("Failed to send message to server: " + exc.getMessage());
-                    }
-                });
-            } finally {
-                try {
-                    bos.close();
-                } catch (IOException ex) {
-                    // ignore close exception
-                }
-            }
-
-        }
+        Thread.currentThread().join();
     }
 }

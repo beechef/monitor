@@ -1,5 +1,11 @@
 package Server.EventDispatcher;
 
-public interface SocketMessageEvent{
-    void execute(SocketMessage data);
+import Server.ServerInstance.Sender;
+
+public interface SocketMessageEvent {
+    byte getHeadByte();
+
+    byte getSubHeadByte();
+
+    void execute(Sender server, SocketMessage data);
 }

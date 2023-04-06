@@ -1,6 +1,8 @@
 package SocketMessageReceiver;
 
 import Server.EventDispatcher.EventDispatcher;
+import Server.EventDispatcher.SocketMessageEvent;
+import Server.ServerInstance.Sender;
 import SocketMessageReceiver.CustomServerReceiver.LoginReceiver;
 import SocketMessageReceiver.CustomServerReceiver.RegisterReceiver;
 
@@ -8,23 +10,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SocketMessageReceiverController {
-    private static final List<SocketMessageReceiver> registeredReceiver = new ArrayList<>();
+    private static final List<SocketMessageEvent> registeredTCPReceiver = new ArrayList<>();
 
-    public static void registerAll() {
+    public static void registerTCPAll(Sender server) {
         register(new LoginReceiver());
         register(new RegisterReceiver());
     }
 
-    private static void register(SocketMessageReceiver receiver) {
-        registeredReceiver.add(receiver);
-        EventDispatcher.startListening(receiver.getHeadByte(), receiver.getSubHeadByte(), receiver);
+    private static void register(SocketMessageEvent receiver) {
+        registeredTCPReceiver.add(receiver);
+        EventDispatcher.startListening(receiver);
     }
 
-    public static void unRegisterAll() {
-        for (var receiver : registeredReceiver) {
+    public static void unRegisterTCPAll() {
+        for (var receiver : registeredTCPReceiver) {
             EventDispatcher.stopListening(receiver.getHeadByte(), receiver.getSubHeadByte(), receiver);
         }
 
-        registeredReceiver.clear();
+        registeredTCPReceiver.clear();
     }
 }
