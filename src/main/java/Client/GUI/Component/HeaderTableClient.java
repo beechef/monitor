@@ -4,17 +4,24 @@
  */
 package Client.GUI.Component;
 
+import Client.GUI.Lib.GlobalVariable;
+import java.awt.Cursor;
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author Admin
  */
 public class HeaderTableClient extends javax.swing.JPanel {
 
-    /**
-     * Creates new form HeaderTableProcess
-     */
+    public static boolean stateSortArrListClient = false;
+
     public HeaderTableClient() {
         initComponents();
+        this.Icon.setIcon(new ImageIcon(GlobalVariable.currentPath + GlobalVariable.urlIconArrow));
+//        this.btnStatus.setBackground(GlobalVariable.HeaderTableColor);
+        //set hover btn status
+        setBtnHoverStatus(this);
     }
 
     /**
@@ -33,7 +40,7 @@ public class HeaderTableClient extends javax.swing.JPanel {
         jTextField2 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        btnStatus = new javax.swing.JLabel();
         Icon = new javax.swing.JLabel();
         jTextField4 = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
@@ -61,7 +68,7 @@ public class HeaderTableClient extends javax.swing.JPanel {
         });
         add(jTextField1);
 
-        jLabel6.setText("ID");
+        jLabel6.setText("         ID");
         add(jLabel6);
 
         jTextField2.setBackground(new java.awt.Color(203, 228, 222));
@@ -91,9 +98,12 @@ public class HeaderTableClient extends javax.swing.JPanel {
         });
         add(jTextField3);
 
-        jButton1.setText("Status");
-        jButton1.setBorder(null);
-        add(jButton1);
+        btnStatus.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        btnStatus.setText("Status");
+        btnStatus.setMaximumSize(new java.awt.Dimension(32, 30));
+        btnStatus.setMinimumSize(new java.awt.Dimension(32, 40));
+        btnStatus.setPreferredSize(new java.awt.Dimension(60, 40));
+        add(btnStatus);
         add(Icon);
 
         jTextField4.setBackground(new java.awt.Color(203, 228, 222));
@@ -135,7 +145,7 @@ public class HeaderTableClient extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Icon;
-    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel btnStatus;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
@@ -147,4 +157,31 @@ public class HeaderTableClient extends javax.swing.JPanel {
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
+
+    private void setBtnHoverStatus(HeaderTableClient aThis) {
+        aThis.btnStatus.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                aThis.btnStatus.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                aThis.btnStatus.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            }
+
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                HeaderTableClient.stateSortArrListClient = !HeaderTableClient.stateSortArrListClient;
+                if (GlobalVariable.clientListStmp.size() > 0) {
+                    GlobalVariable.listClient.renderTable(GlobalVariable.clientListStmp);
+
+                } else {
+                    GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
+
+                }
+
+            }
+        });
+    }
 }

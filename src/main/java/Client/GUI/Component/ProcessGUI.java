@@ -9,22 +9,17 @@ import Client.GUI.Lib.ProcessDTO;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
 import java.util.List;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.LayoutStyle;
 import javax.swing.ScrollPaneLayout;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
@@ -46,20 +41,19 @@ public class ProcessGUI extends javax.swing.JPanel {
         //set scrollbar
         setScrollbar(this.scroll);
 //        this.scroll.setVerticalScrollBar(new ScrollBar());
-        
-        
+
         //init process
-        GlobalVariable.processList.add(new ProcessDTO("process1"));     
-        GlobalVariable.processList.add(new ProcessDTO("process2"));
-        GlobalVariable.processList.add(new ProcessDTO("process3"));
-        GlobalVariable.processList.add(new ProcessDTO("process4"));
+        GlobalVariable.processList.add(new ProcessDTO("process1"));
+        GlobalVariable.processList.add(new ProcessDTO("abc"));
+        GlobalVariable.processList.add(new ProcessDTO("123"));
+        GlobalVariable.processList.add(new ProcessDTO("3a"));
         GlobalVariable.processList.add(new ProcessDTO("process5"));
         GlobalVariable.processList.add(new ProcessDTO("process6"));
-        
-       
 
         //render process
         renderProcess(GlobalVariable.processList);
+        //handle Search
+        handleSearch();
     }
 
     /**
@@ -132,12 +126,16 @@ public class ProcessGUI extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     public void renderProcess(List<ProcessDTO> processList) {
-
-      
+        this.contentTable.removeAll();
         processList.forEach(e -> {
             this.contentTable.add(new RowTableProcess(e));
         });
         
+        if(GlobalVariable.main!=null){
+            GlobalVariable.main.validate();
+            GlobalVariable.main.repaint();
+        }
+
 //        this.contentTable.repaint();
     }
 
@@ -176,7 +174,41 @@ public class ProcessGUI extends javax.swing.JPanel {
         });
         s.getVerticalScrollBar().setUI(new MyScrollBarUI());
     }
+
+    private void handleSearch() {
+        this.searchPanel.InputSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+
+                    if (searchPanel.InputSearch.getText().isEmpty()) {
+                        GlobalVariable.processListStmp.removeAll(GlobalVariable.processListStmp);
+
+                        renderProcess(GlobalVariable.processList);
+                    } else {
+                        if (!searchPanel.InputSearch.getText().equals(searchPanel.getPlaceHolderText())) {
+                            GlobalVariable.processListStmp.removeAll(GlobalVariable.processListStmp);
+
+                            GlobalVariable.processList.forEach(e -> {
+                                if (e.getName().contains(searchPanel.InputSearch.getText())) {
+                                    GlobalVariable.processListStmp.add(e);
+                                }
+                            });
+
+                            renderProcess(GlobalVariable.processListStmp);
+                        }
+                    }
+                }
+
+            }
+
+        });
+    }
+
+    private void renderTable(List<ProcessDTO> processList) {
+        
+    }
 }
+
 class MyScrollBarUI extends BasicScrollBarUI {
 
     private final Dimension d = new Dimension();

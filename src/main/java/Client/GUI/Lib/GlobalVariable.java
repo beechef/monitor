@@ -30,10 +30,8 @@ public class GlobalVariable {
     public static final Color activeColor = new java.awt.Color(76, 126, 126);
     public static final Color headerColor = new java.awt.Color(236, 242, 255);
     public static final Color searchColor = new java.awt.Color(213, 220, 220);
-    public static final Color HeaderTableColor = new java.awt.Color( 203, 228, 222);
-    public static final Color WarningColor=new java.awt.Color(220, 53,53);
-   
-
+    public static final Color HeaderTableColor = new java.awt.Color(203, 228, 222);
+    public static final Color WarningColor = new java.awt.Color(220, 53, 53);
 
     //selected client
     public static boolean selectedClient = true;
@@ -48,8 +46,6 @@ public class GlobalVariable {
     public static StreamingGUI streaming;
     public static OthersGUI others;
     public static ProfileGUI profile;
-    
-
 
     //sidebar icon url
     public static final String urlMenuIcon1 = "/src/main/java/Client/GUI/Image/icon1.png";
@@ -61,7 +57,8 @@ public class GlobalVariable {
     public static final String urlMenuIcon7 = "/src/main/java/Client/GUI/Image/Out.png";
     public static final String urlIconSearch = "/src/main/java/Client/GUI/Image/Search.png";
     public static final String urlCloseIcon = "/src/main/java/Client/GUI/Image/close.png";
-
+    public static final String urlIconArrow = "/src/main/java/Client/GUI/Image/arrow.png";
+    public static final String urlIconAction = "/src/main/java/Client/GUI/Image/icon_action.png";
 
     //Main farme
     public static MainGUI main = null;
@@ -69,8 +66,16 @@ public class GlobalVariable {
     public static String getCurrentPath() {
         return currentPath;
     }
+    
+    //list client
+    public static List<ClientDTO> clientList=new ArrayList<>();
+    // stmp arr client 
+    public static List<ClientDTO> clientListStmp=new ArrayList<>();
 
     //list process
     public static List<ProcessDTO> processList = new ArrayList<>();
+    //stmp arr process
+    public static List<ProcessDTO> processListStmp = new ArrayList<>();
+
 
 }
