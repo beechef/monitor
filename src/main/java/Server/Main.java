@@ -17,10 +17,12 @@ public class Main {
 
         server.addOnStart(Key.JWTKey::readKey);
         server.addOnStart(DatabaseConnector::connect);
-        server.addOnStart(() -> SocketMessageReceiverController.registerTCPAll(server));
+        server.addOnStart(UserController::registerEvents);
+        server.addOnStart(SocketMessageReceiverController::registerEvents);
 
         server.addOnStop(DatabaseConnector::stop);
-        server.addOnStop(SocketMessageReceiverController::unRegisterTCPAll);
+        server.addOnStop(UserController::unRegisterEvents);
+        server.addOnStop(SocketMessageReceiverController::unRegisterEvents);
 
         server.addMiddleware(new EncryptPasswordMiddleWare(EncryptPassword.SALT));
 

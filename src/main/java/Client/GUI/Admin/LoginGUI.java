@@ -7,12 +7,17 @@ package Client.GUI.Admin;
 import Client.ClientInstance;
 import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
-import SocketMessageReceiver.CustomClientReceiver.LoginResultReceiver;
+import SocketMessageReceiver.CustomAdminReceiver.LoginResultReceiver;
+import SocketMessageReceiver.DataType.GetHardwareInfoAdminSide;
+import SocketMessageReceiver.DataType.GetUserRequest;
 import SocketMessageReceiver.DataType.LoginRequest;
 import SocketMessageReceiver.DataType.LoginResultRequest;
-import SocketMessageSender.CustomClientSender.LoginSender;
+import SocketMessageSender.CustomAdminSender.GetHardwareInfoSender;
+import SocketMessageSender.CustomAdminSender.GetUserSender;
+import SocketMessageSender.CustomAdminSender.LoginSender;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 /**
  * @author Admin
@@ -49,6 +54,19 @@ public class LoginGUI extends javax.swing.JFrame {
 
     private void receiveRequest(LoginResultRequest request) {
         System.out.println(request.result);
+
+        if (request.result != LoginResultRequest.Result.SUCCESS) return;
+        var token = request.token;
+
+        new GetUserSender(ClientInstance.tcpClient).send(null, new GetUserRequest(GetUserRequest.Type.GET_ALL, token));
+
+        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
+        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
+        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.CPU);
+        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.MEMORY);
+        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.DISK);
+
+        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
     }
 
     /**

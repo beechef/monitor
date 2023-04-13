@@ -1,9 +1,6 @@
 package Server.ServerInstance;
 
-import Server.EventDispatcher.EventDispatcher;
-import Server.EventDispatcher.Executable;
-import Server.EventDispatcher.MiddlewareSocketMessageEvent;
-import Server.EventDispatcher.SocketMessage;
+import Server.EventDispatcher.*;
 import Server.ServerInstance.Pooling.BufferPooling;
 
 import java.io.IOException;
@@ -160,6 +157,8 @@ public class TCPServer implements Server {
     private void removeClient(AsynchronousSocketChannel client, ByteBuffer buffer) throws IOException {
         _clients.remove(client);
         _bufferPooling.returnPool(buffer);
+
+        EventDispatcher.emitEvent(EventName.USER_DISCONNECTED, client);
 
         System.out.println(client.getLocalAddress() + " is Disconnected");
     }

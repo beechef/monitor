@@ -1,5 +1,6 @@
 package SocketMessageReceiver.CustomServerReceiver;
 
+import Key.JWTKey;
 import Server.Database.CombineCondition;
 import Server.Database.Condition;
 import Server.Database.DatabaseConnector;
@@ -7,20 +8,25 @@ import Server.Database.Operator;
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Sender;
+import Server.UserController;
 import SocketMessageReceiver.DataType.LoginRequest;
 import SocketMessageReceiver.DataType.LoginResultRequest;
 import SocketMessageReceiver.SocketMessageReceiver;
 import SocketMessageSender.CustomServerSender.LoginResultSender;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
 
+import java.sql.Date;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginReceiver extends SocketMessageReceiver<LoginRequest> {
     private static final String CLIENT_TABLE = "client";
+    private static final String ID_FIELD = "id";
     private static final String EMAIL_FIELD = "email";
     private static final String PASSWORD_FIELD = "password";
+
+    private static final long TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 6;
+
 
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<LoginRequest> socketMsg) {
@@ -35,42 +41,47 @@ public class LoginReceiver extends SocketMessageReceiver<LoginRequest> {
             var isExistUser = existUser.next();
 
             if (!isExistUser) {
-                sender.send(target, new LoginResultRequest(LoginResultRequest.Result.EMAIL_NOT_EXIST));
+                sender.send(target, new LoginResultRequest(LoginResultRequest.Result.EMAIL_NOT_EXIST, null));
                 return;
             }
 
             var dbPassword = existUser.getString(PASSWORD_FIELD);
             if (!dbPassword.equals(password)) {
-                sender.send(target, new LoginResultRequest(LoginResultRequest.Result.PASSWORD_WRONG));
+                sender.send(target, new LoginResultRequest(LoginResultRequest.Result.PASSWORD_WRONG, null));
                 return;
             }
 
-            sender.send(target, new LoginResultRequest(LoginResultRequest.Result.SUCCESS));
+            var token = createToken(existUser);
+            sender.send(target, new LoginResultRequest(LoginResultRequest.Result.SUCCESS, token));
+
+            UserController.addTcpAdmin(new UserController.AdminInfo(existUser.getInt(ID_FIELD), target));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void createToken(){
-        var key = Keys.secretKeyFor(SignatureAlgorithm.RS256);
+    private String createToken(ResultSet user) throws SQLException {
+        var key = JWTKey.getKey();
+        var id = user.getInt(ID_FIELD);
+        var email = user.getString(EMAIL_FIELD);
 
-        var token = Jwts.builder()
-                .setSubject("Joe")
-                .claim("name", "Joe")
-                .claim("scope", "self groups/admins")
+        return Jwts.builder()
+                .claim(ID_FIELD, id)
+                .claim(EMAIL_FIELD, email)
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_EXPIRE_TIME))
                 .signWith(key)
                 .compact();
     }
 
     @Override
     public byte getHeadByte() {
-        return EventHeadByte.CONNECTION;
+        return EventHeadByte.ADMIN_CONNECTION;
     }
 
     @Override
     public byte getSubHeadByte() {
-        return EventHeadByte.Connection.LOGIN;
+        return EventHeadByte.AdminConnection.LOGIN;
     }
 }
 

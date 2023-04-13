@@ -12,11 +12,11 @@ public class LoginResultSender extends SocketMessageSender<LoginResultRequest> {
 
     @Override
     public byte getHeadByte() {
-        return EventHeadByte.CONNECTION;
+        return EventHeadByte.ADMIN_CONNECTION;
     }
 
     @Override
     public byte getSubHeadByte() {
-        return EventHeadByte.Connection.LOGIN_RESULT;
+        return EventHeadByte.AdminConnection.LOGIN_RESULT;
     }
 }

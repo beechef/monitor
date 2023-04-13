@@ -12,11 +12,11 @@ public class RegisterResultSender extends SocketMessageSender<RegisterResultRequ
 
     @Override
     public byte getHeadByte() {
-        return EventHeadByte.CONNECTION;
+        return EventHeadByte.ADMIN_CONNECTION;
     }
 
     @Override
     public byte getSubHeadByte() {
-        return EventHeadByte.Connection.REGISTER_RESULT;
+        return EventHeadByte.AdminConnection.REGISTER_RESULT;
     }
 }

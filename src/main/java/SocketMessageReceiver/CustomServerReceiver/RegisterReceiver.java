@@ -4,7 +4,6 @@ import Server.Database.*;
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Sender;
-import SocketMessageReceiver.CustomClientReceiver.RegisterResultReceiver;
 import SocketMessageReceiver.DataType.RegisterRequest;
 import SocketMessageReceiver.DataType.RegisterResultRequest;
 import SocketMessageReceiver.SocketMessageReceiver;
@@ -80,11 +79,11 @@ public class RegisterReceiver extends SocketMessageReceiver<RegisterRequest> {
 
     @Override
     public byte getHeadByte() {
-        return EventHeadByte.CONNECTION;
+        return EventHeadByte.ADMIN_CONNECTION;
     }
 
     @Override
     public byte getSubHeadByte() {
-        return EventHeadByte.Connection.REGISTER;
+        return EventHeadByte.AdminConnection.REGISTER;
     }
 }

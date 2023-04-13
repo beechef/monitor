@@ -4,20 +4,15 @@
  */
 package Client.GUI.Admin;
 
-import java.awt.*;
 import javax.swing.*;
-import javax.swing.GroupLayout;
-import javax.swing.LayoutStyle;
-import javax.swing.border.*;
 
 import Client.ClientInstance;
-import Client.ClientTCP;
 import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
-import SocketMessageReceiver.CustomClientReceiver.RegisterResultReceiver;
+import SocketMessageReceiver.CustomAdminReceiver.RegisterResultReceiver;
 import SocketMessageReceiver.DataType.RegisterRequest;
 import SocketMessageReceiver.DataType.RegisterResultRequest;
-import SocketMessageSender.CustomClientSender.RegisterSender;
+import SocketMessageSender.CustomAdminSender.RegisterSender;
 
 import java.awt.Color;
 

@@ -11,8 +11,10 @@ public class LoginResultRequest implements Serializable {
     }
 
     public Result result;
+    public String token;
 
-    public LoginResultRequest(Result result) {
+    public LoginResultRequest(Result result, String token) {
         this.result = result;
+        this.token = token;
     }
 }
