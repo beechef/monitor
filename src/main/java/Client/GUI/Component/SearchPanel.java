@@ -19,7 +19,7 @@ import javax.swing.JTextField;
  */
 public class SearchPanel extends javax.swing.JPanel {
 
-    private String placeHolderText;
+    private String placeHolderText="Search ...";
 
     public String getPlaceHolderText() {
         return placeHolderText;
@@ -86,7 +86,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTextField InputSearch;
+    public javax.swing.JTextField InputSearch;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
