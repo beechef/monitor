@@ -2,7 +2,7 @@ package SocketMessageSender.CustomUserSender;
 
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.ServerInstance.Sender;
-import SocketMessageReceiver.DataType.GetHardwareInfoResultUserSide;
+import SocketMessageReceiver.DataType.GetHardwareInfoResult.GetHardwareInfoResultUserSide;
 import SocketMessageSender.SocketMessageSender;
 
 public class GetHardwareInfoResultSender extends SocketMessageSender<GetHardwareInfoResultUserSide> {

@@ -3,6 +3,10 @@ package SocketMessageReceiver;
 import Server.EventDispatcher.EventDispatcher;
 import Server.EventDispatcher.SocketMessageEvent;
 import SocketMessageReceiver.CustomServerReceiver.*;
+import SocketMessageReceiver.CustomServerReceiver.GetHardwareInfo.GetHardwareInfoReceiver;
+import SocketMessageReceiver.CustomServerReceiver.GetHardwareInfo.GetHardwareInfoResultReceiver;
+import SocketMessageReceiver.CustomServerReceiver.GetProcesses.GetProcessesReceiver;
+import SocketMessageReceiver.CustomServerReceiver.GetProcesses.GetProcessesResultReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +22,9 @@ public class SocketMessageReceiverController {
 
         register(new GetHardwareInfoReceiver());
         register(new GetHardwareInfoResultReceiver());
+
+        register(new GetProcessesReceiver());
+        register(new GetProcessesResultReceiver());
     }
 
     private static void register(SocketMessageEvent receiver) {

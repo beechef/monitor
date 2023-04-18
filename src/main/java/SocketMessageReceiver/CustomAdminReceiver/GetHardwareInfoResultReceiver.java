@@ -2,7 +2,7 @@ package SocketMessageReceiver.CustomAdminReceiver;
 
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.ExecutableData;
-import SocketMessageReceiver.DataType.GetHardwareInfoResultServerSide;
+import SocketMessageReceiver.DataType.GetHardwareInfoResult.GetHardwareInfoResultServerSide;
 
 public class GetHardwareInfoResultReceiver extends SocketMessageReceiver.SocketMessageReceiverCallBack<GetHardwareInfoResultServerSide> {
     public GetHardwareInfoResultReceiver(ExecutableData<GetHardwareInfoResultServerSide> callback) {

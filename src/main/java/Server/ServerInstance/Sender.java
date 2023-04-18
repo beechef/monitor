@@ -5,4 +5,5 @@ public interface Sender {
 
     void broadCast(Message msg);
 
+    int getBuffer();
 }

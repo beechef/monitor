@@ -27,6 +27,9 @@ public class EventHeadByte {
 
         public static final byte GET_HARDWARE_INFO = 3;
         public static final byte GET_HARDWARE_INFO_RESULT = 4;
+
+        public static final byte GET_PROCESSES = 5;
+        public static final byte GET_PROCESSES_RESULT = 6;
     }
 
 }

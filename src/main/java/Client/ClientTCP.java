@@ -98,4 +98,9 @@ public class ClientTCP implements Client {
     @Override
     public void broadCast(Message msg) {
     }
+
+    @Override
+    public int getBuffer() {
+        return _buffer;
+    }
 }

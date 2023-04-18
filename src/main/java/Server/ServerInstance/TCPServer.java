@@ -39,12 +39,12 @@ public class TCPServer implements Server {
 
     public TCPServer(int port) {
         _port = port;
-        _executor = CreateDefaultExecutor();
+        _executor = createDefaultExecutor();
     }
 
     //region Builder
 
-    private ThreadPoolExecutor CreateDefaultExecutor() {
+    private ThreadPoolExecutor createDefaultExecutor() {
         return new ThreadPoolExecutor(DEFAULT_POOL_SIZE, DEFAULT_MAXIMUM_SIZE, DEFAULT_ALIVE_TIME, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), runnable -> {
             Thread thread = new Thread(runnable);
             thread.setDaemon(false);
@@ -53,7 +53,7 @@ public class TCPServer implements Server {
         });
     }
 
-    protected AsynchronousServerSocketChannel CreateServer(int port, ThreadPoolExecutor executor) throws IOException {
+    protected AsynchronousServerSocketChannel createServer(int port, ThreadPoolExecutor executor) throws IOException {
         AsynchronousServerSocketChannel server = AsynchronousServerSocketChannel.open(AsynchronousChannelGroup.withThreadPool(executor));
         server.bind(new InetSocketAddress(LOCAL_HOST, port));
 
@@ -65,7 +65,7 @@ public class TCPServer implements Server {
         return this;
     }
 
-    public TCPServer SetBuffer(int buffer) {
+    public TCPServer setBuffer(int buffer) {
         _buffer = buffer;
         return this;
     }
@@ -165,7 +165,7 @@ public class TCPServer implements Server {
 
     public void start() throws IOException, SQLException, ClassNotFoundException {
         _executor.prestartCoreThread();
-        _server = CreateServer(_port, _executor);
+        _server = createServer(_port, _executor);
         _bufferPooling = new BufferPooling(_buffer);
 
         acceptConnection();
@@ -218,6 +218,11 @@ public class TCPServer implements Server {
 
     public void broadCast(Message msg) {
 
+    }
+
+    @Override
+    public int getBuffer() {
+        return _buffer;
     }
 
 }

@@ -14,6 +14,7 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 
         TCPServer server = new TCPServer(4445);
+        server.setBuffer(1024 * 8);
 
         server.addOnStart(Key.JWTKey::readKey);
         server.addOnStart(DatabaseConnector::connect);

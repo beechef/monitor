@@ -2,7 +2,7 @@ package SocketMessageSender.CustomAdminSender;
 
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.ServerInstance.Sender;
-import SocketMessageReceiver.DataType.GetHardwareInfoAdminSide;
+import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
 import SocketMessageSender.SocketMessageSender;
 
 public class GetHardwareInfoSender extends SocketMessageSender<GetHardwareInfoAdminSide> {

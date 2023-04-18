@@ -8,11 +8,13 @@ import Client.ClientInstance;
 import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.LoginResultReceiver;
-import SocketMessageReceiver.DataType.GetHardwareInfoAdminSide;
+import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
+import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
 import SocketMessageReceiver.DataType.GetUserRequest;
 import SocketMessageReceiver.DataType.LoginRequest;
 import SocketMessageReceiver.DataType.LoginResultRequest;
 import SocketMessageSender.CustomAdminSender.GetHardwareInfoSender;
+import SocketMessageSender.CustomAdminSender.GetProcessesSender;
 import SocketMessageSender.CustomAdminSender.GetUserSender;
 import SocketMessageSender.CustomAdminSender.LoginSender;
 
@@ -60,13 +62,16 @@ public class LoginGUI extends javax.swing.JFrame {
 
         new GetUserSender(ClientInstance.tcpClient).send(null, new GetUserRequest(GetUserRequest.Type.GET_ALL, token));
 
-        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
-        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
-        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.CPU);
-        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.MEMORY);
-        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.DISK);
+//        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
+//        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
+//        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.CPU);
+//        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.MEMORY);
+//        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.DISK);
+//
+//        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
 
-        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
+        var sender = new GetProcessesSender(ClientInstance.tcpClient);
+        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
     }
 
     /**

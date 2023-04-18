@@ -3,9 +3,9 @@ package SocketMessageReceiver.CustomUserReceiver;
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Sender;
-import SocketMessageReceiver.DataType.GetHardwareInfoAdminSide;
-import SocketMessageReceiver.DataType.GetHardwareInfoServerSide;
-import SocketMessageReceiver.DataType.GetHardwareInfoResultUserSide;
+import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
+import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoServerSide;
+import SocketMessageReceiver.DataType.GetHardwareInfoResult.GetHardwareInfoResultUserSide;
 import SocketMessageReceiver.SocketMessageReceiver;
 import SocketMessageSender.CustomUserSender.GetHardwareInfoResultSender;
 import Utilities.Utilities;
@@ -33,11 +33,13 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<GetHardwareInfoServerSide> socketMsg) {
         var hardwareTypes = socketMsg.msg.hardwareTypes;
-        var hardwareInfos = new ArrayList<String>();
+        var hardwareInfos = new String[socketMsg.msg.hardwareTypes.size()];
 
-        for (var hardwareType : hardwareTypes) {
+        for (int i = 0; i < hardwareTypes.size(); i++) {
+            var hardwareType = hardwareTypes.get(i);
             var hardwareInfo = HardwareInfoFactory.getHardwareInfo(hardwareType);
-            hardwareInfos.add(hardwareInfo.getHardwareInfo());
+
+            hardwareInfos[i] = hardwareInfo.getHardwareInfo();
         }
 
         var sender = new GetHardwareInfoResultSender(server);
@@ -61,7 +63,7 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
                     return new HardwareInfoDisk();
                 }
                 default -> {
-                    return null;
+                    return ""::toString;
                 }
             }
         }
