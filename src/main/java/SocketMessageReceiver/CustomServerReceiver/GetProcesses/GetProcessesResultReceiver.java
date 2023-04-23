@@ -4,11 +4,9 @@ import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Sender;
 import Server.UserController;
-import SocketMessageReceiver.DataType.GetHardwareInfoResult.GetHardwareInfoResultServerSide;
 import SocketMessageReceiver.DataType.GetProcessesResult.GetProcessesResultServerSide;
 import SocketMessageReceiver.DataType.GetProcessesResult.GetProcessesResultUserSide;
 import SocketMessageReceiver.SocketMessageReceiver;
-import SocketMessageSender.CustomServerSender.GetHardwareInfo.GetHardwareInfoResultSender;
 import SocketMessageSender.CustomServerSender.GetProcesses.GetProcessesResultSender;
 
 public class GetProcessesResultReceiver extends SocketMessageReceiver<GetProcessesResultUserSide> {

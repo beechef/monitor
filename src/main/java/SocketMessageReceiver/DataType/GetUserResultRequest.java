@@ -8,13 +8,17 @@ import java.util.ArrayList;
 public class GetUserResultRequest implements Serializable {
     public static class UserInfo implements Serializable {
         public String uuid;
+        public String name;
         public String host;
+        public UserController.UserInfo.UserStatus status;
         public int port;
 
-        public UserInfo(String uuid, String host, int port) {
-            this.uuid = uuid;
-            this.host = host;
-            this.port = port;
+        public UserInfo(UserController.UserInfo info) {
+            this.uuid = info.uuid;
+            this.name = info.name;
+            this.status = info.status;
+            this.host = info.inetSocketAddress == null ? "" : info.inetSocketAddress.getAddress().toString();
+            this.port = info.inetSocketAddress == null ? 0 : info.inetSocketAddress.getPort();
         }
     }
 
@@ -24,11 +28,7 @@ public class GetUserResultRequest implements Serializable {
         this.userInfos = new ArrayList<>();
 
         for (var userInfo : userInfos) {
-            var uuid = userInfo.uuid;
-            var host = userInfo.inetSocketAddress.getAddress().toString();
-            var port = userInfo.inetSocketAddress.getPort();
-
-            this.userInfos.add(new UserInfo(uuid, host, port));
+            this.userInfos.add(new UserInfo(userInfo));
         }
     }
 }

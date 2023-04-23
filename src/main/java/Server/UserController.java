@@ -11,13 +11,30 @@ import java.util.HashMap;
 public class UserController {
     public static class UserInfo implements Serializable {
         public String uuid;
+        public String name;
+        public UserStatus status;
         public InetSocketAddress inetSocketAddress;
         public Object socket;
 
-        public UserInfo(String uuid, InetSocketAddress inetSocketAddress, Object socket) {
+        public UserInfo(String uuid, UserStatus status, InetSocketAddress inetSocketAddress, Object socket) {
+            this.name = uuid;
             this.uuid = uuid;
+            this.status = status;
             this.inetSocketAddress = inetSocketAddress;
             this.socket = socket;
+        }
+
+        public UserInfo(String uuid, String name, UserStatus status, InetSocketAddress inetSocketAddress, Object socket) {
+            this.uuid = uuid;
+            this.name = name;
+            this.status = status;
+            this.inetSocketAddress = inetSocketAddress;
+            this.socket = socket;
+        }
+
+        public static enum UserStatus {
+            AVAILABLE,
+            UNAVAILABLE
         }
     }
 
@@ -112,10 +129,10 @@ public class UserController {
         return null;
     }
 
-    public static AdminInfo getTcpAdmin(int adminId, int id) {
+    public static AdminInfo getTcpAdmin(int adminId) {
         if (tcpAdmins.containsKey(adminId)) {
             for (var admin : tcpAdmins.get(adminId)) {
-                if (admin.id == id) {
+                if (admin.id == adminId) {
                     return admin;
                 }
             }
@@ -136,15 +153,13 @@ public class UserController {
         return null;
     }
 
-    public static AdminInfo getTcpAdmin(int id) {
-        for (var admins : tcpAdmins.values()) {
-            for (var admin : admins) {
-                if (admin.id == id) {
-                    return admin;
-                }
-            }
+    public static ArrayList<AdminInfo> getTcpAdmins(int id) {
+        var adminInfos = new ArrayList<AdminInfo>();
+
+        if (tcpAdmins.containsKey(id)) {
+            adminInfos.addAll(tcpAdmins.get(id));
         }
 
-        return null;
+        return adminInfos;
     }
 }

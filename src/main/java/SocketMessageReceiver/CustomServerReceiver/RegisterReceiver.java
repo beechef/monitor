@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class RegisterReceiver extends SocketMessageReceiver<RegisterRequest> {
-    private static final String CLIENT_TABLE = "client";
+    private static final String ADMIN_TABLE = "admin";
     private static final String EMAIL_FIELD = "email";
     private static final String PASSWORD_FIELD = "password";
 
@@ -28,7 +28,7 @@ public class RegisterReceiver extends SocketMessageReceiver<RegisterRequest> {
                 new Condition(EMAIL_FIELD, Operator.Equal, email, CombineCondition.NONE),
         };
         try {
-            var existUser = DatabaseConnector.select(CLIENT_TABLE, null, existConditions);
+            var existUser = DatabaseConnector.select(ADMIN_TABLE, null, existConditions);
             var result = RegisterResultRequest.Result.SUCCESS;
             var sender = new RegisterResultSender(server);
             var isExistEmail = existUser.next();
@@ -69,7 +69,7 @@ public class RegisterReceiver extends SocketMessageReceiver<RegisterRequest> {
         values.add(new KeyPair<>(PASSWORD_FIELD, password));
 
         try {
-            DatabaseConnector.insert(CLIENT_TABLE, values);
+            DatabaseConnector.insert(ADMIN_TABLE, values);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();

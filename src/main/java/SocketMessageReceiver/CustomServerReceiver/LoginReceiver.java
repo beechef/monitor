@@ -20,7 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginReceiver extends SocketMessageReceiver<LoginRequest> {
-    private static final String CLIENT_TABLE = "client";
+    private static final String CLIENT_TABLE = "admin";
     private static final String ID_FIELD = "id";
     private static final String EMAIL_FIELD = "email";
     private static final String PASSWORD_FIELD = "password";

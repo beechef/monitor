@@ -8,15 +8,13 @@ import Client.ClientInstance;
 import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.LoginResultReceiver;
+import SocketMessageReceiver.DataType.ChangeUserNameRequest;
 import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
 import SocketMessageReceiver.DataType.GetUserRequest;
 import SocketMessageReceiver.DataType.LoginRequest;
 import SocketMessageReceiver.DataType.LoginResultRequest;
-import SocketMessageSender.CustomAdminSender.GetHardwareInfoSender;
-import SocketMessageSender.CustomAdminSender.GetProcessesSender;
-import SocketMessageSender.CustomAdminSender.GetUserSender;
-import SocketMessageSender.CustomAdminSender.LoginSender;
+import SocketMessageSender.CustomAdminSender.*;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -70,8 +68,19 @@ public class LoginGUI extends javax.swing.JFrame {
 //
 //        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
 
-        var sender = new GetProcessesSender(ClientInstance.tcpClient);
-        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+//        var sender = new GetProcessesSender(ClientInstance.tcpClient);
+//        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+
+//        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
+//        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
+//        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.CPU);
+//        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.MEMORY);
+//        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.DISK);
+//
+//        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
+
+        var changeNameSender = new ChangeUserNameSender(ClientInstance.tcpClient);
+        changeNameSender.send(null, new ChangeUserNameRequest(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955", "Changed Name!!!"));
     }
 
     /**

@@ -30,6 +30,9 @@ public class EventHeadByte {
 
         public static final byte GET_PROCESSES = 5;
         public static final byte GET_PROCESSES_RESULT = 6;
+
+        public static final byte CHANGE_NAME = 7;
+        public static final byte CHANGE_NAME_RESULT = 8;
     }
 
 }

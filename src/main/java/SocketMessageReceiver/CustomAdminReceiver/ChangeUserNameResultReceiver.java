@@ -2,13 +2,11 @@ package SocketMessageReceiver.CustomAdminReceiver;
 
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.ExecutableData;
-import Server.EventDispatcher.SocketMessageGeneric;
-import Server.ServerInstance.Sender;
-import SocketMessageReceiver.DataType.GetUserResultRequest;
+import SocketMessageReceiver.DataType.ChangeUserNameResult;
 import SocketMessageReceiver.SocketMessageReceiverCallBack;
 
-public class GetUserResultReceiver extends SocketMessageReceiverCallBack<GetUserResultRequest> {
-    public GetUserResultReceiver(ExecutableData<GetUserResultRequest> callback) {
+public class ChangeUserNameResultReceiver extends SocketMessageReceiverCallBack<ChangeUserNameResult> {
+    public ChangeUserNameResultReceiver(ExecutableData<ChangeUserNameResult> callback) {
         super(callback);
     }
 
@@ -19,6 +17,6 @@ public class GetUserResultReceiver extends SocketMessageReceiverCallBack<GetUser
 
     @Override
     public byte getSubHeadByte() {
-        return EventHeadByte.UserData.GET_RESULT;
+        return EventHeadByte.UserData.CHANGE_NAME_RESULT;
     }
 }

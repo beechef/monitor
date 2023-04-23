@@ -25,6 +25,8 @@ public class SocketMessageReceiverController {
 
         register(new GetProcessesReceiver());
         register(new GetProcessesResultReceiver());
+
+        register(new ChangeUserNameReceiver());
     }
 
     private static void register(SocketMessageEvent receiver) {
