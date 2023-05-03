@@ -1,6 +1,7 @@
 package Client;
 
 import Client.GUI.Admin.LoginGUI;
+import Client.GUI.Admin.RegisterGUI;
 import Client.GUI.Lib.ClientDTO;
 import Client.GUI.Lib.GlobalVariable;
 import Server.EventDispatcher.EventDispatcher;
@@ -26,6 +27,7 @@ public class Admin {
         ClientInstance.udpClient = udpClient;
 
         GlobalVariable.LoginAdminGUI = new LoginGUI();
+        GlobalVariable.RegisterAdminGUI=new RegisterGUI();
         GlobalVariable.LoginAdminGUI.setVisible(true);
 
 //        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
