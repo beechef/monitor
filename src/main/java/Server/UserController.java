@@ -49,7 +49,7 @@ public class UserController {
             this.adminId = adminId;
             this.tcpSocket = tcpSocket;
 
-            id = tcpSocket.hashCode();
+            this.id = adminId;
         }
     }
 
@@ -130,6 +130,7 @@ public class UserController {
 
         return null;
     }
+
 
     public static AdminInfo getAdmin(int adminId) {
         if (admins.containsKey(adminId)) {

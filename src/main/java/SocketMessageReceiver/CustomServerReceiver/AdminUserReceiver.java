@@ -8,24 +8,24 @@ import Server.UserController;
 import SocketMessageReceiver.SocketMessageReceiver;
 import io.jsonwebtoken.Jwts;
 
-public abstract class AdminUserReceiver<T, R> extends SocketMessageReceiver<T> {
+public abstract class AdminUserReceiver<T> extends SocketMessageReceiver<T> {
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<T> socketMsg) {
-        if (!(socketMsg instanceof AdminUserRequest request)) return;
+        if (!(socketMsg.msg instanceof AdminUserRequest request)) return;
 
         var jwt = Jwts.parserBuilder().setSigningKey(JWTKey.getKey()).build().parseClaimsJws(request.getToken());
         var adminId = jwt.getBody().get("id", Integer.class);
         var uuid = request.getUserUuid();
 
         var user = UserController.getUser(adminId, uuid);
-        var admin = UserController.getAdmin(adminId, socketMsg.sender);
+        var admin = UserController.getAdmin(adminId);
 
         if (user != null && admin != null) {
-            setData(socketMsg, new AdminUserInfo(admin, user));
+            setData(server, socketMsg, new AdminUserInfo(admin, user));
         }
     }
 
-    protected abstract void setData(SocketMessageGeneric<T> socketMsg, AdminUserInfo info);
+    protected abstract void setData(Sender server, SocketMessageGeneric<T> socketMsg, AdminUserInfo info);
 
     public class AdminUserInfo {
         public UserController.AdminInfo adminInfo;

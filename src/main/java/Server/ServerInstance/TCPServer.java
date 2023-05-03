@@ -12,7 +12,9 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -200,18 +202,49 @@ public class TCPServer implements Server {
         }
     }
 
+    private Queue<ClientBuffer> bufferQueue = new LinkedList<>();
 
+
+    @Override
     public void send(Object target, Message msg) {
         if (!(target instanceof AsynchronousSocketChannel client)) return;
 
         byte[] msgBytes = msg.toBytes();
         ByteBuffer buffer = _bufferPooling.get();
+
         buffer.put(msgBytes);
         buffer.flip();
 
-        client.write(buffer);
-        onSend(client, msg);
+        var clientBuffer = new ClientBuffer(client, buffer);
+
+        if (bufferQueue.size() == 0) {
+            bufferQueue.add(clientBuffer);
+            send();
+        } else {
+            bufferQueue.add(clientBuffer);
+        }
     }
+
+    private void send() {
+        var clientBuffer = bufferQueue.remove();
+        var client = clientBuffer.client;
+        var buffer = clientBuffer.buffer;
+
+        client.write(buffer, null, new CompletionHandler<>() {
+            @Override
+            public void completed(Integer result, Object attachment) {
+                if (bufferQueue.size() > 0) {
+                    send();
+                }
+            }
+
+            @Override
+            public void failed(Throwable exc, Object attachment) {
+
+            }
+        });
+    }
+
 
     public void onSend(AsynchronousSocketChannel client, Message msg) {
     }
@@ -225,4 +258,13 @@ public class TCPServer implements Server {
         return _buffer;
     }
 
+    class ClientBuffer {
+        public AsynchronousSocketChannel client;
+        public ByteBuffer buffer;
+
+        public ClientBuffer(AsynchronousSocketChannel client, ByteBuffer buffer) {
+            this.client = client;
+            this.buffer = buffer;
+        }
+    }
 }

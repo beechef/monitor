@@ -10,6 +10,8 @@ public class EventHeadByte {
 
         public static final byte REGISTER = 3;
         public static final byte REGISTER_RESULT = 4;
+
+        public static final byte LOGIN_UDP = 5;
     }
 
     public static final byte USER_CONNECTION = 2;
@@ -38,6 +40,9 @@ public class EventHeadByte {
 
         public static final byte PROCESS_ACTION = 9;
         public static final byte PROCESS_ACTION_RESULT = 10;
+
+        public static final byte GET_IMAGE = 11;
+        public static final byte GET_IMAGE_RESULT = 12;
     }
 
 }

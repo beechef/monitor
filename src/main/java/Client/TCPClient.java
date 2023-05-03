@@ -10,6 +10,8 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class TCPClient implements Client {
     private static final int DEFAULT_BUFFER = 1024;
@@ -85,6 +87,9 @@ public class TCPClient implements Client {
         });
     }
 
+    Queue<ByteBuffer> bufferQueue = new LinkedList<>();
+    boolean sending = false;
+
     @Override
     public void send(Object target, Message msg) {
         byte[] msgBytes = msg.toBytes();
@@ -92,7 +97,35 @@ public class TCPClient implements Client {
         buffer.put(msgBytes);
         buffer.flip();
 
-        socket.write(buffer);
+        if (!sending) {
+            bufferQueue.add(buffer);
+            send();
+        } else {
+            bufferQueue.add(buffer);
+        }
+    }
+
+    private void send() {
+        ByteBuffer buffer = bufferQueue.remove();
+        sending = true;
+
+        socket.write(buffer, null, new CompletionHandler<>() {
+            @Override
+            public void completed(Integer result, Object attachment) {
+                buffer.clear();
+
+                if (bufferQueue.size() > 0) {
+                    send();
+                } else {
+                    sending = false;
+                }
+            }
+
+            @Override
+            public void failed(Throwable exc, Object attachment) {
+
+            }
+        });
     }
 
     @Override
