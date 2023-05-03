@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="lc.kra.system.hook" type="repository">
+    <properties maven-id="lc.kra.system:system-hook:3.8" />
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/lc/kra/system/system-hook/3.8/system-hook-3.8.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
