@@ -9,16 +9,17 @@ import SocketMessageReceiver.DataType.GetImage.GetImageRequestAdminSide;
 import SocketMessageSender.CustomAdminSender.GetImageSender;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Admin {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         var tcpClient = new TCPClient("localhost", 4445);
-        tcpClient.setBuffer(1024 * 16);
+        tcpClient.setBuffer(1024 * 1024);
         tcpClient.start();
 
         var udpClient = new UDPClient("localhost", 4446);
-        udpClient.setBuffer(1024 * 16);
+        udpClient.setBuffer(1024 * 1024);
         udpClient.start();
 
         ClientInstance.tcpClient = tcpClient;
@@ -79,6 +80,35 @@ public class Admin {
             System.out.println("After name: " + data.afterName);
             System.out.println();
         }));
+
+        var bytes = new ArrayList<Byte>();
+
+        EventDispatcher.startListening(new GetImageResultReceiver((data) -> {
+            if (!data.isEnd) {
+                for (var b : data.image) {
+                    bytes.add(b);
+                }
+            } else {
+                var image = new byte[bytes.size()];
+                for (int i = 0; i < bytes.size(); i++) {
+                    image[i] = bytes.get(i);
+                }
+
+                System.out.println("Image size: " + image.length);
+
+                try {
+                    var imageFile = new java.io.File("image.png");
+                    var imageOutputStream = new java.io.FileOutputStream(imageFile);
+                    imageOutputStream.write(image);
+                    imageOutputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                bytes.clear();
+            }
+        }));
+
 
         Thread.currentThread().join();
     }

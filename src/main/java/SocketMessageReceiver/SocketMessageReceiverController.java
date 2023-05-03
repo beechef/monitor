@@ -6,6 +6,7 @@ import SocketMessageReceiver.CustomServerReceiver.*;
 import SocketMessageReceiver.CustomServerReceiver.GetHardwareInfo.GetHardwareInfoReceiver;
 import SocketMessageReceiver.CustomServerReceiver.GetHardwareInfo.GetHardwareInfoResultReceiver;
 import SocketMessageReceiver.CustomServerReceiver.GetImage.GetImageReceiver;
+import SocketMessageReceiver.CustomServerReceiver.GetImage.GetImageResultReceiver;
 import SocketMessageReceiver.CustomServerReceiver.GetProcesses.GetProcessesReceiver;
 import SocketMessageReceiver.CustomServerReceiver.GetProcesses.GetProcessesResultReceiver;
 
@@ -20,6 +21,7 @@ public class SocketMessageReceiverController {
         register(new RegisterReceiver());
         register(new LoginUserReceiver());
         register(new LoginUserUDPReceiver());
+        register(new LoginAdminUdpReceiver());
         register(new GetUserReceiver());
 
         register(new GetHardwareInfoReceiver());
@@ -31,6 +33,7 @@ public class SocketMessageReceiverController {
         register(new ChangeUserNameReceiver());
 
         register(new GetImageReceiver());
+        register(new GetImageResultReceiver());
     }
 
     private static void register(SocketMessageEvent receiver) {

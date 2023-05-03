@@ -9,13 +9,10 @@ import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.LoginResultReceiver;
-import SocketMessageReceiver.DataType.ChangeUserNameRequest;
+import SocketMessageReceiver.DataType.*;
 import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
 import SocketMessageReceiver.DataType.GetImage.GetImageRequestAdminSide;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
-import SocketMessageReceiver.DataType.GetUserRequest;
-import SocketMessageReceiver.DataType.LoginRequest;
-import SocketMessageReceiver.DataType.LoginResultRequest;
 import SocketMessageSender.CustomAdminSender.*;
 
 import java.awt.Color;
@@ -59,22 +56,35 @@ public class LoginGUI extends javax.swing.JFrame {
 
     private void receiveRequest(LoginResultRequest request) {
         System.out.println(request.result);
-        
+
         if (request.result != LoginResultRequest.Result.SUCCESS) return;
         try {
             GlobalVariable.LoginAdminGUI.setVisible(false);
-            GlobalVariable.main=new MainGUI();
+            GlobalVariable.main = new MainGUI();
             GlobalVariable.main.setVisible(true);
         } catch (IOException ex) {
             Logger.getLogger(LoginGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         var token = request.token;
 
         new GetUserSender(ClientInstance.tcpClient).send(null, new GetUserRequest(GetUserRequest.Type.GET_ALL, token));
 
-        var sender = new GetImageSender(ClientInstance.udpClient);
-        sender.send(null, new GetImageRequestAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+        new LoginAdminUdpSender(ClientInstance.udpClient).send(null, new LoginAdminUdpRequest(token));
+
+        new Thread(() -> {
+            while (true) {
+                var sender = new GetImageSender(ClientInstance.tcpClient);
+                var fps = 24;
+                sender.send(null, new GetImageRequestAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+
+                try {
+                    Thread.sleep(1000 / fps);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }).start();
 
 //        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
 //        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();

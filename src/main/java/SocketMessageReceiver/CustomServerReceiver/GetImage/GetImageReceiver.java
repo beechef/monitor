@@ -22,7 +22,7 @@ public class GetImageReceiver extends AdminUserReceiver<GetImageRequestAdminSide
     @Override
     protected void setData(Sender server, SocketMessageGeneric<GetImageRequestAdminSide> socketMsg, AdminUserReceiver<GetImageRequestAdminSide>.AdminUserInfo info) {
         var user = info.userInfo;
-        var userSocket = user.udpSocket;
+        var userSocket = user.tcpSocket;
 
         var sender = new GetImageSender(server);
         sender.send(userSocket, new GetImageRequestServerSide(info.adminInfo.id));

@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 
         TCPServer tcpServer = new TCPServer(4445);
-        tcpServer.setBuffer(1024 * 16);
+        tcpServer.setBuffer(1024 * 1024);
 
         tcpServer.addOnStart(Key.JWTKey::readKey);
         tcpServer.addOnStart(DatabaseConnector::connect);
@@ -31,7 +31,7 @@ public class Main {
         tcpServer.start();
 
         UDPServer udpServer = new UDPServer(4446);
-        udpServer.setBuffer(1024 * 16);
+        udpServer.setBuffer(1024 * 1024);
 
         udpServer.start();
 

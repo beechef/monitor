@@ -19,11 +19,11 @@ public class User {
     public static void main(String[] args) throws IOException, InterruptedException {
         try (ServerSocket ignored = new ServerSocket(9999)) {
             var tcpClient = new TCPClient("localhost", 4445);
-            tcpClient.setBuffer(1024 * 16);
+            tcpClient.setBuffer(1024 * 1024);
             tcpClient.start();
 
             UDPClient udpClient = new UDPClient("localhost", 4446);
-            udpClient.setBuffer(1024 * 16);
+            udpClient.setBuffer(1024 * 1024);
             udpClient.start();
 
             ClientInstance.tcpClient = tcpClient;
