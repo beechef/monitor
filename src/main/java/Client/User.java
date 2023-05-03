@@ -31,7 +31,7 @@ public class User {
 
             var loginTcpSender = new LoginSender(tcpClient);
             var uuid = Utilities.getUUID();
-            var adminId = 11;
+            var adminId = 19;
 
             EventDispatcher.startListening(new LoginUserResultReceiver((loginUserResult) -> {
                 var loginUdpSender = new LoginUDPSender(udpClient);
