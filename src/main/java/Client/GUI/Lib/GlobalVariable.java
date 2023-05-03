@@ -6,6 +6,7 @@ package Client.GUI.Lib;
 
 import Client.GUI.Admin.LoginGUI;
 import Client.GUI.Admin.MainGUI;
+import Client.GUI.Admin.RegisterGUI;
 import Client.GUI.Component.HardwareGUI;
 import Client.GUI.Component.ListClientGUI;
 import Client.GUI.Component.OthersGUI;
@@ -39,6 +40,7 @@ public class GlobalVariable {
 
     public static LoginGUI LoginAdminGUI;
     public static MainGUI main = null;
+    public static RegisterGUI RegisterAdminGUI;
 
     //init sidebar item list
     public static List<SidebarItemDTO> itemList = new ArrayList<>();

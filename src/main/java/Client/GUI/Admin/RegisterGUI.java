@@ -7,6 +7,7 @@ package Client.GUI.Admin;
 import javax.swing.*;
 
 import Client.ClientInstance;
+import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.RegisterResultReceiver;
@@ -43,6 +44,11 @@ public class RegisterGUI extends javax.swing.JFrame {
     }
 
     private void receiveResult(RegisterResultRequest request) {
+        if(request.result.toString().equals("SUCCESS")){
+            GlobalVariable.RegisterAdminGUI.setVisible(false);
+            GlobalVariable.LoginAdminGUI.setText(this.inpEmail.getText(), this.inpPassword.getText());
+            GlobalVariable.LoginAdminGUI.setVisible(true);
+        }
         System.out.println(request.result);
     }
 
