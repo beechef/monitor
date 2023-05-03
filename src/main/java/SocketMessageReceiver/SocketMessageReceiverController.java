@@ -18,6 +18,7 @@ public class SocketMessageReceiverController {
         register(new LoginReceiver());
         register(new RegisterReceiver());
         register(new LoginUserReceiver());
+        register(new LoginUserUDPReceiver());
         register(new GetUserReceiver());
 
         register(new GetHardwareInfoReceiver());

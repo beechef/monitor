@@ -14,25 +14,26 @@ public class UserController {
         public String name;
         public UserStatus status;
         public InetSocketAddress inetSocketAddress;
-        public Object socket;
+        public Object tcpSocket;
+        public Object udpSocket;
 
-        public UserInfo(String uuid, UserStatus status, InetSocketAddress inetSocketAddress, Object socket) {
+        public UserInfo(String uuid, UserStatus status, InetSocketAddress inetSocketAddress, Object tcpSocket) {
             this.name = uuid;
             this.uuid = uuid;
             this.status = status;
             this.inetSocketAddress = inetSocketAddress;
-            this.socket = socket;
+            this.tcpSocket = tcpSocket;
         }
 
-        public UserInfo(String uuid, String name, UserStatus status, InetSocketAddress inetSocketAddress, Object socket) {
+        public UserInfo(String uuid, String name, UserStatus status, InetSocketAddress inetSocketAddress, Object tcpSocket) {
             this.uuid = uuid;
             this.name = name;
             this.status = status;
             this.inetSocketAddress = inetSocketAddress;
-            this.socket = socket;
+            this.tcpSocket = tcpSocket;
         }
 
-        public static enum UserStatus {
+        public enum UserStatus {
             AVAILABLE,
             UNAVAILABLE
         }
@@ -41,18 +42,19 @@ public class UserController {
     public static class AdminInfo implements Serializable {
         public int id;
         public int adminId;
-        public Object socket;
+        public Object tcpSocket;
+        public Object udpSocket;
 
-        public AdminInfo(int adminId, Object socket) {
+        public AdminInfo(int adminId, Object tcpSocket) {
             this.adminId = adminId;
-            this.socket = socket;
+            this.tcpSocket = tcpSocket;
 
-            id = socket.hashCode();
+            id = tcpSocket.hashCode();
         }
     }
 
-    private static final HashMap<Integer, ArrayList<UserInfo>> tcpUsers = new HashMap<>();
-    private static final HashMap<Integer, ArrayList<AdminInfo>> tcpAdmins = new HashMap<>();
+    private static final HashMap<Integer, ArrayList<UserInfo>> users = new HashMap<>();
+    private static final HashMap<Integer, ArrayList<AdminInfo>> admins = new HashMap<>();
 
     public static void registerEvents() {
         EventDispatcher.startListening(EventName.USER_DISCONNECTED, UserController::removeDisconnectedSocket);
@@ -63,63 +65,63 @@ public class UserController {
     }
 
     private static void removeDisconnectedSocket(Object data) {
-        for (var admins : tcpAdmins.values()) {
-            if (admins.stream().anyMatch(x -> x.socket == data)) {
-                admins.removeIf(x -> x.socket == data);
+        for (var admins : admins.values()) {
+            if (admins.stream().anyMatch(x -> x.tcpSocket == data || x.udpSocket == data)) {
+                admins.removeIf(x -> x.tcpSocket == data);
                 return;
             }
         }
 
-        for (var users : tcpUsers.values()) {
-            if (users.stream().anyMatch(x -> x.socket == data)) {
-                users.removeIf(x -> x.socket == data);
+        for (var users : users.values()) {
+            if (users.stream().anyMatch(x -> x.tcpSocket == data || x.udpSocket == data)) {
+                users.removeIf(x -> x.tcpSocket == data);
                 return;
             }
         }
     }
 
 
-    public static void addTcpUser(int adminId, UserInfo user) {
-        if (tcpUsers.containsKey(adminId)) {
-            tcpUsers.get(adminId).add(user);
+    public static void addUser(int adminId, UserInfo user) {
+        if (users.containsKey(adminId)) {
+            users.get(adminId).add(user);
         } else {
             var users = new ArrayList<UserInfo>();
             users.add(user);
-            tcpUsers.put(adminId, users);
+            UserController.users.put(adminId, users);
         }
     }
 
-    public static void removeTcpUser(int adminId, UserInfo user) {
-        if (tcpUsers.containsKey(adminId)) {
-            tcpUsers.get(adminId).remove(user);
+    public static void removeUser(int adminId, UserInfo user) {
+        if (users.containsKey(adminId)) {
+            users.get(adminId).remove(user);
         }
     }
 
-    public static void addTcpAdmin(AdminInfo admin) {
+    public static void addAdmin(AdminInfo admin) {
         var adminId = admin.adminId;
-        if (tcpAdmins.containsKey(adminId)) {
-            tcpAdmins.get(adminId).add(admin);
+        if (admins.containsKey(adminId)) {
+            admins.get(adminId).add(admin);
         } else {
             var admins = new ArrayList<AdminInfo>();
             admins.add(admin);
-            tcpAdmins.put(adminId, admins);
+            UserController.admins.put(adminId, admins);
         }
     }
 
-    public static void removeTcpAdmin(AdminInfo admin) {
+    public static void removeAdmin(AdminInfo admin) {
         var adminId = admin.adminId;
-        if (tcpAdmins.containsKey(adminId)) {
-            tcpAdmins.get(adminId).remove(admin);
+        if (admins.containsKey(adminId)) {
+            admins.get(adminId).remove(admin);
         }
     }
 
-    public static ArrayList<UserInfo> getTcpUsers(int adminId) {
-        return tcpUsers.get(adminId);
+    public static ArrayList<UserInfo> getUsers(int adminId) {
+        return users.get(adminId);
     }
 
-    public static UserInfo getTcpUser(int adminId, String uuid) {
-        if (tcpUsers.containsKey(adminId)) {
-            for (var user : tcpUsers.get(adminId)) {
+    public static UserInfo getUser(int adminId, String uuid) {
+        if (users.containsKey(adminId)) {
+            for (var user : users.get(adminId)) {
                 if (user.uuid.equals(uuid)) {
                     return user;
                 }
@@ -129,9 +131,9 @@ public class UserController {
         return null;
     }
 
-    public static AdminInfo getTcpAdmin(int adminId) {
-        if (tcpAdmins.containsKey(adminId)) {
-            for (var admin : tcpAdmins.get(adminId)) {
+    public static AdminInfo getAdmin(int adminId) {
+        if (admins.containsKey(adminId)) {
+            for (var admin : admins.get(adminId)) {
                 if (admin.id == adminId) {
                     return admin;
                 }
@@ -141,10 +143,10 @@ public class UserController {
         return null;
     }
 
-    public static AdminInfo getTcpAdmin(int adminId, Object socket) {
-        if (tcpAdmins.containsKey(adminId)) {
-            for (var admin : tcpAdmins.get(adminId)) {
-                if (admin.socket == socket) {
+    public static AdminInfo getAdmin(int adminId, Object socket) {
+        if (admins.containsKey(adminId)) {
+            for (var admin : admins.get(adminId)) {
+                if (admin.tcpSocket == socket) {
                     return admin;
                 }
             }
@@ -153,11 +155,11 @@ public class UserController {
         return null;
     }
 
-    public static ArrayList<AdminInfo> getTcpAdmins(int id) {
+    public static ArrayList<AdminInfo> getAdmins(int id) {
         var adminInfos = new ArrayList<AdminInfo>();
 
-        if (tcpAdmins.containsKey(id)) {
-            adminInfos.addAll(tcpAdmins.get(id));
+        if (admins.containsKey(id)) {
+            adminInfos.addAll(admins.get(id));
         }
 
         return adminInfos;

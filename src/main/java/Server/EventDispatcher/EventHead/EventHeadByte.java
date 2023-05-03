@@ -17,6 +17,8 @@ public class EventHeadByte {
     public static class UserConnection {
         public static final byte LOGIN = 1;
         public static final byte LOGIN_RESULT = 2;
+
+        public static final byte LOGIN_UDP = 3;
     }
 
     public static final byte USER_DATA = 3;

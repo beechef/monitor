@@ -3,12 +3,14 @@ package SocketMessageReceiver.CustomServerReceiver;
 import Server.Database.*;
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
+import Server.MiddleWare.EncryptPassword;
 import Server.ServerInstance.Sender;
 import SocketMessageReceiver.DataType.RegisterRequest;
 import SocketMessageReceiver.DataType.RegisterResultRequest;
 import SocketMessageReceiver.SocketMessageReceiver;
 import SocketMessageSender.CustomServerSender.RegisterResultSender;
 
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -49,7 +51,7 @@ public class RegisterReceiver extends SocketMessageReceiver<RegisterRequest> {
             result = createAccount(socketMsg.msg) ? RegisterResultRequest.Result.SUCCESS : RegisterResultRequest.Result.UNKNOWN_ERROR;
             sender.send(target, new RegisterResultRequest(result));
 
-        } catch (SQLException e) {
+        } catch (SQLException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
     }
@@ -60,9 +62,11 @@ public class RegisterReceiver extends SocketMessageReceiver<RegisterRequest> {
         return RegisterResultRequest.Result.SUCCESS;
     }
 
-    private boolean createAccount(RegisterRequest request) {
+    private boolean createAccount(RegisterRequest request) throws NoSuchAlgorithmException {
         var email = request.email;
         var password = request.password;
+        var encryptedPassword = new EncryptPassword(EncryptPassword.SALT);
+        password = encryptedPassword.encrypt(password);
 
         var values = new ArrayList<KeyPair<String, String>>();
         values.add(new KeyPair<>(EMAIL_FIELD, email));

@@ -4,6 +4,7 @@ import Server.Database.DatabaseConnector;
 import Server.MiddleWare.EncryptPassword;
 import Server.MiddleWare.EncryptPasswordMiddleWare;
 import Server.ServerInstance.TCPServer;
+import Server.ServerInstance.UDPServer;
 import SocketMessageReceiver.SocketMessageReceiverController;
 
 import java.io.IOException;
@@ -13,21 +14,26 @@ import java.sql.SQLException;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException, SQLException, ClassNotFoundException, NoSuchAlgorithmException {
 
-        TCPServer server = new TCPServer(4445);
-        server.setBuffer(1024 * 16);
+        TCPServer tcpServer = new TCPServer(4445);
+        tcpServer.setBuffer(1024 * 16);
 
-        server.addOnStart(Key.JWTKey::readKey);
-        server.addOnStart(DatabaseConnector::connect);
-        server.addOnStart(UserController::registerEvents);
-        server.addOnStart(SocketMessageReceiverController::registerEvents);
+        tcpServer.addOnStart(Key.JWTKey::readKey);
+        tcpServer.addOnStart(DatabaseConnector::connect);
+        tcpServer.addOnStart(UserController::registerEvents);
+        tcpServer.addOnStart(SocketMessageReceiverController::registerEvents);
 
-        server.addOnStop(DatabaseConnector::stop);
-        server.addOnStop(UserController::unRegisterEvents);
-        server.addOnStop(SocketMessageReceiverController::unRegisterEvents);
+        tcpServer.addOnStop(DatabaseConnector::stop);
+        tcpServer.addOnStop(UserController::unRegisterEvents);
+        tcpServer.addOnStop(SocketMessageReceiverController::unRegisterEvents);
 
-        server.addMiddleware(new EncryptPasswordMiddleWare(EncryptPassword.SALT));
+        tcpServer.addMiddleware(new EncryptPasswordMiddleWare(EncryptPassword.SALT));
 
-        server.start();
+        tcpServer.start();
+
+        UDPServer udpServer = new UDPServer(4446);
+        udpServer.setBuffer(1024 * 16);
+
+        udpServer.start();
 
         // Keep the server running
         Thread.currentThread().join();

@@ -30,13 +30,13 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
         var hardwareTypes = socketMsg.msg.hardwareTypes;
 
         var sender = new GetHardwareInfoSender(server);
-        var user = UserController.getTcpUser(adminId, uuid);
-        var admin = UserController.getTcpAdmin(adminId, socketMsg.sender);
+        var user = UserController.getUser(adminId, uuid);
+        var admin = UserController.getAdmin(adminId, socketMsg.sender);
 
         if (user != null && admin != null) {
             var id = admin.id;
 
-            sender.send(user.socket, new GetHardwareInfoServerSide(hardwareTypes, id));
+            sender.send(user.tcpSocket, new GetHardwareInfoServerSide(hardwareTypes, id));
         }
     }
 }
