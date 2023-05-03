@@ -10,26 +10,37 @@ package Client.GUI.Lib;
  */
 public class ClientDTO {
     private String name;
-    private int ID;
+    private String uuid;
     private String IpAdress;
     private boolean status;
+    private int port;
 
     public ClientDTO() {
     }
 
-    public ClientDTO(String name, int ID, String IpAdress, boolean status) {
+    public ClientDTO(String name, String uuid, String IpAdress, boolean status, int port) {
         this.name = name;
-        this.ID = ID;
+        this.uuid = uuid;
         this.IpAdress = IpAdress;
         this.status = status;
+        this.port=port;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public int getPort() {
+        return port;
+    }
+    
+
+    public void setID(String uuid) {
+        this.uuid = uuid;
     }
 
     public void setIpAdress(String IpAdress) {
@@ -44,8 +55,8 @@ public class ClientDTO {
         return name;
     }
 
-    public int getID() {
-        return ID;
+    public String getID() {
+        return uuid;
     }
 
     public String getIpAdress() {
@@ -58,8 +69,10 @@ public class ClientDTO {
 
     @Override
     public String toString() {
-        return "ClientDTO{" + "name=" + name + ", ID=" + ID + ", IpAdress=" + IpAdress + ", status=" + status + '}';
+        return "ClientDTO{" + "name=" + name + ", uuid=" + uuid + ", IpAdress=" + IpAdress + ", status=" + status + ", port=" + port + '}';
     }
+
+ 
     
     
 }

@@ -1,12 +1,15 @@
 package Client;
 
 import Client.GUI.Admin.LoginGUI;
+import Client.GUI.Lib.ClientDTO;
+import Client.GUI.Lib.GlobalVariable;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
 
 import java.io.IOException;
 
 public class Admin {
+
     public static void main(String[] args) throws IOException, InterruptedException {
         var client = new ClientTCP("localhost", 4445);
         client.setBuffer(1024 * 16);
@@ -14,28 +17,37 @@ public class Admin {
 
         ClientInstance.tcpClient = client;
 
-        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
+        GlobalVariable.LoginAdminGUI = new LoginGUI();
+        GlobalVariable.LoginAdminGUI.setVisible(true);
 
+//        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
         EventDispatcher.startListening(new GetUserResultReceiver(data -> {
             for (var user : data.userInfos) {
-                System.out.println("User UUID: " + user.uuid);
-                System.out.println("User Name: " + user.name);
-                System.out.println("User Host: " + user.host);
-                System.out.println("User Port: " + user.port);
-                System.out.println("User Status: " + user.status);
-                System.out.println();
+                
+                boolean stmpStatus = false;
+                if (user.status.toString().equals("AVAILABLE")) {
+                    stmpStatus = true;
+                }
+              
+                GlobalVariable.clientList.add(new ClientDTO(user.name, user.uuid, user.host, stmpStatus, user.port));
             }
+            GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
         }));
 
         EventDispatcher.startListening(new LoginUserResultReceiver(data -> {
             var userInfo = data.userInfo;
+            
+            boolean stmpStatus = false;
+            System.out.println(userInfo.status);
+            if (userInfo.status.toString().equals("AVAILABLE")) {
+                stmpStatus = true;
+            }
+            
+            System.out.println(userInfo.host);
+            
+            GlobalVariable.clientList.add(new ClientDTO(userInfo.name, userInfo.uuid, userInfo.host, stmpStatus, userInfo.port));
+            GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
 
-            System.out.println("User UUID: " + userInfo.uuid);
-            System.out.println("User Name: " + userInfo.name);
-            System.out.println("User Host: " + userInfo.host);
-            System.out.println("User Port: " + userInfo.port);
-            System.out.println("User Status: " + userInfo.status);
-            System.out.println();
         }));
 
         EventDispatcher.startListening(new GetHardwareInfoResultReceiver(data -> {
@@ -43,7 +55,6 @@ public class Admin {
                 System.out.println(hardwareInfo);
             }
         }));
-
 
         EventDispatcher.startListening(new GetProcessesResultReceiver(data -> {
             for (var process : data.processes) {

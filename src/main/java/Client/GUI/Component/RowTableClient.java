@@ -26,6 +26,7 @@ import javax.swing.ImageIcon;
 public class RowTableClient extends javax.swing.JPanel {
 
     private ClientDTO client;
+    private final int uuidLength = 5;
 
     public ClientDTO getClient() {
         return client;
@@ -113,7 +114,7 @@ public class RowTableClient extends javax.swing.JPanel {
         });
         add(jTextField1);
 
-        clientId.setText("ID");
+        clientId.setText("uuid");
         add(clientId);
 
         jTextField2.setBorder(null);
@@ -127,6 +128,7 @@ public class RowTableClient extends javax.swing.JPanel {
         });
         add(jTextField2);
 
+        clientIp.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         clientIp.setText("IP Address");
         add(clientIp);
 
@@ -224,6 +226,9 @@ public class RowTableClient extends javax.swing.JPanel {
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 System.out.println("render new jfarme");
+//                System.out.println(GlobalVariable.listClient.toString());
+//                GlobalVariable.main.validate();
+//                GlobalVariable.main.repaint();
 
             }
         });
@@ -231,8 +236,13 @@ public class RowTableClient extends javax.swing.JPanel {
 
     private void renderData(RowTableClient aThis) {
         aThis.clientName.setText(client.getName());
-        aThis.clientId.setText(client.getID() + "");
-        aThis.clientIp.setText(client.getIpAdress());
+        if (client.getID().length() > uuidLength) {
+            aThis.clientId.setText(client.getID().substring(0, uuidLength) + "...");
+        } else {
+            aThis.clientId.setText(client.getID() + "");
+
+        }
+        aThis.clientIp.setText(client.getIpAdress().replace("/", ""));
         if (aThis.client.getStatus()) {
             aThis.clientStatus.setText("Available");
             aThis.clientStatus.setForeground(GlobalVariable.primaryColor);
@@ -443,7 +453,7 @@ public class RowTableClient extends javax.swing.JPanel {
 
             }
         });
-        
+
     }
 
 }

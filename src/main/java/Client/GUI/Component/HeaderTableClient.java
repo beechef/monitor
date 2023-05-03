@@ -68,7 +68,7 @@ public class HeaderTableClient extends javax.swing.JPanel {
         });
         add(jTextField1);
 
-        jLabel6.setText("         ID");
+        jLabel6.setText("         Uuid");
         add(jLabel6);
 
         jTextField2.setBackground(new java.awt.Color(203, 228, 222));

@@ -30,19 +30,19 @@ public class ListClientGUI extends javax.swing.JPanel {
         //set placeHolder
         this.searchPanel1.setPlaceHolderText("Try to find ...");
         //init list client
-        GlobalVariable.clientList.add(new ClientDTO("Client1", 1, "1.2.168.1.1", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client2", 2, "1.2.168.1.2", false));
-        GlobalVariable.clientList.add(new ClientDTO("Client3", 3, "1.2.168.1.3", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client4", 4, "1.2.168.1.4", false));
-        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
-        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client1", "2", "1.2.168.1.1", true,1));
+//        GlobalVariable.clientList.add(new ClientDTO("Client2", 2, "1.2.168.1.2", false));
+//        GlobalVariable.clientList.add(new ClientDTO("Client3", 3, "1.2.168.1.3", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client4", 4, "1.2.168.1.4", false));
+//        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
+//        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
         
          //set scrollbar
         setScrollbar(this.scroll);
