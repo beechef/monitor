@@ -234,6 +234,8 @@ public class TCPServer implements Server {
         client.write(buffer, null, new CompletionHandler<>() {
             @Override
             public void completed(Integer result, Object attachment) {
+                buffer.clear();
+
                 if (bufferQueue.size() > 0) {
                     send();
                 }

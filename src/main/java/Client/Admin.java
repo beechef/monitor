@@ -27,7 +27,7 @@ public class Admin {
         ClientInstance.udpClient = udpClient;
 
         GlobalVariable.LoginAdminGUI = new LoginGUI();
-        GlobalVariable.RegisterAdminGUI=new RegisterGUI();
+        GlobalVariable.RegisterAdminGUI = new RegisterGUI();
         GlobalVariable.LoginAdminGUI.setVisible(true);
 
 //        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
