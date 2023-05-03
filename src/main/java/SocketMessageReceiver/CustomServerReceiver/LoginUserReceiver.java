@@ -56,7 +56,7 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
                 bindingAdminAndUser(adminId, deviceId);
             }
 
-            var userInfo = new UserController.UserInfo(name, deviceId, UserController.UserInfo.UserStatus.AVAILABLE, inetAddress, user);
+            var userInfo = new UserController.UserInfo(deviceId, name, UserController.UserInfo.UserStatus.AVAILABLE, inetAddress, user);
             UserController.addTcpUser(adminId, userInfo);
 
             var sender = new LoginUserResultSender(server);
