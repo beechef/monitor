@@ -5,6 +5,7 @@
 package Client.GUI.Admin;
 
 import Client.ClientInstance;
+import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.LoginResultReceiver;
@@ -17,7 +18,10 @@ import SocketMessageReceiver.DataType.LoginResultRequest;
 import SocketMessageSender.CustomAdminSender.*;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Admin
@@ -54,8 +58,16 @@ public class LoginGUI extends javax.swing.JFrame {
 
     private void receiveRequest(LoginResultRequest request) {
         System.out.println(request.result);
-
+        
         if (request.result != LoginResultRequest.Result.SUCCESS) return;
+        try {
+            GlobalVariable.LoginAdminGUI.setVisible(false);
+            GlobalVariable.main=new MainGUI();
+            GlobalVariable.main.setVisible(true);
+        } catch (IOException ex) {
+            Logger.getLogger(LoginGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         var token = request.token;
 
         new GetUserSender(ClientInstance.tcpClient).send(null, new GetUserRequest(GetUserRequest.Type.GET_ALL, token));

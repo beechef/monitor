@@ -4,6 +4,7 @@
  */
 package Client.GUI.Lib;
 
+import Client.GUI.Admin.LoginGUI;
 import Client.GUI.Admin.MainGUI;
 import Client.GUI.Component.HardwareGUI;
 import Client.GUI.Component.ListClientGUI;
@@ -36,6 +37,9 @@ public class GlobalVariable {
     //selected client
     public static boolean selectedClient = true;
 
+    public static LoginGUI LoginAdminGUI;
+    public static MainGUI main = null;
+
     //init sidebar item list
     public static List<SidebarItemDTO> itemList = new ArrayList<>();
 
@@ -61,21 +65,18 @@ public class GlobalVariable {
     public static final String urlIconAction = "/src/main/java/Client/GUI/Image/icon_action.png";
 
     //Main farme
-    public static MainGUI main = null;
-
     public static String getCurrentPath() {
         return currentPath;
     }
-    
+
     //list client
-    public static List<ClientDTO> clientList=new ArrayList<>();
+    public static List<ClientDTO> clientList = new ArrayList<>();
     // stmp arr client 
-    public static List<ClientDTO> clientListStmp=new ArrayList<>();
+    public static List<ClientDTO> clientListStmp = new ArrayList<>();
 
     //list process
     public static List<ProcessDTO> processList = new ArrayList<>();
     //stmp arr process
     public static List<ProcessDTO> processListStmp = new ArrayList<>();
-
 
 }
