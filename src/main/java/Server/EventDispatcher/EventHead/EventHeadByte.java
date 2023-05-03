@@ -38,6 +38,9 @@ public class EventHeadByte {
 
         public static final byte PROCESS_ACTION = 9;
         public static final byte PROCESS_ACTION_RESULT = 10;
+
+        public static final byte GET_IMAGE = 11;
+        public static final byte GET_IMAGE_RESULT = 12;
     }
 
 }

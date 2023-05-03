@@ -5,17 +5,24 @@ import Client.GUI.Lib.ClientDTO;
 import Client.GUI.Lib.GlobalVariable;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
+import SocketMessageReceiver.DataType.GetImage.GetImageRequestAdminSide;
+import SocketMessageSender.CustomAdminSender.GetImageSender;
 
 import java.io.IOException;
 
 public class Admin {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        var client = new TCPClient("localhost", 4445);
-        client.setBuffer(1024 * 16);
-        client.start();
+        var tcpClient = new TCPClient("localhost", 4445);
+        tcpClient.setBuffer(1024 * 16);
+        tcpClient.start();
 
-        ClientInstance.tcpClient = client;
+        var udpClient = new UDPClient("localhost", 4446);
+        udpClient.setBuffer(1024 * 16);
+        udpClient.start();
+
+        ClientInstance.tcpClient = tcpClient;
+        ClientInstance.udpClient = udpClient;
 
         GlobalVariable.LoginAdminGUI = new LoginGUI();
         GlobalVariable.LoginAdminGUI.setVisible(true);
@@ -23,12 +30,12 @@ public class Admin {
 //        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
         EventDispatcher.startListening(new GetUserResultReceiver(data -> {
             for (var user : data.userInfos) {
-                
+
                 boolean stmpStatus = false;
                 if (user.status.toString().equals("AVAILABLE")) {
                     stmpStatus = true;
                 }
-              
+
                 GlobalVariable.clientList.add(new ClientDTO(user.name, user.uuid, user.host, stmpStatus, user.port));
             }
             GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
@@ -36,15 +43,15 @@ public class Admin {
 
         EventDispatcher.startListening(new LoginUserResultReceiver(data -> {
             var userInfo = data.userInfo;
-            
+
             boolean stmpStatus = false;
             System.out.println(userInfo.status);
             if (userInfo.status.toString().equals("AVAILABLE")) {
                 stmpStatus = true;
             }
-            
+
             System.out.println(userInfo.host);
-            
+
             GlobalVariable.clientList.add(new ClientDTO(userInfo.name, userInfo.uuid, userInfo.host, stmpStatus, userInfo.port));
             GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
 

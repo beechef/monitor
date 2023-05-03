@@ -66,6 +66,8 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
                 sender.send(admin.tcpSocket, new LoginUserResult(new GetUserResultRequest.UserInfo(userInfo)));
             }
 
+            sender.send(userInfo.tcpSocket, new LoginUserResult(new GetUserResultRequest.UserInfo(userInfo)));
+
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
         }

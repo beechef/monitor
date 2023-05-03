@@ -11,6 +11,7 @@ import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.LoginResultReceiver;
 import SocketMessageReceiver.DataType.ChangeUserNameRequest;
 import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
+import SocketMessageReceiver.DataType.GetImage.GetImageRequestAdminSide;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
 import SocketMessageReceiver.DataType.GetUserRequest;
 import SocketMessageReceiver.DataType.LoginRequest;
@@ -71,6 +72,9 @@ public class LoginGUI extends javax.swing.JFrame {
         var token = request.token;
 
         new GetUserSender(ClientInstance.tcpClient).send(null, new GetUserRequest(GetUserRequest.Type.GET_ALL, token));
+
+        var sender = new GetImageSender(ClientInstance.udpClient);
+        sender.send(null, new GetImageRequestAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
 
 //        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
 //        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
