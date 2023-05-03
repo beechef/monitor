@@ -43,7 +43,7 @@ public class GetUserReceiver extends SocketMessageReceiver<GetUserRequest> {
         var jwt = Jwts.parserBuilder().setSigningKey(JWTKey.getKey()).build().parseClaimsJws(socketMsg.msg.getToken());
         var adminId = jwt.getBody().get("id", Integer.class);
 
-        var currentUsers = UserController.getTcpUsers(adminId);
+        var currentUsers = UserController.getUsers(adminId);
         var existUsers = getExistUsers(adminId);
         currentUsers = combineUsers(currentUsers, existUsers);
 

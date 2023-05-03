@@ -29,13 +29,13 @@ public class GetProcessesReceiver extends SocketMessageReceiver<GetProcessesAdmi
         var uuid = socketMsg.msg.userUuid;
 
         var sender = new GetProcessesSender(server);
-        var user = UserController.getTcpUser(adminId, uuid);
-        var admin = UserController.getTcpAdmin(adminId, socketMsg.sender);
+        var user = UserController.getUser(adminId, uuid);
+        var admin = UserController.getAdmin(adminId, socketMsg.sender);
 
         if (user != null && admin != null) {
             var id = admin.id;
 
-            sender.send(user.socket, new GetProcessesServerSide(id));
+            sender.send(user.tcpSocket, new GetProcessesServerSide(id));
         }
     }
 }

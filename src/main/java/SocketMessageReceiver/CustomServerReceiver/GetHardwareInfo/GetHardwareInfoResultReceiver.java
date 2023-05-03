@@ -24,11 +24,11 @@ public class GetHardwareInfoResultReceiver extends SocketMessageReceiver<GetHard
     protected void onExecute(Sender server, SocketMessageGeneric<GetHardwareInfoResultUserSide> socketMsg) {
         var id = socketMsg.msg.id;
         var hardwareInfos = socketMsg.msg.hardwareInfos;
-        var admin = UserController.getTcpAdmin(id);
+        var admin = UserController.getAdmin(id);
 
         if (admin != null) {
             var sender = new GetHardwareInfoResultSender(server);
-            sender.send(admin.socket, new GetHardwareInfoResultServerSide(hardwareInfos));
+            sender.send(admin.tcpSocket, new GetHardwareInfoResultServerSide(hardwareInfos));
         }
     }
 }

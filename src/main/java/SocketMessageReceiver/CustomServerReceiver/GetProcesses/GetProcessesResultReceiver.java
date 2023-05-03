@@ -24,11 +24,11 @@ public class GetProcessesResultReceiver extends SocketMessageReceiver<GetProcess
     protected void onExecute(Sender server, SocketMessageGeneric<GetProcessesResultUserSide> socketMsg) {
         var id = socketMsg.msg.id;
         var processes = socketMsg.msg.processes;
-        var admin = UserController.getTcpAdmin(id);
+        var admin = UserController.getAdmin(id);
 
         if (admin != null) {
             var sender = new GetProcessesResultSender(server);
-            sender.send(admin.socket, new GetProcessesResultServerSide(processes));
+            sender.send(admin.tcpSocket, new GetProcessesResultServerSide(processes));
         }
     }
 }

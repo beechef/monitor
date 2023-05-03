@@ -11,7 +11,7 @@ import java.io.IOException;
 public class Admin {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        var client = new ClientTCP("localhost", 4445);
+        var client = new TCPClient("localhost", 4445);
         client.setBuffer(1024 * 16);
         client.start();
 

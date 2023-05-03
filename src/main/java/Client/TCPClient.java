@@ -11,37 +11,37 @@ import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
-public class ClientTCP implements Client {
+public class TCPClient implements Client {
     private static final int DEFAULT_BUFFER = 1024;
 
     private final AsynchronousSocketChannel socket;
     private final InetSocketAddress serverAddress;
 
-    private BufferPooling _bufferPooling;
+    private BufferPooling bufferPooling;
 
-    private int _buffer = DEFAULT_BUFFER;
-    private ClientTCP _this;
+    private int buffer = DEFAULT_BUFFER;
+    private TCPClient _this;
 
-    public ClientTCP(String hostName, int port) throws IOException {
+    public TCPClient(String hostName, int port) throws IOException {
         serverAddress = new InetSocketAddress(hostName, port);
         socket = AsynchronousSocketChannel.open();
 
         _this = this;
     }
 
-    public ClientTCP setBuffer(int buffer) {
-        _buffer = buffer;
+    public TCPClient setBuffer(int buffer) {
+        this.buffer = buffer;
         return this;
     }
 
     public void start() {
-        _bufferPooling = new BufferPooling(_buffer);
+        bufferPooling = new BufferPooling(buffer);
 
         socket.connect(serverAddress, null, new CompletionHandler<Void, Void>() {
             @Override
             public void completed(Void result, Void attachment) {
                 System.out.println("Connected to server");
-                ByteBuffer buffer = _bufferPooling.get();
+                ByteBuffer buffer = bufferPooling.get();
 
                 readData(socket, buffer);
             }
@@ -88,7 +88,7 @@ public class ClientTCP implements Client {
     @Override
     public void send(Object target, Message msg) {
         byte[] msgBytes = msg.toBytes();
-        ByteBuffer buffer = _bufferPooling.get();
+        ByteBuffer buffer = bufferPooling.get();
         buffer.put(msgBytes);
         buffer.flip();
 
@@ -101,6 +101,6 @@ public class ClientTCP implements Client {
 
     @Override
     public int getBuffer() {
-        return _buffer;
+        return buffer;
     }
 }

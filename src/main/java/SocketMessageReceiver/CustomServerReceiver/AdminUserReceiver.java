@@ -3,12 +3,9 @@ package SocketMessageReceiver.CustomServerReceiver;
 import Key.JWTKey;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.MiddleWare.AdminUserRequest;
-import Server.MiddleWare.TokenMark;
 import Server.ServerInstance.Sender;
 import Server.UserController;
-import SocketMessageReceiver.DataType.GetProcesses.GetProcessesServerSide;
 import SocketMessageReceiver.SocketMessageReceiver;
-import SocketMessageSender.CustomServerSender.GetProcesses.GetProcessesSender;
 import io.jsonwebtoken.Jwts;
 
 public abstract class AdminUserReceiver<T, R> extends SocketMessageReceiver<T> {
@@ -20,8 +17,8 @@ public abstract class AdminUserReceiver<T, R> extends SocketMessageReceiver<T> {
         var adminId = jwt.getBody().get("id", Integer.class);
         var uuid = request.getUserUuid();
 
-        var user = UserController.getTcpUser(adminId, uuid);
-        var admin = UserController.getTcpAdmin(adminId, socketMsg.sender);
+        var user = UserController.getUser(adminId, uuid);
+        var admin = UserController.getAdmin(adminId, socketMsg.sender);
 
         if (user != null && admin != null) {
             setData(socketMsg, new AdminUserInfo(admin, user));

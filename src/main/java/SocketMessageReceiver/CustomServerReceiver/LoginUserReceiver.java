@@ -57,13 +57,13 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
             }
 
             var userInfo = new UserController.UserInfo(deviceId, name, UserController.UserInfo.UserStatus.AVAILABLE, inetAddress, user);
-            UserController.addTcpUser(adminId, userInfo);
+            UserController.addUser(adminId, userInfo);
 
             var sender = new LoginUserResultSender(server);
-            var admins = UserController.getTcpAdmins(adminId);
+            var admins = UserController.getAdmins(adminId);
 
             for (var admin : admins) {
-                sender.send(admin.socket, new LoginUserResult(new GetUserResultRequest.UserInfo(userInfo)));
+                sender.send(admin.tcpSocket, new LoginUserResult(new GetUserResultRequest.UserInfo(userInfo)));
             }
 
         } catch (IOException | SQLException e) {
