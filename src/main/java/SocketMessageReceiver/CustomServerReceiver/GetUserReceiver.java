@@ -53,6 +53,7 @@ public class GetUserReceiver extends SocketMessageReceiver<GetUserRequest> {
 
     private ArrayList<UserController.UserInfo> combineUsers(ArrayList<UserController.UserInfo> currentUsers, ArrayList<UserController.UserInfo> existUsers) {
         var combinedUsers = new ArrayList<>(currentUsers == null ? new ArrayList<>() : currentUsers);
+        if (combinedUsers.size() == 0) return existUsers;
 
         for (var existUser : existUsers) {
             for (int i = 0; i < combinedUsers.size(); i++) {
