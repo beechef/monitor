@@ -30,10 +30,10 @@ public class GetProcessesReceiver extends SocketMessageReceiver<GetProcessesAdmi
 
         var sender = new GetProcessesSender(server);
         var user = UserController.getUser(adminId, uuid);
-        var admin = UserController.getAdmin(adminId, socketMsg.sender);
+        var admin = UserController.getAdmin(adminId);
 
         if (user != null && admin != null) {
-            var id = admin.id;
+            var id = admin.adminId;
 
             sender.send(user.tcpSocket, new GetProcessesServerSide(id));
         }

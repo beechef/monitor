@@ -25,6 +25,6 @@ public class GetImageReceiver extends AdminUserReceiver<GetImageRequestAdminSide
         var userSocket = user.tcpSocket;
 
         var sender = new GetImageSender(server);
-        sender.send(userSocket, new GetImageRequestServerSide(info.adminInfo.id));
+        sender.send(userSocket, new GetImageRequestServerSide(info.adminInfo.adminId));
     }
 }

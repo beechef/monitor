@@ -112,6 +112,15 @@ public class Admin {
         }));
 
 
+        EventDispatcher.startListening(new ProcessActionResultReceiver(data -> {
+            System.out.println("Process action result:");
+            System.out.println("Process ID: " + data.processId);
+            System.out.println("Action: " + data.action);
+            System.out.println("Result: " + data.result);
+            System.out.println("Message: " + data.message);
+            System.out.println();
+        }));
+
         Thread.currentThread().join();
     }
 }

@@ -135,7 +135,7 @@ public class UserController {
     public static AdminInfo getAdmin(int adminId) {
         if (admins.containsKey(adminId)) {
             for (var admin : admins.get(adminId)) {
-                if (admin.id == adminId) {
+                if (admin.adminId == adminId) {
                     return admin;
                 }
             }

@@ -10,6 +10,7 @@ import SocketMessageReceiver.CustomServerReceiver.GetImage.GetImageResultReceive
 import SocketMessageReceiver.CustomServerReceiver.GetProcesses.GetProcessesReceiver;
 import SocketMessageReceiver.CustomServerReceiver.GetProcesses.GetProcessesResultReceiver;
 import SocketMessageReceiver.CustomServerReceiver.ProcessAction.ProcessActionReceiver;
+import SocketMessageReceiver.CustomServerReceiver.ProcessAction.ProcessActionResultReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class SocketMessageReceiverController {
         register(new GetImageResultReceiver());
 
         register(new ProcessActionReceiver());
+        register(new ProcessActionResultReceiver());
     }
 
     private static void register(SocketMessageEvent receiver) {

@@ -8,15 +8,18 @@ import SocketMessageReceiver.CustomUserReceiver.GetProcessesReceiver;
 import SocketMessageReceiver.CustomUserReceiver.ProcessActionReceiver;
 import SocketMessageReceiver.DataType.LoginUserRequest;
 import SocketMessageReceiver.DataType.LoginUserUDPRequest;
+import SocketMessageReceiver.DataType.ProcessAction.ProcessActionResultUserSide;
 import SocketMessageSender.CustomUserSender.LoginSender;
 import SocketMessageSender.CustomUserSender.LoginUDPSender;
+import SocketMessageSender.CustomUserSender.ProcessActionResultSender;
 import Utilities.Utilities;
 import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
 import lc.kra.system.keyboard.event.GlobalKeyListener;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
+import java.nio.Buffer;
 
 public class User {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -52,7 +55,29 @@ public class User {
                 switch (data.action) {
                     case KILL -> {
                         try {
-                            Runtime.getRuntime().exec("taskkill /F /IM " + data.processId);
+                            var process = Runtime.getRuntime().exec("taskkill /F /IM " + data.processId);
+
+                            var inputStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                            var errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                            var isSuccess = inputStream.lines().findAny().isPresent();
+
+                            var line = "";
+                            var sender = new ProcessActionResultSender(tcpClient);
+                            var result = isSuccess ? ProcessActionResultUserSide.ProcessActionResult.SUCCESS : ProcessActionResultUserSide.ProcessActionResult.FAILED;
+                            var message = new StringBuilder();
+
+                            if (isSuccess) {
+                                while ((line = inputStream.readLine()) != null) {
+                                    message.append(line).append("\n");
+                                }
+                            } else {
+                                while ((line = errorStream.readLine()) != null) {
+                                    message.append(line).append("\n");
+                                }
+                            }
+
+                            sender.send(null, new ProcessActionResultUserSide(adminId, data.processId, data.action, message.toString(), result));
+
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
