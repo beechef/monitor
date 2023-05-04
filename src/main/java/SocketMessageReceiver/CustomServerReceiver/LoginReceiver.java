@@ -54,7 +54,7 @@ public class LoginReceiver extends SocketMessageReceiver<LoginRequest> {
             var token = createToken(existUser);
             sender.send(target, new LoginResultRequest(LoginResultRequest.Result.SUCCESS, token));
 
-            UserController.addAdmin(new UserController.AdminInfo(existUser.getInt(ID_FIELD), target));
+            UserController.addAdmin(new UserController.AdminInfo(socketMsg.msg.uuid, existUser.getInt(ID_FIELD), target));
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

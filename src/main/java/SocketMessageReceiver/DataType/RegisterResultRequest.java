@@ -9,6 +9,7 @@ public class RegisterResultRequest implements Serializable {
         EMAIL_EXIST,
         UNKNOWN_ERROR,
         PASSWORD_LOWER_6_LENGTH,
+        WRONG_FORMAT_EMAIL,
     }
 
     public Result result;

@@ -20,7 +20,7 @@ public abstract class SocketMessageReceiver<T> implements SocketMessageEvent {
     }
 
     private SocketMessageGeneric<T> filterMessage(SocketMessage socketMsg) {
-        return new SocketMessageGeneric<T>(socketMsg.sender, (T) socketMsg.msg.data);
+        return new SocketMessageGeneric<>(socketMsg.sender, (T) socketMsg.msg.data);
     }
 
     protected abstract void onExecute(Sender server, SocketMessageGeneric<T> socketMsg);

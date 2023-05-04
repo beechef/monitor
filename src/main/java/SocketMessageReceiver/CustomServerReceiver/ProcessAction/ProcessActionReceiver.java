@@ -5,6 +5,8 @@ import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Sender;
 import SocketMessageReceiver.CustomServerReceiver.AdminUserReceiver;
 import SocketMessageReceiver.DataType.ProcessAction.ProcessActionRequestAdminSide;
+import SocketMessageReceiver.DataType.ProcessAction.ProcessActionRequestServerSide;
+import SocketMessageSender.CustomServerSender.ProcessActionSender;
 
 public class ProcessActionReceiver extends AdminUserReceiver<ProcessActionRequestAdminSide> {
     @Override
@@ -20,6 +22,10 @@ public class ProcessActionReceiver extends AdminUserReceiver<ProcessActionReques
 
     @Override
     protected void setData(Sender server, SocketMessageGeneric<ProcessActionRequestAdminSide> socketMsg, AdminUserReceiver<ProcessActionRequestAdminSide>.AdminUserInfo info) {
+        var user = info.userInfo.tcpSocket;
+        var request = new ProcessActionRequestServerSide(socketMsg.msg.processId, socketMsg.msg.action, info.adminInfo.adminId);
 
+        var sender = new ProcessActionSender(server);
+        sender.send(user, request);
     }
 }

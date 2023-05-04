@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -233,6 +234,8 @@ public class TCPServer implements Server {
         client.write(buffer, null, new CompletionHandler<>() {
             @Override
             public void completed(Integer result, Object attachment) {
+                buffer.clear();
+
                 if (bufferQueue.size() > 0) {
                     send();
                 }

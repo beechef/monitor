@@ -14,11 +14,14 @@ import SocketMessageReceiver.DataType.*;
 import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
 import SocketMessageReceiver.DataType.GetImage.GetImageRequestAdminSide;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
+import SocketMessageReceiver.DataType.ProcessAction.ProcessActionRequestAdminSide;
 import SocketMessageSender.CustomAdminSender.*;
+import Utilities.Utilities;
 
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +52,7 @@ public class LoginGUI extends javax.swing.JFrame {
     }
 
     private void sendRequest() {
+<<<<<<< HEAD
         String email = inpEmail.getText();
         String password = inpPassword.getText();
         
@@ -62,8 +66,13 @@ public class LoginGUI extends javax.swing.JFrame {
             this.lableMessage.setText("Password must contain at least 6 characters");
             return;
         }
+=======
+        var uuid = Utilities.getUUID();
+        var email = inpEmail.getText();
+        var password = inpPassword.getText();
+>>>>>>> origin/master
 
-        sender.send(null, new LoginRequest(email, password));
+        sender.send(null, new LoginRequest(uuid, email, password));
     }
     
     public void setInputFromRegister(String email,String password){
@@ -92,19 +101,21 @@ public class LoginGUI extends javax.swing.JFrame {
 
         new LoginAdminUdpSender(ClientInstance.udpClient).send(null, new LoginAdminUdpRequest(token));
 
-        new Thread(() -> {
-            while (true) {
-                var sender = new GetImageSender(ClientInstance.tcpClient);
-                var fps = 24;
-                sender.send(null, new GetImageRequestAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+        new ProcessActionSender(ClientInstance.tcpClient).send(null, new ProcessActionRequestAdminSide(7012, ProcessActionRequestAdminSide.ProcessAction.KILL, token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
 
-                try {
-                    Thread.sleep(1000 / fps);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
+//        new Thread(() -> {
+//            while (true) {
+//                var sender = new GetImageSender(ClientInstance.tcpClient);
+//                var fps = 24;
+////                sender.send(null, new GetImageRequestAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+//
+//                try {
+//                    Thread.sleep(1000 / fps);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }).start();
 
 //        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
 //        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
@@ -114,8 +125,8 @@ public class LoginGUI extends javax.swing.JFrame {
 //
 //        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
 
-//        var sender = new GetProcessesSender(ClientInstance.tcpClient);
-//        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+        var sender = new GetProcessesSender(ClientInstance.tcpClient);
+        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
 
 //        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
 //        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
@@ -125,8 +136,8 @@ public class LoginGUI extends javax.swing.JFrame {
 //
 //        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
 
-        var changeNameSender = new ChangeUserNameSender(ClientInstance.tcpClient);
-        changeNameSender.send(null, new ChangeUserNameRequest(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955", "Changed Name!!!"));
+//        var changeNameSender = new ChangeUserNameSender(ClientInstance.tcpClient);
+//        changeNameSender.send(null, new ChangeUserNameRequest(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955", "Changed Name!!!"));
     }
 
     /**

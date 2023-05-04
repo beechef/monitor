@@ -17,14 +17,6 @@ public class UserController {
         public Object tcpSocket;
         public Object udpSocket;
 
-        public UserInfo(String uuid, UserStatus status, InetSocketAddress inetSocketAddress, Object tcpSocket) {
-            this.name = uuid;
-            this.uuid = uuid;
-            this.status = status;
-            this.inetSocketAddress = inetSocketAddress;
-            this.tcpSocket = tcpSocket;
-        }
-
         public UserInfo(String uuid, String name, UserStatus status, InetSocketAddress inetSocketAddress, Object tcpSocket) {
             this.uuid = uuid;
             this.name = name;
@@ -40,16 +32,15 @@ public class UserController {
     }
 
     public static class AdminInfo implements Serializable {
-        public int id;
+        public String uuid;
         public int adminId;
         public Object tcpSocket;
         public Object udpSocket;
 
-        public AdminInfo(int adminId, Object tcpSocket) {
+        public AdminInfo(String uuid, int adminId, Object tcpSocket) {
+            this.uuid = uuid;
             this.adminId = adminId;
             this.tcpSocket = tcpSocket;
-
-            this.id = adminId;
         }
     }
 
@@ -91,9 +82,9 @@ public class UserController {
         }
     }
 
-    public static void removeUser(int adminId, UserInfo user) {
+    public static void removeUser(int adminId, String uuid) {
         if (users.containsKey(adminId)) {
-            users.get(adminId).remove(user);
+            users.get(adminId).removeIf(x -> x.uuid.equals(uuid));
         }
     }
 
@@ -135,7 +126,7 @@ public class UserController {
     public static AdminInfo getAdmin(int adminId) {
         if (admins.containsKey(adminId)) {
             for (var admin : admins.get(adminId)) {
-                if (admin.id == adminId) {
+                if (admin.adminId == adminId) {
                     return admin;
                 }
             }
@@ -147,7 +138,7 @@ public class UserController {
     public static AdminInfo getAdmin(int adminId, Object socket) {
         if (admins.containsKey(adminId)) {
             for (var admin : admins.get(adminId)) {
-                if (admin.tcpSocket == socket) {
+                if (admin.tcpSocket == socket || admin.udpSocket == socket) {
                     return admin;
                 }
             }

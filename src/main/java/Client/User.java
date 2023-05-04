@@ -1,18 +1,25 @@
 package Client;
 
 import Server.EventDispatcher.EventDispatcher;
-import Server.ServerInstance.Message;
 import SocketMessageReceiver.CustomAdminReceiver.LoginUserResultReceiver;
 import SocketMessageReceiver.CustomUserReceiver.GetHardwareInfoReceiver;
 import SocketMessageReceiver.CustomUserReceiver.GetImageReceiver;
 import SocketMessageReceiver.CustomUserReceiver.GetProcessesReceiver;
+import SocketMessageReceiver.CustomUserReceiver.ProcessActionReceiver;
+import SocketMessageReceiver.DataType.LogOutUserRequest;
 import SocketMessageReceiver.DataType.LoginUserRequest;
 import SocketMessageReceiver.DataType.LoginUserUDPRequest;
+import SocketMessageReceiver.DataType.ProcessAction.ProcessActionResultUserSide;
+import SocketMessageSender.CustomUserSender.LogOutUserSender;
 import SocketMessageSender.CustomUserSender.LoginSender;
 import SocketMessageSender.CustomUserSender.LoginUDPSender;
+import SocketMessageSender.CustomUserSender.ProcessActionResultSender;
 import Utilities.Utilities;
+import lc.kra.system.keyboard.GlobalKeyboardHook;
+import lc.kra.system.keyboard.event.GlobalKeyEvent;
+import lc.kra.system.keyboard.event.GlobalKeyListener;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
 
 public class User {
@@ -45,6 +52,59 @@ public class User {
             EventDispatcher.startListening(new GetHardwareInfoReceiver());
             EventDispatcher.startListening(new GetImageReceiver());
 
+            EventDispatcher.startListening(new ProcessActionReceiver((data) -> {
+                switch (data.action) {
+                    case KILL -> {
+                        try {
+                            var process = Runtime.getRuntime().exec("taskkill /F /IM " + data.processId);
+
+                            var inputStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                            var errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+                            var isSuccess = inputStream.lines().findAny().isPresent();
+
+                            var line = "";
+                            var sender = new ProcessActionResultSender(tcpClient);
+                            var result = isSuccess ? ProcessActionResultUserSide.ProcessActionResult.SUCCESS : ProcessActionResultUserSide.ProcessActionResult.FAILED;
+                            var message = new StringBuilder();
+
+                            if (isSuccess) {
+                                while ((line = inputStream.readLine()) != null) {
+                                    message.append(line).append("\n");
+                                }
+                            } else {
+                                while ((line = errorStream.readLine()) != null) {
+                                    message.append(line).append("\n");
+                                }
+                            }
+
+                            sender.send(null, new ProcessActionResultUserSide(adminId, data.processId, data.action, message.toString(), result));
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }));
+
+            GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
+            keyboardHook.addKeyListener(new GlobalKeyListener() {
+                @Override
+                public void keyPressed(GlobalKeyEvent globalKeyEvent) {
+//                    System.out.println(globalKeyEvent);
+                }
+
+                @Override
+                public void keyReleased(GlobalKeyEvent globalKeyEvent) {
+
+                }
+            });
+
+            var shutdownThread = new Thread(() -> {
+                var sender = new LogOutUserSender(tcpClient);
+                sender.send(null, new LogOutUserRequest(adminId, uuid));
+            });
+            Runtime.getRuntime().addShutdownHook(shutdownThread);
 
             Thread.currentThread().join();
         } catch (IOException e) {
@@ -53,4 +113,5 @@ public class User {
         }
 
     }
+
 }

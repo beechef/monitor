@@ -64,6 +64,12 @@
             <version>8.0.32</version>
         </dependency>
 
+        <dependency>
+            <groupId>lc.kra.system</groupId>
+            <artifactId>system-hook</artifactId>
+            <version>3.8</version>
+        </dependency>
+
     </dependencies>
 
 </project>
