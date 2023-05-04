@@ -1,5 +1,7 @@
 package Client;
 
+import Client.GUI.Lib.GlobalVariable;
+import Client.GUI.User.LoginUserGUI;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.LoginUserResultReceiver;
 import SocketMessageReceiver.CustomUserReceiver.GetHardwareInfoReceiver;
@@ -23,6 +25,7 @@ import java.io.*;
 import java.net.ServerSocket;
 
 public class User {
+
     public static void main(String[] args) throws IOException, InterruptedException {
         try (ServerSocket ignored = new ServerSocket(9999)) {
             var tcpClient = new TCPClient("localhost", 4445);
@@ -36,17 +39,19 @@ public class User {
             ClientInstance.tcpClient = tcpClient;
             ClientInstance.udpClient = udpClient;
 
-            var loginTcpSender = new LoginSender(tcpClient);
+            GlobalVariable.LoginUserGUI = new LoginUserGUI();
+            GlobalVariable.LoginUserGUI.setVisible(true);
+
+//            var loginTcpSender = new LoginSender(tcpClient);
             var uuid = Utilities.getUUID();
-            var adminId = 11;
+            var adminId = 19;
 
             EventDispatcher.startListening(new LoginUserResultReceiver((loginUserResult) -> {
-                var loginUdpSender = new LoginUDPSender(udpClient);
-                loginUdpSender.send(null, new LoginUserUDPRequest(adminId, uuid));
+                System.out.println(loginUserResult);
+//                GlobalVariable.LoginUserGUI.dispose();
+//                var loginUdpSender = new LoginUDPSender(udpClient);
+//                loginUdpSender.send(null, new LoginUserUDPRequest(adminId, uuid));
             }));
-
-            loginTcpSender.send(null, new LoginUserRequest(adminId, uuid));
-            System.out.println("User UUID: " + uuid);
 
             EventDispatcher.startListening(new GetProcessesReceiver());
             EventDispatcher.startListening(new GetHardwareInfoReceiver());

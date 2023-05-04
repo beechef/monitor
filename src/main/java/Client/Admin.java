@@ -32,31 +32,24 @@ public class Admin {
 
 //        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
             EventDispatcher.startListening(new GetUserResultReceiver(data -> {
+                System.out.println("load user");
                 for (var user : data.userInfos) {
 
                     boolean stmpStatus = false;
                     if (user.status.toString().equals("AVAILABLE")) {
                         stmpStatus = true;
                     }
-
                     GlobalVariable.clientList.add(new ClientDTO(user.name, user.uuid, user.host, stmpStatus, user.port));
                 }
                 GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
+
             }));
 
             EventDispatcher.startListening(new LoginUserResultReceiver(data -> {
+                System.out.println("user login");
                 var userInfo = data.userInfo;
-
-                boolean stmpStatus = false;
-                System.out.println(userInfo.status);
-                if (userInfo.status.toString().equals("AVAILABLE")) {
-                    stmpStatus = true;
-                }
-
-                System.out.println(userInfo.host);
-
-                GlobalVariable.clientList.add(new ClientDTO(userInfo.name, userInfo.uuid, userInfo.host, stmpStatus, userInfo.port));
-                GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
+                
+                GlobalVariable.listClient.handleUerLogin(userInfo.name, userInfo.uuid, userInfo.host, true, userInfo.port);
 
             }));
 
@@ -111,7 +104,6 @@ public class Admin {
                 }
             }));
 
-
             EventDispatcher.startListening(new ProcessActionResultReceiver(data -> {
                 System.out.println("Process action result:");
                 System.out.println("Process ID: " + data.processId);
@@ -125,6 +117,9 @@ public class Admin {
                 System.out.println("Log out user result:");
                 System.out.println("UUID: " + data.deviceId);
                 System.out.println();
+
+                GlobalVariable.listClient.handleUerLogout(data.deviceId.toString());
+
             }));
 
             Thread.currentThread().join();

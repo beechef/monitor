@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Client.GUI.Lib;
 
 import Client.GUI.Admin.LoginGUI;
@@ -13,6 +9,7 @@ import Client.GUI.Component.OthersGUI;
 import Client.GUI.Component.ProcessGUI;
 import Client.GUI.Component.ProfileGUI;
 import Client.GUI.Component.StreamingGUI;
+import Client.GUI.User.LoginUserGUI;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +38,7 @@ public class GlobalVariable {
     public static LoginGUI LoginAdminGUI;
     public static MainGUI main = null;
     public static RegisterGUI RegisterAdminGUI;
+    public static LoginUserGUI LoginUserGUI;
 
     //init sidebar item list
     public static List<SidebarItemDTO> itemList = new ArrayList<>();

@@ -43,8 +43,8 @@ public class ListClientGUI extends javax.swing.JPanel {
 //        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
 //        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
 //        GlobalVariable.clientList.add(new ClientDTO("Client5", 5, "1.2.168.1.5", true));
-        
-         //set scrollbar
+
+        //set scrollbar
         setScrollbar(this.scroll);
 
         //render table
@@ -143,6 +143,38 @@ public class ListClientGUI extends javax.swing.JPanel {
             GlobalVariable.main.repaint();
         }
 
+    }
+
+    public void handleUerLogout(String uuid) {
+
+        for (int i = 0; i < GlobalVariable.clientList.size(); i++) {
+            if (GlobalVariable.clientList.get(i).getID().equals(uuid)) {
+                GlobalVariable.clientList.get(i).setStatus(false);
+                GlobalVariable.clientList.get(i).setIpAdress("");
+                renderTable(GlobalVariable.clientList);
+                break;
+            }
+        }
+    }
+
+    public void handleUerLogin(String name, String uuid, String host, boolean stmpStatus, int port) {
+        System.out.println(GlobalVariable.clientList.toString());
+        boolean findUser = false;
+        for (int i = 0; i < GlobalVariable.clientList.size(); i++) {
+            if (GlobalVariable.clientList.get(i).getID().equals(uuid)) {
+                GlobalVariable.clientList.get(i).setStatus(true);
+                GlobalVariable.clientList.get(i).setIpAdress(host);
+                findUser = true;
+                break;
+            }
+        }
+
+        if (findUser) {
+            renderTable(GlobalVariable.clientList);
+        } else {
+            GlobalVariable.clientList.add(new ClientDTO(name, uuid, host, stmpStatus, port));
+            renderTable(GlobalVariable.clientList);
+        }
     }
 
     private void handleSearch() {

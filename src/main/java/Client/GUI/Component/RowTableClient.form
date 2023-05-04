@@ -83,6 +83,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="clientId">
       <Properties>
+        <Property name="horizontalAlignment" type="int" value="2"/>
         <Property name="text" type="java.lang.String" value="uuid"/>
       </Properties>
     </Component>
