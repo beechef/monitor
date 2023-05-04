@@ -15,10 +15,12 @@ import SocketMessageReceiver.DataType.GetImage.GetImageRequestAdminSide;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
 import SocketMessageReceiver.DataType.ProcessAction.ProcessActionRequestAdminSide;
 import SocketMessageSender.CustomAdminSender.*;
+import Utilities.Utilities;
 
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,10 +51,11 @@ public class LoginGUI extends javax.swing.JFrame {
     }
 
     private void sendRequest() {
-        String email = inpEmail.getText();
-        String password = inpPassword.getText();
+        var uuid = Utilities.getUUID();
+        var email = inpEmail.getText();
+        var password = inpPassword.getText();
 
-        sender.send(null, new LoginRequest(email, password));
+        sender.send(null, new LoginRequest(uuid, email, password));
     }
 
     private void receiveRequest(LoginResultRequest request) {

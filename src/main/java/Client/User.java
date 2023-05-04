@@ -6,9 +6,11 @@ import SocketMessageReceiver.CustomUserReceiver.GetHardwareInfoReceiver;
 import SocketMessageReceiver.CustomUserReceiver.GetImageReceiver;
 import SocketMessageReceiver.CustomUserReceiver.GetProcessesReceiver;
 import SocketMessageReceiver.CustomUserReceiver.ProcessActionReceiver;
+import SocketMessageReceiver.DataType.LogOutUserRequest;
 import SocketMessageReceiver.DataType.LoginUserRequest;
 import SocketMessageReceiver.DataType.LoginUserUDPRequest;
 import SocketMessageReceiver.DataType.ProcessAction.ProcessActionResultUserSide;
+import SocketMessageSender.CustomUserSender.LogOutUserSender;
 import SocketMessageSender.CustomUserSender.LoginSender;
 import SocketMessageSender.CustomUserSender.LoginUDPSender;
 import SocketMessageSender.CustomUserSender.ProcessActionResultSender;
@@ -19,7 +21,6 @@ import lc.kra.system.keyboard.event.GlobalKeyListener;
 
 import java.io.*;
 import java.net.ServerSocket;
-import java.nio.Buffer;
 
 public class User {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -99,6 +100,12 @@ public class User {
                 }
             });
 
+            var shutdownThread = new Thread(() -> {
+                var sender = new LogOutUserSender(tcpClient);
+                sender.send(null, new LogOutUserRequest(adminId, uuid));
+            });
+            Runtime.getRuntime().addShutdownHook(shutdownThread);
+
             Thread.currentThread().join();
         } catch (IOException e) {
             System.out.println("Application instance is already running.");
@@ -106,4 +113,5 @@ public class User {
         }
 
     }
+
 }

@@ -25,8 +25,10 @@ public class ProcessActionResultReceiver extends SocketMessageReceiver<ProcessAc
 
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<ProcessActionResultUserSide> socketMsg) {
-        var adminSocket = Objects.requireNonNull(UserController.getAdmin(socketMsg.msg.adminId)).tcpSocket;
+        var admin = UserController.getAdmin(socketMsg.msg.adminId);
+        if (admin == null) return;
 
+        var adminSocket = admin.tcpSocket;
         var sender = new ProcessActionResultSender(server);
         sender.send(adminSocket, socketMsg.msg);
     }

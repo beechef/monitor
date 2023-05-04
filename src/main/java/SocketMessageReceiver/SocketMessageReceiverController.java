@@ -39,6 +39,8 @@ public class SocketMessageReceiverController {
 
         register(new ProcessActionReceiver());
         register(new ProcessActionResultReceiver());
+
+        register(new LogOutUserReceiver());
     }
 
     private static void register(SocketMessageEvent receiver) {

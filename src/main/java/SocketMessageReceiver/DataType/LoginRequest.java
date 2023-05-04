@@ -5,10 +5,12 @@ import Server.MiddleWare.EncryptPasswordMark;
 import java.io.Serializable;
 
 public class LoginRequest implements Serializable, EncryptPasswordMark {
+    public String uuid;
     public String email;
     public String password;
 
-    public LoginRequest(String email, String password) {
+    public LoginRequest(String uuid, String email, String password) {
+        this.uuid = uuid;
         this.email = email;
         this.password = password;
     }
