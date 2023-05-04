@@ -100,8 +100,8 @@ public class LoginGUI extends javax.swing.JFrame {
 //
 //        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
 
-        var sender = new GetProcessesSender(ClientInstance.tcpClient);
-        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+//        var sender = new GetProcessesSender(ClientInstance.tcpClient);
+//        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
 
 //        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
 //        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
@@ -111,8 +111,10 @@ public class LoginGUI extends javax.swing.JFrame {
 //
 //        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
 
-//        var changeNameSender = new ChangeUserNameSender(ClientInstance.tcpClient);
-//        changeNameSender.send(null, new ChangeUserNameRequest(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955", "Changed Name!!!"));
+        System.out.println("Change Name");
+
+        var changeNameSender = new ChangeUserNameSender(ClientInstance.tcpClient);
+        changeNameSender.send(null, new ChangeUserNameRequest(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955", "Changed Name!!!"));
     }
 
     /**

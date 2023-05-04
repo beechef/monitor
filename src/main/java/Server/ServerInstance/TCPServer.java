@@ -126,6 +126,8 @@ public class TCPServer implements Server {
         client.read(buffer, null, new CompletionHandler<Integer, Void>() {
             @Override
             public void completed(Integer numBytes, Void attachment) {
+                readData(client, _bufferPooling.get());
+
                 if (numBytes == -1) {
                     try {
                         removeClient(client, buffer);
@@ -144,7 +146,6 @@ public class TCPServer implements Server {
                 }
 
                 buffer.clear();
-                readData(client, buffer);
             }
 
             @Override

@@ -109,6 +109,8 @@ public class TCPClient implements Client {
         ByteBuffer buffer = bufferQueue.remove();
         sending = true;
 
+        System.out.println("Sending");
+
         socket.write(buffer, null, new CompletionHandler<>() {
             @Override
             public void completed(Integer result, Object attachment) {
@@ -123,7 +125,7 @@ public class TCPClient implements Client {
 
             @Override
             public void failed(Throwable exc, Object attachment) {
-
+                System.err.println("Failed to send data to server: " + exc.getMessage());
             }
         });
     }
