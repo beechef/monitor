@@ -83,6 +83,7 @@ public class LoginGUI extends javax.swing.JFrame {
         }
 
         var token = request.token;
+        GlobalVariable.tokenAdmin=request.token;
 
         new GetUserSender(ClientInstance.tcpClient).send(null, new GetUserRequest(GetUserRequest.Type.GET_ALL, token));
 
@@ -110,14 +111,14 @@ public class LoginGUI extends javax.swing.JFrame {
 //        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.DISK);
 //
 //        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
-<<<<<<< HEAD
+//<<<<<<< HEAD
 
 //        var sender = new GetProcessesSender(ClientInstance.tcpClient);
 //        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
-=======
-        var sender = new GetProcessesSender(ClientInstance.tcpClient);
-        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
->>>>>>> origin/master
+//=======
+//        var sender = new GetProcessesSender(ClientInstance.tcpClient);
+//        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+//>>>>>>> origin/master
 
 //        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
 //        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
@@ -126,16 +127,14 @@ public class LoginGUI extends javax.swing.JFrame {
 //        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.DISK);
 //
 //        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
-<<<<<<< HEAD
-
-        System.out.println("Change Name");
-
-        var changeNameSender = new ChangeUserNameSender(ClientInstance.tcpClient);
-        changeNameSender.send(null, new ChangeUserNameRequest(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955", "Changed Name!!!"));
-=======
+//<<<<<<< HEAD
+//
+//        System.out.println("Change Name");
+//
 //        var changeNameSender = new ChangeUserNameSender(ClientInstance.tcpClient);
 //        changeNameSender.send(null, new ChangeUserNameRequest(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955", "Changed Name!!!"));
->>>>>>> origin/master
+//=======
+//>>>>>>> origin/master
     }
 
     /**

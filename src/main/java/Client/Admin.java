@@ -36,10 +36,12 @@ public class Admin {
                 for (var user : data.userInfos) {
 
                     boolean stmpStatus = false;
+                    String host=" ............ ";
                     if (user.status.toString().equals("AVAILABLE")) {
                         stmpStatus = true;
+                        host=user.host;
                     }
-                    GlobalVariable.clientList.add(new ClientDTO(user.name, user.uuid, user.host, stmpStatus, user.port));
+                    GlobalVariable.clientList.add(new ClientDTO(user.name, user.uuid, host, stmpStatus, user.port));
                 }
                 GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
 
@@ -74,6 +76,7 @@ public class Admin {
                 System.out.println("Before name: " + data.beforeName);
                 System.out.println("After name: " + data.afterName);
                 System.out.println();
+                GlobalVariable.listClient.changedName(data.uuid, data.afterName);
             }));
 
             var bytes = new ArrayList<Byte>();

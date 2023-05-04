@@ -7,6 +7,7 @@ package Client.GUI.Admin;
 import javax.swing.*;
 
 import Client.ClientInstance;
+import Client.GUI.Lib.GlobalFunction;
 import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
@@ -59,6 +60,18 @@ public class RegisterGUI extends javax.swing.JFrame {
         var email = inpEmail.getText();
         var password = inpPassword.getText();
         var confirmPassword = inpConfirmPassword.getText();
+        
+        
+        //validate 
+        if (!GlobalFunction.validateEmail(email)) {
+            this.labelMessage.setText("Please enter correct email format");
+            return;
+        }
+
+        if (!GlobalFunction.validatePass(password)) {
+            this.labelMessage.setText("Password must contain at least 6 characters");
+            return;
+        }
 
         if (!password.equals(confirmPassword)) {
             JOptionPane.showMessageDialog(this, "Password and confirm password not match");

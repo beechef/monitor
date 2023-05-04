@@ -68,6 +68,8 @@ public class GlobalVariable {
     public static String getCurrentPath() {
         return currentPath;
     }
+    
+    public static String tokenAdmin=null;
 
     //list client
     public static List<ClientDTO> clientList = new ArrayList<>();

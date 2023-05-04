@@ -150,7 +150,7 @@ public class ListClientGUI extends javax.swing.JPanel {
         for (int i = 0; i < GlobalVariable.clientList.size(); i++) {
             if (GlobalVariable.clientList.get(i).getID().equals(uuid)) {
                 GlobalVariable.clientList.get(i).setStatus(false);
-                GlobalVariable.clientList.get(i).setIpAdress("");
+                GlobalVariable.clientList.get(i).setIpAdress("............");
                 renderTable(GlobalVariable.clientList);
                 break;
             }
@@ -175,6 +175,17 @@ public class ListClientGUI extends javax.swing.JPanel {
             GlobalVariable.clientList.add(new ClientDTO(name, uuid, host, stmpStatus, port));
             renderTable(GlobalVariable.clientList);
         }
+    }
+
+    public void changedName(String uuid, String name) {
+        for (int i = 0; i < GlobalVariable.clientList.size(); i++) {
+            if (GlobalVariable.clientList.get(i).getID().equals(uuid)) {
+                GlobalVariable.clientList.get(i).setName(name);
+                break;
+            }
+        }
+        
+        renderTable(GlobalVariable.clientList);
     }
 
     private void handleSearch() {
