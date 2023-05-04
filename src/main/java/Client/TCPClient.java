@@ -63,6 +63,8 @@ public class TCPClient implements Client {
         client.read(buffer, null, new CompletionHandler<Integer, Void>() {
             @Override
             public void completed(Integer numBytes, Void attachment) {
+                readData(client, bufferPooling.get());
+
                 if (numBytes == -1) {
                     return;
                 }
@@ -77,7 +79,6 @@ public class TCPClient implements Client {
                 }
 
                 buffer.clear();
-                readData(client, buffer);
             }
 
             @Override
