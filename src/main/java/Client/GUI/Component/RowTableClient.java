@@ -114,6 +114,7 @@ public class RowTableClient extends javax.swing.JPanel {
         });
         add(jTextField1);
 
+        clientId.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         clientId.setText("uuid");
         add(clientId);
 

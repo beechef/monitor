@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package Client.GUI.Admin;
 
 import Client.ClientInstance;
@@ -11,17 +7,14 @@ import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.LoginResultReceiver;
 import SocketMessageReceiver.DataType.*;
-import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
-import SocketMessageReceiver.DataType.GetImage.GetImageRequestAdminSide;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
 import SocketMessageReceiver.DataType.ProcessAction.ProcessActionRequestAdminSide;
 import SocketMessageSender.CustomAdminSender.*;
 import Utilities.Utilities;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,7 +26,6 @@ public class LoginGUI extends javax.swing.JFrame {
     /**
      * Creates new form LoginGUI
      */
-
     Color primaryColor = new java.awt.Color(46, 79, 79);
 
     private final LoginSender sender;
@@ -52,30 +44,25 @@ public class LoginGUI extends javax.swing.JFrame {
     }
 
     private void sendRequest() {
-<<<<<<< HEAD
+        var uuid = Utilities.getUUID();
         String email = inpEmail.getText();
         String password = inpPassword.getText();
-        
+
         //validate 
-        if(!GlobalFunction.validateEmail(email)){
+        if (!GlobalFunction.validateEmail(email)) {
             this.lableMessage.setText("Please enter correct email format");
             return;
         }
-        
-        if(!GlobalFunction.validatePass(password)){
+
+        if (!GlobalFunction.validatePass(password)) {
             this.lableMessage.setText("Password must contain at least 6 characters");
             return;
         }
-=======
-        var uuid = Utilities.getUUID();
-        var email = inpEmail.getText();
-        var password = inpPassword.getText();
->>>>>>> origin/master
 
         sender.send(null, new LoginRequest(uuid, email, password));
     }
-    
-    public void setInputFromRegister(String email,String password){
+
+    public void setInputFromRegister(String email, String password) {
         this.inpEmail.setText(email);
         this.inpPassword.setText(password);
     }
@@ -83,9 +70,9 @@ public class LoginGUI extends javax.swing.JFrame {
     private void receiveRequest(LoginResultRequest request) {
         System.out.println(request.result);
 
-        if (request.result != LoginResultRequest.Result.SUCCESS){
+        if (request.result != LoginResultRequest.Result.SUCCESS) {
             this.lableMessage.setText(request.result.toString());
-            return ;
+            return;
         }
         try {
             GlobalVariable.LoginAdminGUI.setVisible(false);
@@ -116,7 +103,6 @@ public class LoginGUI extends javax.swing.JFrame {
 //                }
 //            }
 //        }).start();
-
 //        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
 //        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
 //        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.CPU);
@@ -124,7 +110,6 @@ public class LoginGUI extends javax.swing.JFrame {
 //        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.DISK);
 //
 //        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
-
         var sender = new GetProcessesSender(ClientInstance.tcpClient);
         sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
 
@@ -135,7 +120,6 @@ public class LoginGUI extends javax.swing.JFrame {
 //        hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.DISK);
 //
 //        sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, "029B5DFC-C0AA-127C-26F5-50EBF6780955", token));
-
 //        var changeNameSender = new ChangeUserNameSender(ClientInstance.tcpClient);
 //        changeNameSender.send(null, new ChangeUserNameRequest(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955", "Changed Name!!!"));
     }
@@ -196,6 +180,11 @@ public class LoginGUI extends javax.swing.JFrame {
                 inpEmailActionPerformed(evt);
             }
         });
+        inpEmail.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inpEmailKeyPressed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -208,6 +197,11 @@ public class LoginGUI extends javax.swing.JFrame {
         inpPassword.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 inpPasswordActionPerformed(evt);
+            }
+        });
+        inpPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inpPasswordKeyPressed(evt);
             }
         });
 
@@ -412,8 +406,22 @@ public class LoginGUI extends javax.swing.JFrame {
         // navigate to from register
         GlobalVariable.LoginAdminGUI.setVisible(false);
         GlobalVariable.RegisterAdminGUI.setVisible(true);
-        
+
     }//GEN-LAST:event_jLabel7MouseClicked
+
+    private void inpEmailKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inpEmailKeyPressed
+        // TODO add your handling code here:
+         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.inpPassword.requestFocus();
+        }
+    }//GEN-LAST:event_inpEmailKeyPressed
+
+    private void inpPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inpPasswordKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            sendRequest();
+        }
+    }//GEN-LAST:event_inpPasswordKeyPressed
 
     /**
      * @param args the command line arguments
