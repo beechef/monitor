@@ -2,11 +2,11 @@ package SocketMessageReceiver.CustomAdminReceiver;
 
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.ExecutableData;
-import SocketMessageReceiver.DataType.LoginUserResult;
+import SocketMessageReceiver.DataType.LoginUserResultAdminSide;
 import SocketMessageReceiver.SocketMessageReceiverCallBack;
 
-public class LoginUserResultReceiver extends SocketMessageReceiverCallBack<LoginUserResult> {
-    public LoginUserResultReceiver(ExecutableData<LoginUserResult> callback) {
+public class LoginUserResultReceiver extends SocketMessageReceiverCallBack<LoginUserResultAdminSide> {
+    public LoginUserResultReceiver(ExecutableData<LoginUserResultAdminSide> callback) {
         super(callback);
     }
 

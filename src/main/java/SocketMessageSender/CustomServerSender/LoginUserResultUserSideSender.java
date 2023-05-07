@@ -2,11 +2,11 @@ package SocketMessageSender.CustomServerSender;
 
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.ServerInstance.Sender;
-import SocketMessageReceiver.DataType.LoginUserResult;
+import SocketMessageReceiver.DataType.LoginUserResultUserSide;
 import SocketMessageSender.SocketMessageSender;
 
-public class LoginUserResultSender extends SocketMessageSender<LoginUserResult> {
-    public LoginUserResultSender(Sender server) {
+public class LoginUserResultUserSideSender extends SocketMessageSender<LoginUserResultUserSide> {
+    public LoginUserResultUserSideSender(Sender server) {
         super(server);
     }
 
@@ -19,4 +19,5 @@ public class LoginUserResultSender extends SocketMessageSender<LoginUserResult> 
     public byte getSubHeadByte() {
         return EventHeadByte.UserConnection.LOGIN_RESULT;
     }
+
 }
