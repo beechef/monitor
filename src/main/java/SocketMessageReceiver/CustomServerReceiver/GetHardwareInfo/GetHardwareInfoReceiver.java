@@ -5,13 +5,14 @@ import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Sender;
 import Server.UserController;
+import SocketMessageReceiver.CustomServerReceiver.AdminUserReceiver;
 import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
 import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoServerSide;
 import SocketMessageReceiver.SocketMessageReceiver;
 import SocketMessageSender.CustomServerSender.GetHardwareInfo.GetHardwareInfoSender;
 import io.jsonwebtoken.Jwts;
 
-public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareInfoAdminSide> {
+public class GetHardwareInfoReceiver extends AdminUserReceiver<GetHardwareInfoAdminSide> {
     @Override
     public byte getHeadByte() {
         return EventHeadByte.USER_DATA;
@@ -23,20 +24,12 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
     }
 
     @Override
-    protected void onExecute(Sender server, SocketMessageGeneric<GetHardwareInfoAdminSide> socketMsg) {
-        var jwt = Jwts.parserBuilder().setSigningKey(JWTKey.getKey()).build().parseClaimsJws(socketMsg.msg.getToken());
-        var adminId = jwt.getBody().get("id", Integer.class);
-        var uuid = socketMsg.msg.userUuid;
+    protected void setData(Sender server, SocketMessageGeneric<GetHardwareInfoAdminSide> socketMsg, AdminUserReceiver<GetHardwareInfoAdminSide>.AdminUserInfo info) {
+        var sender = new GetHardwareInfoSender(server);
+        var id = info.adminInfo.adminId;
+        var uuid = info.adminInfo.uuid;
         var hardwareTypes = socketMsg.msg.hardwareTypes;
 
-        var sender = new GetHardwareInfoSender(server);
-        var user = UserController.getUser(adminId, uuid);
-        var admin = UserController.getAdmin(adminId);
-
-        if (user != null && admin != null) {
-            var id = admin.adminId;
-
-            sender.send(user.tcpSocket, new GetHardwareInfoServerSide(hardwareTypes, id));
-        }
+        sender.send(info.userInfo.tcpSocket, new GetHardwareInfoServerSide(id, uuid, hardwareTypes));
     }
 }

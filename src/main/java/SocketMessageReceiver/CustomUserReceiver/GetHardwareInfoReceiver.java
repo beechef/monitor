@@ -43,7 +43,7 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
         }
 
         var sender = new GetHardwareInfoResultSender(server);
-        sender.send(socketMsg.sender, new GetHardwareInfoResultUserSide(socketMsg.msg.id, hardwareInfos));
+        sender.send(socketMsg.sender, new GetHardwareInfoResultUserSide(socketMsg.msg.adminId, socketMsg.msg.adminUuid, hardwareInfos));
     }
 
     interface HardwareInfo {

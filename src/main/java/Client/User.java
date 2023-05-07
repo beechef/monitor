@@ -57,40 +57,7 @@ public class User {
             EventDispatcher.startListening(new GetHardwareInfoReceiver());
             EventDispatcher.startListening(new GetImageReceiver());
 
-            EventDispatcher.startListening(new ProcessActionReceiver((data) -> {
-                switch (data.action) {
-                    case KILL -> {
-                        try {
-                            var process = Runtime.getRuntime().exec("taskkill /F /IM " + data.processId);
-
-                            var inputStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                            var errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-                            var isSuccess = inputStream.lines().findAny().isPresent();
-
-                            var line = "";
-                            var sender = new ProcessActionResultSender(tcpClient);
-                            var result = isSuccess ? ProcessActionResultUserSide.ProcessActionResult.SUCCESS : ProcessActionResultUserSide.ProcessActionResult.FAILED;
-                            var message = new StringBuilder();
-
-                            if (isSuccess) {
-                                while ((line = inputStream.readLine()) != null) {
-                                    message.append(line).append("\n");
-                                }
-                            } else {
-                                while ((line = errorStream.readLine()) != null) {
-                                    message.append(line).append("\n");
-                                }
-                            }
-
-                            sender.send(null, new ProcessActionResultUserSide(adminId, data.processId, data.action, message.toString(), result));
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-            }));
+            EventDispatcher.startListening(new ProcessActionReceiver());
 
             GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
             keyboardHook.addKeyListener(new GlobalKeyListener() {

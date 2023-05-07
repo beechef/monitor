@@ -8,6 +8,7 @@ public class LoginResultRequest implements Serializable {
         EMAIL_NOT_EXIST,
         PASSWORD_WRONG,
         UNKNOWN_ERROR,
+        ALREADY_LOGIN
     }
 
     public Result result;

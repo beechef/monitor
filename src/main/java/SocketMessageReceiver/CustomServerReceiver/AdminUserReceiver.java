@@ -14,11 +14,13 @@ public abstract class AdminUserReceiver<T> extends SocketMessageReceiver<T> {
         if (!(socketMsg.msg instanceof AdminUserRequest request)) return;
 
         var jwt = Jwts.parserBuilder().setSigningKey(JWTKey.getKey()).build().parseClaimsJws(request.getToken());
-        var adminId = jwt.getBody().get("id", Integer.class);
+        var adminId = jwt.getBody().get(LoginReceiver.ID_FIELD, Integer.class);
+        var adminUuid = jwt.getBody().get(LoginReceiver.UUID_FIELD, String.class);
+
         var uuid = request.getUserUuid();
 
         var user = UserController.getUser(adminId, uuid);
-        var admin = UserController.getAdmin(adminId);
+        var admin = UserController.getAdmin(adminId, adminUuid);
 
         if (user != null && admin != null) {
             setData(server, socketMsg, new AdminUserInfo(admin, user));

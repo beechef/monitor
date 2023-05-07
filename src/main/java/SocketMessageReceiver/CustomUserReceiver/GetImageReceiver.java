@@ -35,13 +35,13 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
 
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<GetImageRequestServerSide> socketMsg) {
-        var adminId = socketMsg.msg.id;
+        var adminId = socketMsg.msg.adminId;
+        var adminUuid = socketMsg.msg.adminUuid;
 
         var image = getImage();
         var byteBuffer = ByteBuffer.wrap(image);
         var chunkSize = 1024 * 1000;
         var pos = 0;
-        var session = UUID.randomUUID().toString();
 
         var sender = new SocketMessageSender.CustomUserSender.GetImageResultSender(server);
         do {
@@ -50,13 +50,13 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
 
             byteBuffer.get(pos, chunk, 0, chunkSize);
 
-            sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, chunk, session, false));
+            sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, chunk, false));
 
             pos += chunkSize;
         } while (pos < image.length);
 
 
-        sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, new byte[0], session, true));
+        sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, new byte[0], true));
     }
 
     private byte[] getImage() {

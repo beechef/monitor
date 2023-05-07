@@ -1,21 +1,22 @@
 package SocketMessageReceiver.DataType.ProcessAction;
 
+import Server.MiddleWare.AdminRequest;
+
 import java.io.Serializable;
 
-public class ProcessActionResultUserSide implements Serializable {
+public class ProcessActionResultUserSide extends AdminRequest implements Serializable {
     public enum ProcessActionResult {
         SUCCESS,
         FAILED,
     }
 
-    public int adminId;
     public int processId;
     public ProcessActionRequestAdminSide.ProcessAction action;
     public String message;
     public ProcessActionResult result;
 
-    public ProcessActionResultUserSide(int adminId, int processId, ProcessActionRequestAdminSide.ProcessAction action, String message, ProcessActionResult result) {
-        this.adminId = adminId;
+    public ProcessActionResultUserSide(int adminId, String adminUuid, int processId, ProcessActionRequestAdminSide.ProcessAction action, String message, ProcessActionResult result) {
+        super(adminId, adminUuid);
         this.processId = processId;
         this.action = action;
         this.message = message;

@@ -25,9 +25,10 @@ public class LoginAdminUdpReceiver extends SocketMessageReceiver<LoginAdminUdpRe
     protected void onExecute(Sender server, SocketMessageGeneric<LoginAdminUdpRequest> socketMsg) {
         var admin = socketMsg.sender;
         var jwt = Jwts.parserBuilder().setSigningKey(JWTKey.getKey()).build().parseClaimsJws(socketMsg.msg.getToken());
-        var adminId = jwt.getBody().get("id", Integer.class);
+        var adminId = jwt.getBody().get(LoginReceiver.ID_FIELD, Integer.class);
+        var adminUuid = jwt.getBody().get(LoginReceiver.UUID_FIELD, String.class);
 
-        var adminInfo = UserController.getAdmin(adminId);
+        var adminInfo = UserController.getAdmin(adminId, adminUuid);
         if (adminInfo != null) {
             adminInfo.udpSocket = admin;
         }

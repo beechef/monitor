@@ -1,11 +1,12 @@
 package SocketMessageReceiver.DataType.GetProcesses;
 
+import Server.MiddleWare.AdminRequest;
+
 import java.io.Serializable;
 
-public class GetProcessesServerSide implements Serializable {
-    public int id;
+public class GetProcessesServerSide extends AdminRequest implements Serializable {
 
-    public GetProcessesServerSide(int id) {
-        this.id = id;
+    public GetProcessesServerSide(int adminId, String adminUuid) {
+        super(adminId, adminUuid);
     }
 }

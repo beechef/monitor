@@ -1,15 +1,16 @@
 package SocketMessageReceiver.DataType.GetHardwareInfo;
 
+import Server.MiddleWare.AdminRequest;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class GetHardwareInfoServerSide implements Serializable {
+public class GetHardwareInfoServerSide extends AdminRequest implements Serializable {
 
     public ArrayList<GetHardwareInfoAdminSide.HardwareType> hardwareTypes;
-    public int id;
 
-    public GetHardwareInfoServerSide(ArrayList<GetHardwareInfoAdminSide.HardwareType> hardwareTypes, int id) {
-        this.id = id;
+    public GetHardwareInfoServerSide(int adminId, String adminUuid, ArrayList<GetHardwareInfoAdminSide.HardwareType> hardwareTypes) {
+        super(adminId, adminUuid);
         this.hardwareTypes = hardwareTypes;
     }
 }

@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Admin {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-        try (ServerSocket ignored = new ServerSocket(9998)) {
+//        try (ServerSocket ignored = new ServerSocket(9998)) {
             var tcpClient = new TCPClient("localhost", 4445);
             tcpClient.setBuffer(1024 * 1024);
             tcpClient.start();
@@ -123,10 +123,10 @@ public class Admin {
             }));
 
             Thread.currentThread().join();
-        } catch (IOException e) {
-            System.out.println("Application instance is already running.");
-            System.exit(0);
-        }
+//        } catch (IOException e) {
+//            System.out.println("Application instance is already running.");
+//            System.exit(0);
+//        }
 
     }
 }

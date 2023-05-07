@@ -22,11 +22,11 @@ public class GetImageResultReceiver extends SocketMessageReceiver<GetImageResult
 
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<GetImageResultUserSide> socketMsg) {
-        var admin = UserController.getAdmin(socketMsg.msg.id);
+        var admin = UserController.getAdmin(socketMsg.msg.adminId, socketMsg.msg.adminUuid);
         var sender = new GetImageResultSender(server);
 
         if (admin != null) {
-            sender.send(admin.tcpSocket, new GetImageResultServerSide(socketMsg.msg.image, socketMsg.msg.session, socketMsg.msg.isEnd));
+            sender.send(admin.tcpSocket, new GetImageResultServerSide(socketMsg.msg.image, socketMsg.msg.isEnd));
         }
     }
 }

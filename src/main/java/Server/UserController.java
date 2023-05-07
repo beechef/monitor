@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class UserController {
     public static class UserInfo implements Serializable {
@@ -123,10 +124,10 @@ public class UserController {
     }
 
 
-    public static AdminInfo getAdmin(int adminId) {
+    public static AdminInfo getAdmin(int adminId, String uuid) {
         if (admins.containsKey(adminId)) {
             for (var admin : admins.get(adminId)) {
-                if (admin.adminId == adminId) {
+                if (admin.adminId == adminId && admin.uuid.equals(uuid)) {
                     return admin;
                 }
             }
@@ -135,17 +136,18 @@ public class UserController {
         return null;
     }
 
-    public static AdminInfo getAdmin(int adminId, Object socket) {
-        if (admins.containsKey(adminId)) {
-            for (var admin : admins.get(adminId)) {
-                if (admin.tcpSocket == socket || admin.udpSocket == socket) {
-                    return admin;
-                }
-            }
-        }
 
-        return null;
-    }
+//    public static AdminInfo getAdmin(int adminId, Object socket) {
+//        if (admins.containsKey(adminId)) {
+//            for (var admin : admins.get(adminId)) {
+//                if (admin.tcpSocket == socket || admin.udpSocket == socket) {
+//                    return admin;
+//                }
+//            }
+//        }
+//
+//        return null;
+//    }
 
     public static ArrayList<AdminInfo> getAdmins(int id) {
         var adminInfos = new ArrayList<AdminInfo>();
