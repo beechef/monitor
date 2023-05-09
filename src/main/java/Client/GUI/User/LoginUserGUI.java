@@ -6,6 +6,7 @@ import SocketMessageReceiver.DataType.LoginUserRequest;
 import SocketMessageSender.CustomUserSender.LoginSender;
 import Utilities.Utilities;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import javax.swing.JLabel;
 
 /**
@@ -88,6 +89,11 @@ public class LoginUserGUI extends javax.swing.JFrame {
         idAminField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 idAminFieldActionPerformed(evt);
+            }
+        });
+        idAminField.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                idAminFieldKeyPressed(evt);
             }
         });
 
@@ -251,6 +257,13 @@ public class LoginUserGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         sendRequest();
     }//GEN-LAST:event_btnLoginMouseClicked
+
+    private void idAminFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_idAminFieldKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            sendRequest();
+        }
+    }//GEN-LAST:event_idAminFieldKeyPressed
     
     
     /**

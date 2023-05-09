@@ -4,8 +4,12 @@
  */
 package Client.GUI.Component;
 
+import Client.ClientInstance;
 import Client.GUI.Lib.ClientDTO;
 import Client.GUI.Lib.GlobalVariable;
+import SocketMessageReceiver.DataType.ChangeUserNameRequest;
+import SocketMessageReceiver.DataType.LoginResultRequest;
+import SocketMessageSender.CustomAdminSender.ChangeUserNameSender;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Cursor;
@@ -192,6 +196,7 @@ public class RowTableClient extends javax.swing.JPanel {
             } else {
                 if (!clientName.getText().equals(client.getName())) {
                     setClientName(clientName.getText());
+
                 }
             }
         }
@@ -276,13 +281,12 @@ public class RowTableClient extends javax.swing.JPanel {
         });
     }
 
-    private void setClientName(String text) {
-        GlobalVariable.clientList.forEach(e -> {
-            if (e == this.client) {
-                e.setName(text);
-                System.out.println("reset test");
-            }
-        });
+    public void setClientName(String text) {
+
+        System.out.println("request change name");
+        var changeNameSender = new ChangeUserNameSender(ClientInstance.tcpClient);
+        changeNameSender.send(null, new ChangeUserNameRequest(GlobalVariable.tokenAdmin, this.client.getID(), text));
+
     }
 
     private void setHover(RowTableClient row) {
