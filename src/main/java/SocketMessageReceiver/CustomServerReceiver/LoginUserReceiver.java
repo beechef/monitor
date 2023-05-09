@@ -138,7 +138,7 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
     private void bindingAdminAndUser(int adminId, String userId) {
         try {
             var existBinding = getData(userId, BINDING_TABLE, BINDING_USER_ID_FIELD);
-            var isExist = getData(userId, BINDING_TABLE, BINDING_USER_ID_FIELD).next();
+            var isExist = existBinding.next();
 
             var values = new String[]{BINDING_ADMIN_ID_FIELD, BINDING_USER_ID_FIELD};
             var data = new String[]{String.valueOf(adminId), userId};
