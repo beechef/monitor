@@ -1,17 +1,16 @@
 package SocketMessageReceiver.DataType.GetImage;
 
+import Server.MiddleWare.AdminRequest;
+
 import java.io.Serializable;
 
-public class GetImageResultUserSide implements Serializable {
-    public int id;
+public class GetImageResultUserSide extends AdminRequest implements Serializable {
     public byte[] image;
-    public String session;
     public boolean isEnd;
 
-    public GetImageResultUserSide(int id, byte[] image, String session,boolean isEnd) {
-        this.id = id;
+    public GetImageResultUserSide(int adminId, String adminUuid, byte[] image, boolean isEnd) {
+        super(adminId, adminUuid);
         this.image = image;
-        this.session = session;
         this.isEnd = isEnd;
     }
 }

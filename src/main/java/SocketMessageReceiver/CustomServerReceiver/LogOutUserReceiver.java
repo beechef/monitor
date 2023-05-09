@@ -22,13 +22,16 @@ public class LogOutUserReceiver extends SocketMessageReceiver<LogOutUserRequest>
 
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<LogOutUserRequest> socketMsg) {
-        var admin = UserController.getAdmin(socketMsg.msg.adminId);
-        if (admin == null) return;
+        var admins = UserController.getAdmins(socketMsg.msg.adminId);
+        if (admins.isEmpty()) return;
 
-        var adminSocket = admin.tcpSocket;
         var sender = new LogOutUserSender(server);
-        sender.send(adminSocket, socketMsg.msg);
 
-        UserController.removeUser(admin.adminId, socketMsg.msg.deviceId);
+        for (var admin : admins) {
+            var adminSocket = admin.tcpSocket;
+            sender.send(adminSocket, socketMsg.msg);
+        }
+
+        UserController.removeUser(socketMsg.msg.adminId, socketMsg.msg.deviceId);
     }
 }

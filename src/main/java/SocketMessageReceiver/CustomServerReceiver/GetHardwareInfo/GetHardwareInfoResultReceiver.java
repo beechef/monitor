@@ -22,9 +22,11 @@ public class GetHardwareInfoResultReceiver extends SocketMessageReceiver<GetHard
 
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<GetHardwareInfoResultUserSide> socketMsg) {
-        var id = socketMsg.msg.id;
+        var adminId = socketMsg.msg.adminId;
+        var adminUuid = socketMsg.msg.adminUuid;
+
         var hardwareInfos = socketMsg.msg.hardwareInfos;
-        var admin = UserController.getAdmin(id);
+        var admin = UserController.getAdmin(adminId, adminUuid);
 
         if (admin != null) {
             var sender = new GetHardwareInfoResultSender(server);

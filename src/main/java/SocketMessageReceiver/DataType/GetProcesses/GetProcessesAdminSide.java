@@ -1,10 +1,11 @@
 package SocketMessageReceiver.DataType.GetProcesses;
 
+import Server.MiddleWare.AdminUserRequest;
 import Server.MiddleWare.TokenMark;
 
 import java.io.Serializable;
 
-public class GetProcessesAdminSide implements Serializable, TokenMark {
+public class GetProcessesAdminSide implements Serializable, AdminUserRequest {
     public String token;
     public String userUuid;
 
@@ -18,4 +19,8 @@ public class GetProcessesAdminSide implements Serializable, TokenMark {
         this.userUuid = userUuid;
     }
 
+    @Override
+    public String getUserUuid() {
+        return userUuid;
+    }
 }

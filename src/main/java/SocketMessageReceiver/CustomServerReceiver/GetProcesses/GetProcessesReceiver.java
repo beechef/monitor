@@ -1,17 +1,14 @@
 package SocketMessageReceiver.CustomServerReceiver.GetProcesses;
 
-import Key.JWTKey;
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Sender;
-import Server.UserController;
+import SocketMessageReceiver.CustomServerReceiver.AdminUserReceiver;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesServerSide;
-import SocketMessageReceiver.SocketMessageReceiver;
 import SocketMessageSender.CustomServerSender.GetProcesses.GetProcessesSender;
-import io.jsonwebtoken.Jwts;
 
-public class GetProcessesReceiver extends SocketMessageReceiver<GetProcessesAdminSide> {
+public class GetProcessesReceiver extends AdminUserReceiver<GetProcessesAdminSide> {
     @Override
     public byte getHeadByte() {
         return EventHeadByte.USER_DATA;
@@ -22,20 +19,10 @@ public class GetProcessesReceiver extends SocketMessageReceiver<GetProcessesAdmi
         return EventHeadByte.UserData.GET_PROCESSES;
     }
 
+
     @Override
-    protected void onExecute(Sender server, SocketMessageGeneric<GetProcessesAdminSide> socketMsg) {
-        var jwt = Jwts.parserBuilder().setSigningKey(JWTKey.getKey()).build().parseClaimsJws(socketMsg.msg.getToken());
-        var adminId = jwt.getBody().get("id", Integer.class);
-        var uuid = socketMsg.msg.userUuid;
-
+    protected void setData(Sender server, SocketMessageGeneric<GetProcessesAdminSide> socketMsg, AdminUserReceiver<GetProcessesAdminSide>.AdminUserInfo info) {
         var sender = new GetProcessesSender(server);
-        var user = UserController.getUser(adminId, uuid);
-        var admin = UserController.getAdmin(adminId);
-
-        if (user != null && admin != null) {
-            var id = admin.adminId;
-
-            sender.send(user.tcpSocket, new GetProcessesServerSide(id));
-        }
+        sender.send(info.userInfo.tcpSocket, new GetProcessesServerSide(info.adminInfo.adminId, info.adminInfo.uuid));
     }
 }

@@ -23,7 +23,9 @@ public class GetProcessesReceiver extends SocketMessageReceiver<GetProcessesServ
 
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<GetProcessesServerSide> socketMsg) {
-        var adminId = socketMsg.msg.id;
+        var adminId = socketMsg.msg.adminId;
+        var adminUuid = socketMsg.msg.adminUuid;
+
         var operatingSystem = new SystemInfo().getOperatingSystem();
         var processes = operatingSystem.getProcesses();
         var processInfos = new ProcessInfo[processes.size()];
@@ -60,7 +62,7 @@ public class GetProcessesReceiver extends SocketMessageReceiver<GetProcessesServ
             var processInfoChunk = new ProcessInfo[index - startIndex];
             System.arraycopy(processInfos, startIndex, processInfoChunk, 0, index - startIndex);
 
-            sender.send(socketMsg.sender, new GetProcessesResultUserSide(adminId, processInfoChunk));
+            sender.send(socketMsg.sender, new GetProcessesResultUserSide(adminId, adminUuid, processInfoChunk));
         }
     }
 }

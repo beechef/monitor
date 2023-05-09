@@ -150,7 +150,7 @@ public class ListClientGUI extends javax.swing.JPanel {
         for (int i = 0; i < GlobalVariable.clientList.size(); i++) {
             if (GlobalVariable.clientList.get(i).getID().equals(uuid)) {
                 GlobalVariable.clientList.get(i).setStatus(false);
-                GlobalVariable.clientList.get(i).setIpAdress("............");
+                GlobalVariable.clientList.get(i).setIpAdress(" ............ ");
                 renderTable(GlobalVariable.clientList);
                 break;
             }

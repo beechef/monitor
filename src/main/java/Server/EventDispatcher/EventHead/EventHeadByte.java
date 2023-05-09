@@ -12,6 +12,13 @@ public class EventHeadByte {
         public static final byte REGISTER_RESULT = 4;
 
         public static final byte LOGIN_UDP = 5;
+
+        public static final byte LOGOUT = 6;
+        public static final byte FORGET_PASSWORD = 7;
+        public static final byte FORGET_PASSWORD_RESULT = 8;
+
+        public static final byte CHANGE_FORGET_PASSWORD = 9;
+        public static final byte CHANGE_FORGET_PASSWORD_RESULT = 10;
     }
 
     public static final byte USER_CONNECTION = 2;

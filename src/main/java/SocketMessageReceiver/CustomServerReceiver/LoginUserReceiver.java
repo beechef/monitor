@@ -7,9 +7,11 @@ import Server.ServerInstance.Sender;
 import Server.UserController;
 import SocketMessageReceiver.DataType.GetUserResultRequest;
 import SocketMessageReceiver.DataType.LoginUserRequest;
-import SocketMessageReceiver.DataType.LoginUserResult;
+import SocketMessageReceiver.DataType.LoginUserResultAdminSide;
+import SocketMessageReceiver.DataType.LoginUserResultUserSide;
 import SocketMessageReceiver.SocketMessageReceiver;
-import SocketMessageSender.CustomServerSender.LoginUserResultSender;
+import SocketMessageSender.CustomServerSender.LoginUserResultAdminSideSender;
+import SocketMessageSender.CustomServerSender.LoginUserResultUserSideSender;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -20,12 +22,15 @@ import java.util.ArrayList;
 
 public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
     private static final String USER_TABLE = "user";
-    private static final String ID_FIELD = "id";
+    private static final String USER_ID_FIELD = "id";
     private static final String NAME_FIELD = "name";
 
     private static final String BINDING_TABLE = "binding";
     private static final String BINDING_ADMIN_ID_FIELD = "id_admin";
     private static final String BINDING_USER_ID_FIELD = "id_user";
+
+    private static final String ADMIN_TABLE = "admin";
+    private static final String ADMIN_ID_FIELD = "id";
 
 
     @Override
@@ -45,6 +50,14 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
         var deviceId = socketMsg.msg.deviceId;
 
         try {
+            var existAdmin = getAdmin(adminId);
+            var userSender = new LoginUserResultUserSideSender(server);
+
+            if (!existAdmin.next()) {
+                userSender.send(user, new LoginUserResultUserSide(LoginUserResultUserSide.LoginResult.NOT_FOUND_ADMIN));
+                return;
+            }
+
             InetSocketAddress inetAddress = getInitAddress(user);
             var existUser = getUser(deviceId);
             var name = deviceId;
@@ -53,20 +66,23 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
                 name = existUser.getString(NAME_FIELD);
             } else {
                 registerUser(deviceId, name);
-                bindingAdminAndUser(adminId, deviceId);
             }
+
+            bindingAdminAndUser(adminId, deviceId);
 
             var userInfo = new UserController.UserInfo(deviceId, name, UserController.UserInfo.UserStatus.AVAILABLE, inetAddress, user);
             UserController.addUser(adminId, userInfo);
 
-            var sender = new LoginUserResultSender(server);
+            userSender.send(user, new LoginUserResultUserSide(LoginUserResultUserSide.LoginResult.SUCCESS));
+
+            var adminSender = new LoginUserResultAdminSideSender(server);
             var admins = UserController.getAdmins(adminId);
 
             for (var admin : admins) {
-                sender.send(admin.tcpSocket, new LoginUserResult(new GetUserResultRequest.UserInfo(userInfo)));
+                adminSender.send(admin.tcpSocket, new LoginUserResultAdminSide(new GetUserResultRequest.UserInfo(userInfo)));
             }
 
-            sender.send(userInfo.tcpSocket, new LoginUserResult(new GetUserResultRequest.UserInfo(userInfo)));
+            adminSender.send(userInfo.tcpSocket, new LoginUserResultAdminSide(new GetUserResultRequest.UserInfo(userInfo)));
 
         } catch (IOException | SQLException e) {
             throw new RuntimeException(e);
@@ -86,18 +102,26 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
         return null;
     }
 
-    private ResultSet getUser(String id) {
-        var conditions = new Condition[]{new Condition(ID_FIELD, Operator.Equal, id, CombineCondition.NONE)};
+    private ResultSet getData(String id, String tableName, String idField) {
+        var conditions = new Condition[]{new Condition(idField, Operator.Equal, id, CombineCondition.NONE)};
         try {
-            return DatabaseConnector.select(USER_TABLE, null, conditions);
+            return DatabaseConnector.select(tableName, null, conditions);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
+    private ResultSet getUser(String id) {
+        return getData(id, USER_TABLE, USER_ID_FIELD);
+    }
+
+    private ResultSet getAdmin(int id) {
+        return getData(String.valueOf(id), ADMIN_TABLE, ADMIN_ID_FIELD);
+    }
+
     private void registerUser(String id, String name) {
         try {
-            var values = new String[]{ID_FIELD, NAME_FIELD};
+            var values = new String[]{USER_ID_FIELD, NAME_FIELD};
             var data = new String[]{id, name};
             var keyPairs = new ArrayList<KeyPair<String, String>>(values.length);
 
@@ -113,8 +137,23 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
 
     private void bindingAdminAndUser(int adminId, String userId) {
         try {
+            var existBinding = getData(userId, BINDING_TABLE, BINDING_USER_ID_FIELD);
+            var isExist = getData(userId, BINDING_TABLE, BINDING_USER_ID_FIELD).next();
+
             var values = new String[]{BINDING_ADMIN_ID_FIELD, BINDING_USER_ID_FIELD};
             var data = new String[]{String.valueOf(adminId), userId};
+
+            if (isExist) {
+                var isSameAdmin = existBinding.getInt(BINDING_ADMIN_ID_FIELD) == adminId;
+
+                if (isSameAdmin) {
+                    return;
+                }
+
+                var conditions = new Condition[]{new Condition(BINDING_USER_ID_FIELD, Operator.Equal, userId, CombineCondition.NONE)};
+                DatabaseConnector.delete(BINDING_TABLE, conditions);
+            }
+
             var keyPairs = new ArrayList<KeyPair<String, String>>(values.length);
 
             for (int i = 0; i < values.length; i++) {
