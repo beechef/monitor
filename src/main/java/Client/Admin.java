@@ -6,6 +6,7 @@ import Client.GUI.Lib.ClientDTO;
 import Client.GUI.Lib.GlobalVariable;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
+import jdk.jfr.Event;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -118,13 +119,19 @@ public class Admin {
             System.out.println("UUID: " + data.deviceId);
             System.out.println();
 
-            GlobalVariable.listClient.handleUerLogout(data.deviceId.toString());
+            GlobalVariable.listClient.handleUerLogout(data.deviceId);
 
         }));
 
         EventDispatcher.startListening(new ForgetPasswordResultReceiver(data -> {
             System.out.println("Forget password result:");
             System.out.println("Email: " + data.email);
+            System.out.println("Result: " + data.result);
+            System.out.println();
+        }));
+
+        EventDispatcher.startListening(new ChangeForgetPasswordResultReceiver(data -> {
+            System.out.println("Change forget password result:");
             System.out.println("Result: " + data.result);
             System.out.println();
         }));

@@ -48,9 +48,6 @@ public class LoginGUI extends javax.swing.JFrame {
         String email = inpEmail.getText();
         String password = inpPassword.getText();
 
-        var s = new ForgetPasswordSender(ClientInstance.tcpClient);
-        s.send(null, new ForgetPasswordRequest(email));
-
         //validate 
         if (!GlobalFunction.validateEmail(email)) {
             this.lableMessage.setText("Please enter correct email format");

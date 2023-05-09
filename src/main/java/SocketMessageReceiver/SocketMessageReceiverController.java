@@ -44,6 +44,7 @@ public class SocketMessageReceiverController {
         register(new LogOutAdminReceiver());
 
         register(new ForgetPasswordReceiver());
+        register(new ChangeForgetPasswordReceiver());
     }
 
     private static void register(SocketMessageEvent receiver) {
