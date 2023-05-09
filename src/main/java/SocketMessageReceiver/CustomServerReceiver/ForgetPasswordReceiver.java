@@ -28,6 +28,30 @@ public class ForgetPasswordReceiver extends SocketMessageReceiver<ForgetPassword
 
     private static final int ALIVE_TIME = 60 * 5; // 5 minutes
 
+    private static String email;
+
+    private static Session session;
+
+    public static void login(String email, String password) {
+        ForgetPasswordReceiver.email = email;
+
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "465");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.socketFactory.port", "465");
+        prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
+        session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(email, password);
+                    }
+                });
+
+
+    }
+
     @Override
     public byte getHeadByte() {
         return EventHeadByte.ADMIN_CONNECTION;
@@ -56,27 +80,11 @@ public class ForgetPasswordReceiver extends SocketMessageReceiver<ForgetPassword
     }
 
     private void sendEmail(String email, String otp) {
-        final String username = "phamtuc19@gmail.com";
-        final String password = "wnndtmhxohalrksp";
-
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "465");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.socketFactory.port", "465");
-        prop.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
 
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(username));
+            message.setFrom(new InternetAddress(ForgetPasswordReceiver.email));
             message.setRecipients(
                     Message.RecipientType.TO,
                     InternetAddress.parse(email)
