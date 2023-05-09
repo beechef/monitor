@@ -149,7 +149,7 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
                 if (isSameAdmin) {
                     return;
                 }
-                
+
                 var conditions = new Condition[]{new Condition(BINDING_USER_ID_FIELD, Operator.Equal, userId, CombineCondition.NONE)};
                 DatabaseConnector.delete(BINDING_TABLE, conditions);
             }
