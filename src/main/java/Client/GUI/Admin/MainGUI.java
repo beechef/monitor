@@ -465,10 +465,14 @@ public class MainGUI extends javax.swing.JFrame {
         if (GlobalVariable.selectedClient) {
             System.out.println("Amin request get prcess of user uuid: " + GlobalVariable.selectedClientInfor.getID());
             System.out.println(GlobalVariable.tokenAdmin);
-            var sender = new GetProcessesSender(ClientInstance.tcpClient);
-            sender.send(null, new GetProcessesAdminSide(GlobalVariable.tokenAdmin, GlobalVariable.selectedClientInfor.getID()));
+            sendRequestGetAllProcess();
         }
     }//GEN-LAST:event_MenuItem2MouseClicked
+
+    public void sendRequestGetAllProcess() {
+        var sender = new GetProcessesSender(ClientInstance.tcpClient);
+        sender.send(null, new GetProcessesAdminSide(GlobalVariable.tokenAdmin, GlobalVariable.selectedClientInfor.getID()));
+    }
 
     /**
      * @param args the command line arguments

@@ -89,7 +89,7 @@ public class LoginGUI extends javax.swing.JFrame {
 
         new LoginAdminUdpSender(ClientInstance.udpClient).send(null, new LoginAdminUdpRequest(token));
 
-        new ProcessActionSender(ClientInstance.tcpClient).send(null, new ProcessActionRequestAdminSide(7012, ProcessActionRequestAdminSide.ProcessAction.KILL, token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+//        new ProcessActionSender(ClientInstance.tcpClient).send(null, new ProcessActionRequestAdminSide(7012, ProcessActionRequestAdminSide.ProcessAction.KILL, token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
 
 //        new Thread(() -> {
 //            while (true) {

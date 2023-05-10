@@ -4,9 +4,12 @@
  */
 package Client.GUI.Component;
 
+import Client.ClientInstance;
 import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.ProcessDTO;
 import Client.GUI.Lib.RoundBorder;
+import SocketMessageReceiver.DataType.ProcessAction.ProcessActionRequestAdminSide;
+import SocketMessageSender.CustomAdminSender.ProcessActionSender;
 import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.ImageIcon;
@@ -100,7 +103,9 @@ public class RowTableProcess extends javax.swing.JPanel {
 
     private void lableEndTaskMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lableEndTaskMouseClicked
         //send repues
-        paintRowTabeProcess();
+        System.out.println("Admin send request delete process "+this.process.getName());
+        new ProcessActionSender(ClientInstance.tcpClient).send(null, new ProcessActionRequestAdminSide(this.process.getId(), ProcessActionRequestAdminSide.ProcessAction.KILL, GlobalVariable.tokenAdmin, GlobalVariable.selectedClientInfor.getID()));
+//        paintRowTabeProcess();
 
     }//GEN-LAST:event_lableEndTaskMouseClicked
 
@@ -165,8 +170,8 @@ public class RowTableProcess extends javax.swing.JPanel {
 
     }
 
-    public void paintRowTabeProcess() {
-        System.out.println("delete " + this.process.getName());
+    public void paintRowTabeProcess(int idProcess) {
+//        System.out.println("delete " + this.process.getName());
         
         GlobalVariable.processList.remove(this.process);
         GlobalVariable.process.contentTable.removeAll();
