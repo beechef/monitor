@@ -43,12 +43,12 @@ public class ProcessGUI extends javax.swing.JPanel {
 //        this.scroll.setVerticalScrollBar(new ScrollBar());
 
         //init process
-        GlobalVariable.processList.add(new ProcessDTO("process1"));
-        GlobalVariable.processList.add(new ProcessDTO("abc"));
-        GlobalVariable.processList.add(new ProcessDTO("123"));
-        GlobalVariable.processList.add(new ProcessDTO("3a"));
-        GlobalVariable.processList.add(new ProcessDTO("process5"));
-        GlobalVariable.processList.add(new ProcessDTO("process6"));
+//        GlobalVariable.processList.add(new ProcessDTO("process1"));
+//        GlobalVariable.processList.add(new ProcessDTO("abc"));
+//        GlobalVariable.processList.add(new ProcessDTO("123"));
+//        GlobalVariable.processList.add(new ProcessDTO("3a"));
+//        GlobalVariable.processList.add(new ProcessDTO("process5"));
+//        GlobalVariable.processList.add(new ProcessDTO("process6"));
 
         //render process
         renderProcess(GlobalVariable.processList);

@@ -4,6 +4,7 @@ import Client.GUI.Admin.LoginGUI;
 import Client.GUI.Admin.RegisterGUI;
 import Client.GUI.Lib.ClientDTO;
 import Client.GUI.Lib.GlobalVariable;
+import Client.GUI.Lib.ProcessDTO;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
 import jdk.jfr.Event;
@@ -66,12 +67,15 @@ public class Admin {
         }));
 
         EventDispatcher.startListening(new GetProcessesResultReceiver(data -> {
+            GlobalVariable.processList.removeAll(GlobalVariable.processList);
             for (var process : data.processes) {
+                GlobalVariable.processList.add(new ProcessDTO(process.name,process.id+"",process.path));
                 System.out.println("Process ID: " + process.id);
                 System.out.println("Process Name: " + process.name);
                 System.out.println("Process Path: " + process.path);
                 System.out.println();
             }
+            GlobalVariable.process.renderProcess(GlobalVariable.processList);
         }));
 
         EventDispatcher.startListening(new ChangeUserNameResultReceiver(data -> {
