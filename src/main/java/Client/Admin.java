@@ -55,8 +55,13 @@ public class Admin {
         }));
 
         EventDispatcher.startListening(new GetHardwareInfoResultReceiver(data -> {
-            for (var hardwareInfo : data.hardwareInfos) {
-                System.out.println(hardwareInfo);
+            for (var hardwareInfo : data.hardwareInfos.entrySet()) {
+                System.out.println("Hardware name: " + hardwareInfo.getKey());
+
+                for (var info : hardwareInfo.getValue()) {
+                    System.out.println("Key: " + info.key);
+                    System.out.println("Value: " + info.value);
+                }
             }
         }));
 

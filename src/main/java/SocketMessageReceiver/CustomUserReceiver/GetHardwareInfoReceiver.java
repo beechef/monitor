@@ -1,5 +1,6 @@
 package SocketMessageReceiver.CustomUserReceiver;
 
+import Server.Database.KeyPair;
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Sender;
@@ -17,6 +18,7 @@ import oshi.software.os.OperatingSystem;
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareInfoServerSide> {
 
@@ -33,13 +35,13 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<GetHardwareInfoServerSide> socketMsg) {
         var hardwareTypes = socketMsg.msg.hardwareTypes;
-        var hardwareInfos = new String[socketMsg.msg.hardwareTypes.size()];
+        var hardwareInfos = new HashMap<GetHardwareInfoAdminSide.HardwareType, ArrayList<KeyPair<String, String>>>();
 
-        for (int i = 0; i < hardwareTypes.size(); i++) {
-            var hardwareType = hardwareTypes.get(i);
-            var hardwareInfo = HardwareInfoFactory.getHardwareInfo(hardwareType);
+        for (var hardwareType : hardwareTypes) {
+            var hardwareInfoGetter = HardwareInfoFactory.getHardwareInfo(hardwareType);
+            var info = hardwareInfoGetter.getHardwareInfo();
 
-            hardwareInfos[i] = hardwareInfo.getHardwareInfo();
+            hardwareInfos.put(hardwareType, info);
         }
 
         var sender = new GetHardwareInfoResultSender(server);
@@ -47,7 +49,7 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
     }
 
     interface HardwareInfo {
-        String getHardwareInfo();
+        ArrayList<KeyPair<String, String>> getHardwareInfo();
     }
 
     public static class HardwareInfoFactory {
@@ -63,17 +65,26 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
                     return new HardwareInfoDisk();
                 }
                 default -> {
-                    return ""::toString;
+                    return null;
                 }
             }
         }
     }
 
     public static class HardwareInfoCPU implements HardwareInfo {
+        public static final String CLOCK_SPEED = "ClockSpeed";
+        public static final String USAGE_PERCENT = "UsagePercent";
+        public static final String LOGICAL_PROCESSOR_COUNT = "LogicalProcessorCount";
+        public static final String PHYSICAL_PROCESSOR_COUNT = "PhysicalProcessorCount";
+        public static final String PROCESS_COUNT = "ProcessCount";
+        public static final String THREAD_COUNT = "ThreadCount";
+
         private static long[] preTicks = new long[CentralProcessor.TickType.values().length];
 
         @Override
-        public String getHardwareInfo() {
+        public ArrayList<KeyPair<String, String>> getHardwareInfo() {
+            var info = new ArrayList<KeyPair<String, String>>();
+
             var systemInfo = new SystemInfo();
             var hardwareAbstractionLayer = systemInfo.getHardware();
             var processor = hardwareAbstractionLayer.getProcessor();
@@ -86,13 +97,14 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
             var processCount = getProcessCount(operatingSystem);
             var threadCount = getThreadCount(operatingSystem);
 
-            return "Clock Speed: " + clockSpeed + " GHz" +
-                    "\nUsage Percent: " + usagePercent + "%" +
-                    "\nLogical Processor Count: " + logicalProcessorCount +
-                    "\nPhysical Processor Count: " + physicalProcessorCount +
-                    "\nProcess Count: " + processCount +
-                    "\nThread Count: " + threadCount +
-                    "\n";
+            info.add(new KeyPair<>(CLOCK_SPEED, clockSpeed + " GHz"));
+            info.add(new KeyPair<>(USAGE_PERCENT, usagePercent + " %"));
+            info.add(new KeyPair<>(LOGICAL_PROCESSOR_COUNT, String.valueOf(logicalProcessorCount)));
+            info.add(new KeyPair<>(PHYSICAL_PROCESSOR_COUNT, String.valueOf(physicalProcessorCount)));
+            info.add(new KeyPair<>(PROCESS_COUNT, String.valueOf(processCount)));
+            info.add(new KeyPair<>(THREAD_COUNT, String.valueOf(threadCount)));
+
+            return info;
         }
 
         private double getUsagePercent(CentralProcessor processor) {
@@ -125,8 +137,14 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
     }
 
     public static class HardwareInfoMemory implements HardwareInfo {
+        public static final String TOTAL_MEMORY = "TotalMemory";
+        public static final String USED_MEMORY = "UsedMemory";
+        public static final String AVAILABLE_MEMORY = "AvailableMemory";
+
         @Override
-        public String getHardwareInfo() {
+        public ArrayList<KeyPair<String, String>> getHardwareInfo() {
+            var info = new ArrayList<KeyPair<String, String>>();
+
             var systemInfo = new SystemInfo();
             var hardwareAbstractionLayer = systemInfo.getHardware();
             var memory = hardwareAbstractionLayer.getMemory();
@@ -135,10 +153,11 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
             var usedMemory = Utilities.byteToGB(getUsedMemory(memory));
             var availableMemory = Utilities.byteToGB(getAvailableMemory(memory));
 
-            return "Total Memory: " + totalMemory + " GB" +
-                    "\nUsed Memory: " + usedMemory + " GB" +
-                    "\nAvailable Memory: " + availableMemory + " GB" +
-                    "\n";
+            info.add(new KeyPair<>(TOTAL_MEMORY, totalMemory + " GB"));
+            info.add(new KeyPair<>(USED_MEMORY, usedMemory + " GB"));
+            info.add(new KeyPair<>(AVAILABLE_MEMORY, availableMemory + " GB"));
+
+            return info;
         }
 
         private long getAvailableMemory(GlobalMemory memory) {
@@ -155,25 +174,32 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
     }
 
     public static class HardwareInfoDisk implements HardwareInfo {
+        public static final String DISK_NAME = "DiskName";
+        public static final String DISK_TOTAL_SIZE = "DiskTotalSize";
+        public static final String DISK_USED_SIZE = "DiskUsedSize";
+        public static final String DISK_AVAILABLE_SIZE = "DiskAvailableSize";
+
+        public static final String SPACE = "Space";
+
         @Override
-        public String getHardwareInfo() {
+        public ArrayList<KeyPair<String, String>> getHardwareInfo() {
             File[] disks = File.listRoots();
 
-            var info = new StringBuilder();
+            var info = new ArrayList<KeyPair<String, String>>();
             for (var disk : disks) {
                 var diskName = getDiskName(disk);
                 var diskTotalSize = getDiskTotalSize(disk);
                 var diskUsedSize = getDiskUsedSize(disk);
                 var diskAvailableSize = getDiskAvailableSize(disk);
 
-                info.append("Disk Name: ").append(diskName).append("\n")
-                        .append("Disk Total Size: ").append(diskTotalSize).append(" GB").append("\n")
-                        .append("Disk Used Size: ").append(diskUsedSize).append(" GB").append("\n")
-                        .append("Disk Available Size: ").append(diskAvailableSize).append(" GB").append("\n")
-                        .append("\n");
+                info.add(new KeyPair<>(DISK_NAME, diskName));
+                info.add(new KeyPair<>(DISK_TOTAL_SIZE, diskTotalSize + " GB"));
+                info.add(new KeyPair<>(DISK_USED_SIZE, diskUsedSize + " GB"));
+                info.add(new KeyPair<>(DISK_AVAILABLE_SIZE, diskAvailableSize + " GB"));
+                info.add(new KeyPair<>(SPACE, ""));
             }
 
-            return info.toString();
+            return info;
         }
 
         private String getDiskName(File disk) {
