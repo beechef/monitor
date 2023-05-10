@@ -7,8 +7,12 @@ import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.ProcessDTO;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
+import SocketMessageReceiver.DataType.ServerInfo;
 import jdk.jfr.Event;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -16,8 +20,16 @@ import java.util.ArrayList;
 public class Admin {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-//        try (ServerSocket ignored = new ServerSocket(9998)) {
-        var tcpClient = new TCPClient("localhost", 4445);
+        var serverInfo = getServerInfo();
+        if (serverInfo == null) {
+            System.out.println("Invalid server info");
+            return;
+        }
+
+        var host = serverInfo.host;
+        var port = serverInfo.port;
+
+        var tcpClient = new TCPClient(host, port);
         tcpClient.setBuffer(1024 * 1024);
         tcpClient.start();
 
@@ -169,10 +181,22 @@ public class Admin {
         })));
 
         Thread.currentThread().join();
-//        } catch (IOException e) {
-//            System.out.println("Application instance is already running.");
-//            System.exit(0);
-//        }
+    }
 
+
+    private static final String SERVER_INFO_FILE = "admin_server_info.dat";
+
+    private static ServerInfo getServerInfo() {
+        File file = new File("./" + SERVER_INFO_FILE);
+        if (!file.exists()) return null;
+
+        try (var reader = new BufferedReader(new FileReader(file))) {
+            var serverIp = reader.readLine();
+            var serverPort = Integer.parseInt(reader.readLine());
+
+            return new ServerInfo(serverIp, serverPort);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -10,6 +10,7 @@ import SocketMessageReceiver.DataType.LogOutUserRequest;
 import SocketMessageReceiver.DataType.LoginUserRequest;
 import SocketMessageReceiver.DataType.LoginUserUDPRequest;
 import SocketMessageReceiver.DataType.ProcessAction.ProcessActionResultUserSide;
+import SocketMessageReceiver.DataType.ServerInfo;
 import SocketMessageSender.CustomUserSender.LogOutUserSender;
 import SocketMessageSender.CustomUserSender.LoginSender;
 import SocketMessageSender.CustomUserSender.LoginUDPSender;
@@ -24,29 +25,39 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.ServerSocket;
+import java.net.URL;
 
 public class User {
+    public static int adminId;
+
     public static void main(String[] args) throws IOException, InterruptedException {
         try (ServerSocket ignored = new ServerSocket(9999)) {
-            var tcpClient = new TCPClient("localhost", 4445);
+            var serverInfo = getServerInfo();
+            if (serverInfo == null) {
+                System.out.println("Invalid server info");
+                return;
+            }
+
+            var host = serverInfo.host;
+            var port = serverInfo.port;
+
+            var tcpClient = new TCPClient(host, port);
 
             tcpClient.setBuffer(1024 * 1024);
             tcpClient.start();
 
-            UDPClient udpClient = new UDPClient("localhost", 4446);
-            udpClient.setBuffer(1024 * 1024);
-            udpClient.start();
+//            UDPClient udpClient = new UDPClient("localhost", 4446);
+//            udpClient.setBuffer(1024 * 1024);
+//            udpClient.start();
 
             ClientInstance.tcpClient = tcpClient;
-            ClientInstance.udpClient = udpClient;
+//            ClientInstance.udpClient = udpClient;
 
             GlobalVariable.LoginUserGUI = new LoginUserGUI();
             GlobalVariable.LoginUserGUI.setVisible(true);
 
 //            var loginTcpSender = new LoginSender(tcpClient);
             var uuid = Utilities.getUUID();
-            var adminId = 19;
-
 
             EventDispatcher.startListening(new LoginUserResultReceiver((loginUserResult) -> {
                 if (!loginUserResult.userInfo.isWriteLog) return;
@@ -79,6 +90,22 @@ public class User {
             System.exit(0);
         }
 
+    }
+
+    private static final String SERVER_INFO_FILE = "user_server_info.dat";
+
+    private static ServerInfo getServerInfo() {
+        File file = new File("./" + SERVER_INFO_FILE);
+        if (!file.exists()) return null;
+
+        try (var reader = new BufferedReader(new FileReader(file))) {
+            var serverIp = reader.readLine();
+            var serverPort = Integer.parseInt(reader.readLine());
+
+            return new ServerInfo(serverIp, serverPort);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }
