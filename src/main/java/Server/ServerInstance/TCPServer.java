@@ -219,7 +219,7 @@ public class TCPServer implements Server {
 
         var clientBuffer = new ClientBuffer(client, buffer);
 
-        if (bufferQueue.size() == 0) {
+        if (bufferQueue.size() == 0 && !isSending) {
             bufferQueue.add(clientBuffer);
             send();
         } else {
@@ -227,7 +227,11 @@ public class TCPServer implements Server {
         }
     }
 
+    private boolean isSending = false;
+
     private void send() {
+        isSending = true;
+
         var clientBuffer = bufferQueue.remove();
         var client = clientBuffer.client;
         var buffer = clientBuffer.buffer;
@@ -239,6 +243,8 @@ public class TCPServer implements Server {
 
                 if (bufferQueue.size() > 0) {
                     send();
+                } else {
+                    isSending = false;
                 }
             }
 
