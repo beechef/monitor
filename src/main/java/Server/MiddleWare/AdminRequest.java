@@ -1,6 +1,8 @@
 package Server.MiddleWare;
 
-public class AdminRequest {
+import java.io.Serializable;
+
+public class AdminRequest implements Serializable {
     public int adminId;
     public String adminUuid;
 

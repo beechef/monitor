@@ -75,7 +75,8 @@ public class TCPClient implements Client {
                 try {
                     SocketMessage msg = new SocketMessage(client, data);
                     EventDispatcher.emitEvent(_this, msg);
-                } catch (IOException | ClassNotFoundException ignored) {
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
 
                 buffer.clear();
@@ -89,7 +90,7 @@ public class TCPClient implements Client {
     }
 
     Queue<ByteBuffer> bufferQueue = new LinkedList<>();
-    boolean sending = false;
+    private boolean sending = false;
 
     @Override
     public void send(Object target, Message msg) {
@@ -107,8 +108,8 @@ public class TCPClient implements Client {
     }
 
     private void send() {
-        ByteBuffer buffer = bufferQueue.remove();
         sending = true;
+        ByteBuffer buffer = bufferQueue.remove();
 
         System.out.println("Sending");
 
