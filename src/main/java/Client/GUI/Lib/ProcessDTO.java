@@ -11,19 +11,19 @@ package Client.GUI.Lib;
 public class ProcessDTO {
 
     private String name;
-    private String id;
+    private int id;
     private String path;
 
     public ProcessDTO() {
     }
 
-    public ProcessDTO(String name, String id, String path) {
+    public ProcessDTO(String name, int id, String path) {
         this.name = name;
         this.id = id;
         this.path = path;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -31,7 +31,7 @@ public class ProcessDTO {
         return path;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

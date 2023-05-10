@@ -81,5 +81,9 @@ public class GlobalVariable {
     public static List<ProcessDTO> processList = new ArrayList<>();
     //stmp arr process
     public static List<ProcessDTO> processListStmp = new ArrayList<>();
+    
+    
+    //hardware data
+    public static HardwareDTO hardwareData=null;
 
 }

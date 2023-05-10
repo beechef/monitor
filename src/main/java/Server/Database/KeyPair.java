@@ -1,6 +1,8 @@
 package Server.Database;
 
-public class KeyPair<K, V> {
+import java.io.Serializable;
+
+public class KeyPair<K, V> implements Serializable{
     public K key;
     public V value;
 

@@ -3,7 +3,9 @@ package Client;
 import Client.GUI.Admin.LoginGUI;
 import Client.GUI.Admin.RegisterGUI;
 import Client.GUI.Lib.ClientDTO;
+import Client.GUI.Lib.DiskDTO;
 import Client.GUI.Lib.GlobalVariable;
+import Client.GUI.Lib.HardwareDTO;
 import Client.GUI.Lib.ProcessDTO;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
@@ -16,6 +18,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 
 public class Admin {
 
@@ -68,24 +71,121 @@ public class Admin {
         }));
 
         EventDispatcher.startListening(new GetHardwareInfoResultReceiver(data -> {
+            GlobalVariable.hardwareData = new HardwareDTO();
             for (var hardwareInfo : data.hardwareInfos.entrySet()) {
                 System.out.println("Hardware name: " + hardwareInfo.getKey());
 
-                for (var info : hardwareInfo.getValue()) {
-                    System.out.println("Key: " + info.key);
-                    System.out.println("Value: " + info.value);
+                if (hardwareInfo.getKey().toString().equals("CPU")) {
+                    for (var info : hardwareInfo.getValue()) {
+                        System.out.println("Key: " + info.key);
+                        System.out.println("Value: " + info.value);
+                        if (info.key.equals("ClockSpeed")) {
+                            GlobalVariable.hardwareData.setCpuClockSpeed(info.value);
+                        } else {
+                            if (info.key.equals("UsagePercent")) {
+                                GlobalVariable.hardwareData.setCpuUsagePercent(info.value);
+                            } else {
+                                if (info.key.equals("LogicalProcessorCount")) {
+                                    GlobalVariable.hardwareData.setCpuLogicalProcessorCount(info.value);
+                                } else {
+                                    if (info.key.equals("PhysicalProcessorCount")) {
+                                        GlobalVariable.hardwareData.setCpuPhysicalProcessorCount(info.value);
+                                    } else {
+                                        if (info.key.equals("ProcessCount")) {
+                                            GlobalVariable.hardwareData.setCpuProcessCount(info.value);
+                                        } else {
+                                            if (info.key.equals("ThreadCount")) {
+                                                GlobalVariable.hardwareData.setCpuThreadCount(info.value);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (hardwareInfo.getKey().toString().equals("MEMORY")) {
+                    for (var info : hardwareInfo.getValue()) {
+                        System.out.println("Key: " + info.key);
+                        System.out.println("Value: " + info.value);
+                        if (info.key.equals("TotalMemory")) {
+                            GlobalVariable.hardwareData.setTotalMemory(info.value);
+                        } else {
+                            if (info.key.equals("UsedMemory")) {
+                                GlobalVariable.hardwareData.setUsedMemory(info.value);
+                            } else {
+                                if (info.key.equals("AvailableMemory")) {
+                                    GlobalVariable.hardwareData.setAvailableMemory(info.value);
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                if (hardwareInfo.getKey().toString().equals("DISK")) {
+
+                    String DiskName = null;
+                    String DiskTotalSize = null;
+                    String DiskUsedSize = null;
+                    String DiskAvailableSize = null;
+                    String Space = null;
+
+                    for (var info : hardwareInfo.getValue()) {
+                        System.out.println("Key: " + info.key);
+                        System.out.println("Value: " + info.value);
+                        if (info.key.equals("DiskName")) {
+                            DiskName = info.value;
+                        } else {
+                            if (info.key.equals("DiskTotalSize")) {
+                                DiskTotalSize = info.value;
+                            } else {
+                                if (info.key.equals("DiskUsedSize")) {
+                                    DiskUsedSize = info.value;
+                                } else {
+                                    if (info.key.equals("DiskAvailableSize")) {
+                                        DiskAvailableSize = info.value;
+                                    } else {
+                                        if (info.key.equals("Space")) {
+                                            Space = info.value;
+                                            DiskDTO x = new DiskDTO(DiskName, DiskTotalSize, DiskUsedSize, DiskAvailableSize, Space);
+                                            GlobalVariable.hardwareData.Disks.add(x);
+                                            DiskName = null;
+                                            DiskTotalSize = null;
+                                            DiskUsedSize = null;
+                                            DiskAvailableSize = null;
+                                            Space = null;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                 }
             }
+
+            //
+            GlobalVariable.hardware.renderContent();
         }));
 
         EventDispatcher.startListening(new GetProcessesResultReceiver(data -> {
             GlobalVariable.processList.removeAll(GlobalVariable.processList);
             for (var process : data.processes) {
+<<<<<<< HEAD
+                GlobalVariable.processList.add(new ProcessDTO(process.name, process.id, process.path));
+//                System.out.println("Process ID: " + process.id);
+//                System.out.println("Process Name: " + process.name);
+//                System.out.println("Process Path: " + process.path);
+//                System.out.println();
+=======
                 GlobalVariable.processList.add(new ProcessDTO(process.name, process.id + "", process.path));
                 System.out.println("Process ID: " + process.id);
                 System.out.println("Process Name: " + process.name);
                 System.out.println("Process Path: " + process.path);
                 System.out.println();
+>>>>>>> origin/master
             }
             GlobalVariable.process.renderProcess(GlobalVariable.processList);
         }));
@@ -127,6 +227,11 @@ public class Admin {
         }));
 
         EventDispatcher.startListening(new ProcessActionResultReceiver(data -> {
+
+            JOptionPane.showMessageDialog(GlobalVariable.main, "Endtask " + data.processId + " " + data.result + "  " + data.message);
+
+            GlobalVariable.main.sendRequestGetAllProcess();
+
             System.out.println("Process action result:");
             System.out.println("Process ID: " + data.processId);
             System.out.println("Action: " + data.action);
