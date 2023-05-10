@@ -9,15 +9,36 @@ package Client.GUI.Lib;
  * @author Admin
  */
 public class ProcessDTO {
+
     private String name;
+    private String id;
+    private String path;
 
     public ProcessDTO() {
     }
 
-    public ProcessDTO(String name) {
+    public ProcessDTO(String name, String id, String path) {
         this.name = name;
+        this.id = id;
+        this.path = path;
     }
-     
+
+    public String getId() {
+        return id;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+    
 
     public String getName() {
         return name;
@@ -31,5 +52,5 @@ public class ProcessDTO {
     public String toString() {
         return super.toString(); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
     }
-    
+
 }
