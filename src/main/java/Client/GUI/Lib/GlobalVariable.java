@@ -33,7 +33,8 @@ public class GlobalVariable {
     public static final Color WarningColor = new java.awt.Color(220, 53, 53);
 
     //selected client
-    public static boolean selectedClient = true;
+    public static boolean selectedClient = false;
+    public static ClientDTO selectedClientInfor=null;
 
     public static LoginGUI LoginAdminGUI;
     public static MainGUI main = null;

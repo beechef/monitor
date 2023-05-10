@@ -4,6 +4,7 @@
  */
 package Client.GUI.Admin;
 
+import Client.ClientInstance;
 import Client.GUI.Component.ListClientGUI;
 import Client.GUI.Component.HardwareGUI;
 import Client.GUI.Component.OthersGUI;
@@ -13,10 +14,15 @@ import Client.GUI.Component.ProcessGUI;
 import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.RoundBorder;
 import Client.GUI.Lib.SidebarItemDTO;
+import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
+import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
+import SocketMessageSender.CustomAdminSender.GetHardwareInfoSender;
+import SocketMessageSender.CustomAdminSender.GetProcessesSender;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -33,9 +39,7 @@ public class MainGUI extends javax.swing.JFrame {
      * Creates new form MainGUI
      */
     public MainGUI() throws IOException {
-
         initComponents();
-
         //init current path
         GlobalVariable.currentPath = new java.io.File(".").getCanonicalPath();
 
@@ -46,7 +50,6 @@ public class MainGUI extends javax.swing.JFrame {
         GlobalVariable.streaming = new StreamingGUI();
         GlobalVariable.others = new OthersGUI();
         GlobalVariable.profile = new ProfileGUI();
-
 
 //        this.content.add(icon1)
         //init sidebar item
@@ -71,8 +74,18 @@ public class MainGUI extends javax.swing.JFrame {
         sidebarItemMouseEvent();
 
         //header
+        //renderHeader
         renderHeader(this);
 
+    }
+
+    public void renderSidebar() throws IOException {
+        //active menu item
+        handelActiveMenuItem();
+        //add hover item list
+        sidebarItemMouseEvent();
+        //renderHeader
+        renderHeader(this);
     }
 
     /**
@@ -114,8 +127,8 @@ public class MainGUI extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         Header = new javax.swing.JPanel();
         ClientName = new javax.swing.JLabel();
-        ClientIp = new javax.swing.JLabel();
-        ClientLocation = new javax.swing.JLabel();
+        ClientID = new javax.swing.JLabel();
+        ClientAddress = new javax.swing.JLabel();
         content = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -160,6 +173,9 @@ public class MainGUI extends javax.swing.JFrame {
 
         MenuItem1.setOpaque(false);
         MenuItem1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MenuItem1MouseClicked(evt);
+            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 MenuItem1MouseExited(evt);
             }
@@ -181,6 +197,9 @@ public class MainGUI extends javax.swing.JFrame {
 
         MenuItem2.setOpaque(false);
         MenuItem2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MenuItem2MouseClicked(evt);
+            }
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 MenuItem2MouseExited(evt);
             }
@@ -352,13 +371,11 @@ public class MainGUI extends javax.swing.JFrame {
         ClientName.setForeground(new java.awt.Color(51, 51, 51));
         ClientName.setText("List clients");
 
-        ClientIp.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        ClientIp.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        ClientIp.setText("Address: 0x553B4400435e6");
+        ClientID.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        ClientID.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
-        ClientLocation.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        ClientLocation.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        ClientLocation.setText("Vietnam");
+        ClientAddress.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        ClientAddress.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
         javax.swing.GroupLayout HeaderLayout = new javax.swing.GroupLayout(Header);
         Header.setLayout(HeaderLayout);
@@ -367,10 +384,10 @@ public class MainGUI extends javax.swing.JFrame {
             .addGroup(HeaderLayout.createSequentialGroup()
                 .addGap(30, 30, 30)
                 .addComponent(ClientName, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 694, Short.MAX_VALUE)
-                .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ClientIp, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(ClientLocation, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 411, Short.MAX_VALUE)
+                .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(ClientID, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+                    .addComponent(ClientAddress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(30, 30, 30))
         );
         HeaderLayout.setVerticalGroup(
@@ -379,9 +396,9 @@ public class MainGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(HeaderLayout.createSequentialGroup()
-                        .addComponent(ClientIp, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ClientID, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ClientLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(ClientAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 5, Short.MAX_VALUE))
                     .addComponent(ClientName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -428,6 +445,31 @@ public class MainGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_MenuItem6MouseExited
 
+    private void MenuItem1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuItem1MouseClicked
+        // click to hardware
+        if (GlobalVariable.selectedClient) {
+            System.out.println("Amin request get hardware of user uuid: " + GlobalVariable.selectedClientInfor.getID());
+            var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
+            var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();
+            hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.CPU);
+            hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.MEMORY);
+            hardwareTypes.add(GetHardwareInfoAdminSide.HardwareType.DISK);
+
+            sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, GlobalVariable.selectedClientInfor.getID(), GlobalVariable.tokenAdmin));
+        }
+
+    }//GEN-LAST:event_MenuItem1MouseClicked
+
+    private void MenuItem2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuItem2MouseClicked
+        // click to process
+        if (GlobalVariable.selectedClient) {
+            System.out.println("Amin request get prcess of user uuid: " + GlobalVariable.selectedClientInfor.getID());
+            System.out.println(GlobalVariable.tokenAdmin);
+            var sender = new GetProcessesSender(ClientInstance.tcpClient);
+            sender.send(null, new GetProcessesAdminSide(GlobalVariable.tokenAdmin, GlobalVariable.selectedClientInfor.getID()));
+        }
+    }//GEN-LAST:event_MenuItem2MouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -470,13 +512,13 @@ public class MainGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JLabel ClientIp;
-    public javax.swing.JLabel ClientLocation;
+    public javax.swing.JLabel ClientAddress;
+    public javax.swing.JLabel ClientID;
     private javax.swing.JLabel ClientName;
     private javax.swing.JPanel Header;
     private javax.swing.JPanel MenuItem;
     private javax.swing.JPanel MenuItem1;
-    private javax.swing.JPanel MenuItem2;
+    public javax.swing.JPanel MenuItem2;
     private javax.swing.JPanel MenuItem3;
     private javax.swing.JPanel MenuItem4;
     private javax.swing.JPanel MenuItem5;
@@ -561,8 +603,8 @@ public class MainGUI extends javax.swing.JFrame {
                             GlobalVariable.itemList.get(i).state = true;
                             //handel funcion
                             if (GlobalVariable.itemList.get(i).compContent != null) {
-                                    GlobalVariable.itemList.get(i).compContent.setVisible(true);
-                            }else{
+                                GlobalVariable.itemList.get(i).compContent.setVisible(true);
+                            } else {
                                 System.out.println("logout");
                             }
                             //end handel function
@@ -573,7 +615,7 @@ public class MainGUI extends javax.swing.JFrame {
                                 if (GlobalVariable.itemList.get(i).compContent != null) {
                                     GlobalVariable.itemList.get(i).compContent.setVisible(false);
                                 }
-                                
+
                                 GlobalVariable.itemList.get(i).state = false;
                                 GlobalVariable.itemList.get(i).compTitle.setBorder(new RoundBorder(3, GlobalVariable.primaryColor));
                             }
@@ -602,11 +644,16 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void renderHeader(MainGUI f) {
         if (GlobalVariable.selectedClient) {
-            f.ClientName.setText("Client name");
+            f.ClientName.setText(GlobalVariable.selectedClientInfor.getName());
+            f.ClientID.setText("Client uuid:" + GlobalVariable.selectedClientInfor.getID());
+            f.ClientAddress.setText("IpAddress: " + GlobalVariable.selectedClientInfor.getIpAdress());
+            f.ClientID.setVisible(true);
+            f.ClientAddress.setVisible(true);
+
         } else {
             f.Header.setBackground(GlobalVariable.headerColor);
-            f.ClientIp.setVisible(false);
-            f.ClientLocation.setVisible(false);
+            f.ClientID.setVisible(false);
+            f.ClientAddress.setVisible(false);
             f.ClientName.setText("List clients");
         }
     }

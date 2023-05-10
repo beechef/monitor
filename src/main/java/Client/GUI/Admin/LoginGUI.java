@@ -114,11 +114,11 @@ public class LoginGUI extends javax.swing.JFrame {
 //<<<<<<< HEAD
 
 //        var sender = new GetProcessesSender(ClientInstance.tcpClient);
-//        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
+//        sender.send(null, new GetProcessesAdminSide(token, "03000200-0400-0500-0006-000700080009"));
 //=======
 //        var sender = new GetProcessesSender(ClientInstance.tcpClient);
 //        sender.send(null, new GetProcessesAdminSide(token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
-//>>>>>>> origin/master
+//>>>>>>> origin/masterpr
 
 //        var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
 //        var hardwareTypes = new ArrayList<GetHardwareInfoAdminSide.HardwareType>();

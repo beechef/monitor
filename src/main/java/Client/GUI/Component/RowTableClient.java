@@ -19,8 +19,11 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 
 /**
@@ -88,6 +91,11 @@ public class RowTableClient extends javax.swing.JPanel {
         setMaximumSize(new java.awt.Dimension(2147483647, 46));
         setMinimumSize(new java.awt.Dimension(386, 46));
         setPreferredSize(new java.awt.Dimension(614, 46));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+        });
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -201,6 +209,23 @@ public class RowTableClient extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_clientNameKeyPressed
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        // TODO add your handling code here:
+        if(this.client.getStatus()){
+            try {
+                System.out.println("selected client :"+ this.client.toString());
+                GlobalVariable.selectedClient=true;
+                GlobalVariable.selectedClientInfor=this.client;
+                //rerender
+                GlobalVariable.main.renderSidebar();
+                GlobalVariable.main.validate();
+                GlobalVariable.main.repaint();
+            } catch (IOException ex) {
+                Logger.getLogger(RowTableClient.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_formMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
