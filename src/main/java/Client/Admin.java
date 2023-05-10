@@ -69,7 +69,7 @@ public class Admin {
         EventDispatcher.startListening(new GetProcessesResultReceiver(data -> {
             GlobalVariable.processList.removeAll(GlobalVariable.processList);
             for (var process : data.processes) {
-                GlobalVariable.processList.add(new ProcessDTO(process.name,process.id+"",process.path));
+                GlobalVariable.processList.add(new ProcessDTO(process.name, process.id + "", process.path));
                 System.out.println("Process ID: " + process.id);
                 System.out.println("Process Name: " + process.name);
                 System.out.println("Process Path: " + process.path);
@@ -152,6 +152,21 @@ public class Admin {
             System.out.println("Interval: " + data.writeLogInterval);
             System.out.println();
         }));
+
+        EventDispatcher.startListening(new GetLogResultReceiver(data -> {
+            System.out.println("Get log result:");
+            System.out.println("Result: " + data.log);
+            System.out.println("Is end: " + data.isEnd);
+            System.out.println();
+        }));
+
+        EventDispatcher.startListening(new UserActionResultReceiver((data -> {
+            System.out.println("User action result:");
+            System.out.println("Action: " + data.action);
+            System.out.println("Result: " + data.result);
+            System.out.println("Message: " + data.message);
+            System.out.println();
+        })));
 
         Thread.currentThread().join();
 //        } catch (IOException e) {
