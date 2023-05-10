@@ -9,8 +9,12 @@ import Client.GUI.Lib.HardwareDTO;
 import Client.GUI.Lib.ProcessDTO;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
+import SocketMessageReceiver.DataType.ServerInfo;
 import jdk.jfr.Event;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -19,8 +23,16 @@ import javax.swing.JOptionPane;
 public class Admin {
 
     public static void main(String[] args) throws IOException, InterruptedException {
-//        try (ServerSocket ignored = new ServerSocket(9998)) {
-        var tcpClient = new TCPClient("localhost", 4445);
+        var serverInfo = getServerInfo();
+        if (serverInfo == null) {
+            System.out.println("Invalid server info");
+            return;
+        }
+
+        var host = serverInfo.host;
+        var port = serverInfo.port;
+
+        var tcpClient = new TCPClient(host, port);
         tcpClient.setBuffer(1024 * 1024);
         tcpClient.start();
 
@@ -161,11 +173,19 @@ public class Admin {
         EventDispatcher.startListening(new GetProcessesResultReceiver(data -> {
             GlobalVariable.processList.removeAll(GlobalVariable.processList);
             for (var process : data.processes) {
+<<<<<<< HEAD
                 GlobalVariable.processList.add(new ProcessDTO(process.name, process.id, process.path));
 //                System.out.println("Process ID: " + process.id);
 //                System.out.println("Process Name: " + process.name);
 //                System.out.println("Process Path: " + process.path);
 //                System.out.println();
+=======
+                GlobalVariable.processList.add(new ProcessDTO(process.name, process.id + "", process.path));
+                System.out.println("Process ID: " + process.id);
+                System.out.println("Process Name: " + process.name);
+                System.out.println("Process Path: " + process.path);
+                System.out.println();
+>>>>>>> origin/master
             }
             GlobalVariable.process.renderProcess(GlobalVariable.processList);
         }));
@@ -242,11 +262,46 @@ public class Admin {
             System.out.println();
         }));
 
-        Thread.currentThread().join();
-//        } catch (IOException e) {
-//            System.out.println("Application instance is already running.");
-//            System.exit(0);
-//        }
+        EventDispatcher.startListening(new ChangeKeyLogConfigResultReceiver(data -> {
+            System.out.println("Change KeyLog config result:");
+            System.out.println("Result: " + data.uuid);
+            System.out.println("Write Log: " + data.isWriteLog);
+            System.out.println("Interval: " + data.writeLogInterval);
+            System.out.println();
+        }));
 
+        EventDispatcher.startListening(new GetLogResultReceiver(data -> {
+            System.out.println("Get log result:");
+            System.out.println("Result: " + data.log);
+            System.out.println("Is end: " + data.isEnd);
+            System.out.println();
+        }));
+
+        EventDispatcher.startListening(new UserActionResultReceiver((data -> {
+            System.out.println("User action result:");
+            System.out.println("Action: " + data.action);
+            System.out.println("Result: " + data.result);
+            System.out.println("Message: " + data.message);
+            System.out.println();
+        })));
+
+        Thread.currentThread().join();
+    }
+
+
+    private static final String SERVER_INFO_FILE = "admin_server_info.dat";
+
+    private static ServerInfo getServerInfo() {
+        File file = new File("./" + SERVER_INFO_FILE);
+        if (!file.exists()) return null;
+
+        try (var reader = new BufferedReader(new FileReader(file))) {
+            var serverIp = reader.readLine();
+            var serverPort = Integer.parseInt(reader.readLine());
+
+            return new ServerInfo(serverIp, serverPort);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

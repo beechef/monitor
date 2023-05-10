@@ -111,8 +111,6 @@ public class TCPClient implements Client {
         sending = true;
         ByteBuffer buffer = bufferQueue.remove();
 
-        System.out.println("Sending");
-
         socket.write(buffer, null, new CompletionHandler<>() {
             @Override
             public void completed(Integer result, Object attachment) {

@@ -142,7 +142,8 @@ public class TCPServer implements Server {
                 try {
                     SocketMessage msg = new SocketMessage(client, data);
                     emitMessage(msg);
-                } catch (IOException | ClassNotFoundException ignored) {
+                } catch (IOException | ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
 
                 buffer.clear();

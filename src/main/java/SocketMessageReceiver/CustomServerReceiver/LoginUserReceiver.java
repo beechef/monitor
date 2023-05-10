@@ -24,6 +24,8 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
     private static final String USER_TABLE = "user";
     private static final String USER_ID_FIELD = "id";
     private static final String NAME_FIELD = "name";
+    private static final String USER_WRITE_LOG = "write_log";
+    private static final String USER_WRITE_LOG_INTERVAL = "write_log_interval";
 
     private static final String BINDING_TABLE = "binding";
     private static final String BINDING_ADMIN_ID_FIELD = "id_admin";
@@ -31,6 +33,9 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
 
     private static final String ADMIN_TABLE = "admin";
     private static final String ADMIN_ID_FIELD = "id";
+
+    private static final boolean DEFAULT_WRITE_LOG = true;
+    private static final long DEFAULT_WRITE_LOG_INTERVAL = 30L * 60; // 30 minutes
 
 
     @Override
@@ -52,6 +57,8 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
         try {
             var existAdmin = getAdmin(adminId);
             var userSender = new LoginUserResultUserSideSender(server);
+            var isWriteLog = DEFAULT_WRITE_LOG;
+            var writeLogInterval = DEFAULT_WRITE_LOG_INTERVAL;
 
             if (!existAdmin.next()) {
                 userSender.send(user, new LoginUserResultUserSide(LoginUserResultUserSide.LoginResult.NOT_FOUND_ADMIN));
@@ -64,13 +71,15 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
 
             if (existUser.next()) {
                 name = existUser.getString(NAME_FIELD);
+                isWriteLog = existUser.getBoolean(USER_WRITE_LOG);
+                writeLogInterval = existUser.getLong(USER_WRITE_LOG_INTERVAL);
             } else {
-                registerUser(deviceId, name);
+                registerUser(deviceId, name, isWriteLog, writeLogInterval);
             }
 
             bindingAdminAndUser(adminId, deviceId);
 
-            var userInfo = new UserController.UserInfo(deviceId, name, UserController.UserInfo.UserStatus.AVAILABLE, inetAddress, user);
+            var userInfo = new UserController.UserInfo(deviceId, name, UserController.UserInfo.UserStatus.AVAILABLE, isWriteLog, writeLogInterval, inetAddress, user);
             UserController.addUser(adminId, userInfo);
 
             userSender.send(user, new LoginUserResultUserSide(LoginUserResultUserSide.LoginResult.SUCCESS));
@@ -119,10 +128,10 @@ public class LoginUserReceiver extends SocketMessageReceiver<LoginUserRequest> {
         return getData(String.valueOf(id), ADMIN_TABLE, ADMIN_ID_FIELD);
     }
 
-    private void registerUser(String id, String name) {
+    private void registerUser(String id, String name, boolean isWriteLog, long writeLogInterval) {
         try {
-            var values = new String[]{USER_ID_FIELD, NAME_FIELD};
-            var data = new String[]{id, name};
+            var values = new String[]{USER_ID_FIELD, NAME_FIELD, USER_WRITE_LOG, USER_WRITE_LOG_INTERVAL};
+            var data = new String[]{id, name, isWriteLog ? "1" : "0", String.valueOf(writeLogInterval)};
             var keyPairs = new ArrayList<KeyPair<String, String>>(values.length);
 
             for (int i = 0; i < values.length; i++) {

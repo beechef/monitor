@@ -26,6 +26,8 @@ public class GetUserReceiver extends SocketMessageReceiver<GetUserRequest> {
     private static final String USER_TABLE = "user";
     private static final String USER_ID = "id";
     private static final String USER_NAME = "name";
+    private static final String USER_WRITE_LOG = "write_log";
+    private static final String USER_WRITE_LOG_INTERVAL = "write_log_interval";
 
     @Override
     public byte getHeadByte() {
@@ -82,7 +84,10 @@ public class GetUserReceiver extends SocketMessageReceiver<GetUserRequest> {
                 if (userResult.next()) {
                     var id = userResult.getString(USER_ID);
                     var name = userResult.getString(USER_NAME);
-                    var user = new UserController.UserInfo(id, name, UserController.UserInfo.UserStatus.UNAVAILABLE, null, null);
+                    var isWriteLog = userResult.getBoolean(USER_WRITE_LOG);
+                    var writeLogInterval = userResult.getLong(USER_WRITE_LOG_INTERVAL);
+
+                    var user = new UserController.UserInfo(id, name, UserController.UserInfo.UserStatus.UNAVAILABLE, isWriteLog, writeLogInterval,null, null);
 
                     existUsers.add(user);
                 }

@@ -30,6 +30,9 @@ public class EventHeadByte {
         public static final byte LOGIN_UDP = 3;
 
         public static final byte LOGOUT = 4;
+
+        public static final byte ACTION = 5;
+        public static final byte ACTION_RESULT = 6;
     }
 
     public static final byte USER_DATA = 3;
@@ -52,6 +55,14 @@ public class EventHeadByte {
 
         public static final byte GET_IMAGE = 11;
         public static final byte GET_IMAGE_RESULT = 12;
+
+        public static final byte SEND_KEY_LOG = 13;
+
+        public static final byte CHANGE_KEY_LOG_CONFIG = 14;
+        public static final byte CHANGE_KEY_LOG_CONFIG_RESULT = 15;
+
+        public static final byte GET_LOG = 16;
+        public static final byte GET_LOG_RESULT = 17;
     }
 
 }

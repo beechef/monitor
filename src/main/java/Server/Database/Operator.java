@@ -3,8 +3,8 @@ package Server.Database;
 public enum Operator {
     Equal,
     NotEqual,
-    Smaller,
-    SmallerEqual,
+    Lesser,
+    LesserEqual,
     Greater,
     GreaterEqual
 }

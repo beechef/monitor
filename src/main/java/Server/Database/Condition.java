@@ -23,10 +23,10 @@ public class Condition {
             case NotEqual -> {
                 return "!=";
             }
-            case Smaller -> {
+            case Lesser -> {
                 return "<";
             }
-            case SmallerEqual -> {
+            case LesserEqual -> {
                 return "<=";
             }
             case Greater -> {

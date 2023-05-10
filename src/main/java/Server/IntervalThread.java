@@ -12,6 +12,8 @@ public class IntervalThread {
 
     private final List<Executable> actions = new ArrayList<>();
 
+    public boolean isRunning;
+
     public IntervalThread(float seconds) {
         this.seconds = seconds;
     }
@@ -25,12 +27,26 @@ public class IntervalThread {
     }
 
     public void start() {
+        if (thread != null) thread.interrupt();
+
         thread = new Thread(this::run);
         thread.start();
+
+        isRunning = true;
     }
 
     private void run() {
         while (true) {
+            try {
+                Thread.sleep((long) (seconds * 1000));
+            } catch (InterruptedException ignored) {
+            }
+
+            if (thread.isInterrupted() || !isRunning) {
+                thread.interrupt();
+                return;
+            }
+
             for (var action : actions) {
                 try {
                     action.execute();
@@ -38,15 +54,10 @@ public class IntervalThread {
                     throw new RuntimeException(e);
                 }
             }
-
-            try {
-                Thread.sleep((long) (seconds * 1000));
-            } catch (InterruptedException ignored) {
-            }
         }
     }
 
     public void stop() {
-        thread.interrupt();
+        isRunning = false;
     }
 }
