@@ -5,6 +5,7 @@ import Server.Database.*;
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Sender;
+import Server.UserController;
 import SocketMessageReceiver.DataType.ChangeUserNameRequest;
 import SocketMessageReceiver.DataType.ChangeUserNameResult;
 import SocketMessageReceiver.SocketMessageReceiver;
@@ -58,6 +59,9 @@ public class ChangeUserNameReceiver extends SocketMessageReceiver<ChangeUserName
             if (userInfo.next()) {
                 beforeName = userInfo.getString(USER_NAME_FIELD);
             }
+
+            var user = UserController.getUser(adminId, userId);
+            if (user != null) user.name = afterName;
 
             DatabaseConnector.update(USER_TABLE, keyPairs, conditions);
 
