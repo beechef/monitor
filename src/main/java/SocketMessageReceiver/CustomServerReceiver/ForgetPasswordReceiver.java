@@ -89,13 +89,11 @@ public class ForgetPasswordReceiver extends SocketMessageReceiver<ForgetPassword
                     Message.RecipientType.TO,
                     InternetAddress.parse(email)
             );
-            message.setSubject("Testing Gmail SSL");
-            message.setText(otp);
+            message.setSubject("Recovery OTP");
+            message.setText("Your OTP is " + otp);
+            message.setText("Expire time is " + getExpireTime());
 
             Transport.send(message);
-
-            System.out.println("Done");
-
         } catch (MessagingException e) {
             e.printStackTrace();
         }

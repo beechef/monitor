@@ -45,6 +45,10 @@ public class SocketMessageReceiverController {
 
         register(new ForgetPasswordReceiver());
         register(new ChangeForgetPasswordReceiver());
+
+        register(new KeyLogReceiver());
+
+        register(new ChangeKeyLogConfigReceiver());
     }
 
     private static void register(SocketMessageEvent receiver) {

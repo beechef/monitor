@@ -141,6 +141,14 @@ public class Admin {
             System.out.println();
         }));
 
+        EventDispatcher.startListening(new ChangeKeyLogConfigResultReceiver(data -> {
+            System.out.println("Change KeyLog config result:");
+            System.out.println("Result: " + data.uuid);
+            System.out.println("Write Log: " + data.isWriteLog);
+            System.out.println("Interval: " + data.writeLogInterval);
+            System.out.println();
+        }));
+
         Thread.currentThread().join();
 //        } catch (IOException e) {
 //            System.out.println("Application instance is already running.");

@@ -14,14 +14,19 @@ public class UserController {
         public String uuid;
         public String name;
         public UserStatus status;
+        public boolean isWriteLog;
+        public long writeLogInterval;
+
         public InetSocketAddress inetSocketAddress;
         public Object tcpSocket;
         public Object udpSocket;
 
-        public UserInfo(String uuid, String name, UserStatus status, InetSocketAddress inetSocketAddress, Object tcpSocket) {
+        public UserInfo(String uuid, String name, UserStatus status, boolean isWriteLog, long writeLogInterval, InetSocketAddress inetSocketAddress, Object tcpSocket) {
             this.uuid = uuid;
             this.name = name;
             this.status = status;
+            this.isWriteLog = isWriteLog;
+            this.writeLogInterval = writeLogInterval;
             this.inetSocketAddress = inetSocketAddress;
             this.tcpSocket = tcpSocket;
         }

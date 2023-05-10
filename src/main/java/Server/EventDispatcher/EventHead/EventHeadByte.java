@@ -52,6 +52,11 @@ public class EventHeadByte {
 
         public static final byte GET_IMAGE = 11;
         public static final byte GET_IMAGE_RESULT = 12;
+
+        public static final byte SEND_KEY_LOG = 13;
+
+        public static final byte CHANGE_KEY_LOG_CONFIG = 14;
+        public static final byte CHANGE_KEY_LOG_CONFIG_RESULT = 15;
     }
 
 }

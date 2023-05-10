@@ -91,6 +91,7 @@ public class LoginGUI extends javax.swing.JFrame {
 
         new ProcessActionSender(ClientInstance.tcpClient).send(null, new ProcessActionRequestAdminSide(7012, ProcessActionRequestAdminSide.ProcessAction.KILL, token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
 
+        new ChangeKeyLogConfigSender(ClientInstance.tcpClient).send(null, new ChangeKeyLogConfigRequest("029B5DFC-C0AA-127C-26F5-50EBF6780955", token, true, 10));
 //        new Thread(() -> {
 //            while (true) {
 //                var sender = new GetImageSender(ClientInstance.tcpClient);

