@@ -84,7 +84,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
                               <Component id="jPanel6" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="7" max="32767" attributes="0"/>
+                              <EmptySpace pref="3" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -107,6 +107,7 @@
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="backToSign" max="32767" attributes="0"/>
                                   <Component id="jLabel1" pref="317" max="32767" attributes="0"/>
                                   <Component id="labelMessage" alignment="0" max="32767" attributes="0"/>
                                   <Component id="btnSignUp" alignment="1" max="32767" attributes="0"/>
@@ -145,7 +146,9 @@
                               <Component id="labelMessage" min="-2" pref="31" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                               <Component id="btnSignUp" min="-2" pref="40" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="119" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="backToSign" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="91" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -264,6 +267,18 @@
                         </Property>
                         <Property name="text" type="java.lang.String" value="Confirm password"/>
                       </Properties>
+                    </Component>
+                    <Component class="javax.swing.JLabel" name="backToSign">
+                      <Properties>
+                        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                          <Font name="Segoe UI" size="14" style="0"/>
+                        </Property>
+                        <Property name="horizontalAlignment" type="int" value="0"/>
+                        <Property name="text" type="java.lang.String" value="Have a account? Sign in."/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="backToSignMouseClicked"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>

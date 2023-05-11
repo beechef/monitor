@@ -74,7 +74,7 @@ public class StreamingGUI extends javax.swing.JPanel {
         }
 
         streamingThread = new Thread(() -> {
-            var fps = 24;
+            var fps = 12;
             var sender = new GetImageSender(ClientInstance.tcpClient);
 
             while (true) {
@@ -90,7 +90,7 @@ public class StreamingGUI extends javax.swing.JPanel {
                     Thread.sleep(1000 / fps);
                 } catch (InterruptedException e) {
 //                    throw new RuntimeException(e);
-                    e.printStackTrace();
+//                    e.printStackTrace();
                     System.out.println("Streaming is interrupted");
 
                 }

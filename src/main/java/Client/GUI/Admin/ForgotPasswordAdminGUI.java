@@ -53,6 +53,7 @@ public class ForgotPasswordAdminGUI extends javax.swing.JFrame {
         if (request.result.toString().equals("SUCCESS")) {
             this.setVisible(false);
             GlobalVariable.LoginAdminGUI.setVisible(true);
+            JOptionPane.showMessageDialog(GlobalVariable.LoginAdminGUI, "Reset password success ");
         } else {
             this.labelMessage.setText(request.result.toString());
         }
@@ -105,7 +106,7 @@ public class ForgotPasswordAdminGUI extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         inpConfirmPassword = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnReset = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         wrapperRightPanel = new javax.swing.JPanel();
@@ -179,10 +180,15 @@ public class ForgotPasswordAdminGUI extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel10.setText("Confirm new password");
 
-        jButton1.setBackground(new java.awt.Color(46, 79, 79));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Reset");
+        btnReset.setBackground(new java.awt.Color(46, 79, 79));
+        btnReset.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnReset.setForeground(new java.awt.Color(255, 255, 255));
+        btnReset.setText("Reset");
+        btnReset.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnResetMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -191,7 +197,7 @@ public class ForgotPasswordAdminGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnReset, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
                     .addComponent(labelMessage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(inpPassword)
@@ -225,7 +231,7 @@ public class ForgotPasswordAdminGUI extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(labelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnReset, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(147, 147, 147))
         );
 
@@ -363,6 +369,11 @@ public class ForgotPasswordAdminGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_inpConfirmPasswordKeyPressed
 
+    private void btnResetMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnResetMouseClicked
+        // TODO add your handling code here:
+        sendRequest();
+    }//GEN-LAST:event_btnResetMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -400,11 +411,11 @@ public class ForgotPasswordAdminGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnReset;
     private javax.swing.JLabel img;
     private javax.swing.JTextField inpConfirmPassword;
     private javax.swing.JTextField inpOTP;
     private javax.swing.JTextField inpPassword;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel4;

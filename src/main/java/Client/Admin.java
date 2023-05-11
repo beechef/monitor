@@ -144,28 +144,30 @@ public class Admin {
                         System.out.println("Key: " + info.key);
                         System.out.println("Value: " + info.value);
 
-                        switch (info.key) {
-                            case GetHardwareInfoReceiver.HardwareInfoDisk.DISK_NAME -> {
-                                DiskName = info.value;
-                            }
-                            case GetHardwareInfoReceiver.HardwareInfoDisk.DISK_TOTAL_SIZE -> {
+                        if (info.key.equals("DiskName")) {
+                            DiskName = info.value;
+                        } else {
+                            if (info.key.equals("DiskTotalSize")) {
                                 DiskTotalSize = info.value;
-                            }
-                            case GetHardwareInfoReceiver.HardwareInfoDisk.DISK_USED_SIZE -> {
-                                DiskUsedSize = info.value;
-                            }
-                            case GetHardwareInfoReceiver.HardwareInfoDisk.DISK_AVAILABLE_SIZE -> {
-                                DiskAvailableSize = info.value;
-                            }
-                            case GetHardwareInfoReceiver.HardwareInfoDisk.SPACE -> {
-                                Space = info.value;
-                                DiskDTO x = new DiskDTO(DiskName, DiskTotalSize, DiskUsedSize, DiskAvailableSize, Space);
-                                GlobalVariable.hardwareData.Disks.add(x);
-                                DiskName = null;
-                                DiskTotalSize = null;
-                                DiskUsedSize = null;
-                                DiskAvailableSize = null;
-                                Space = null;
+                            } else {
+                                if (info.key.equals("DiskUsedSize")) {
+                                    DiskUsedSize = info.value;
+                                } else {
+                                    if (info.key.equals("DiskAvailableSize")) {
+                                        DiskAvailableSize = info.value;
+                                    } else {
+                                        if (info.key.equals("Space")) {
+                                            Space = info.value;
+                                            DiskDTO x = new DiskDTO(DiskName, DiskTotalSize, DiskUsedSize, DiskAvailableSize, Space);
+                                            GlobalVariable.hardwareData.Disks.add(x);
+                                            DiskName = null;
+                                            DiskTotalSize = null;
+                                            DiskUsedSize = null;
+                                            DiskAvailableSize = null;
+                                            Space = null;
+                                        }
+                                    }
+                                }
                             }
                         }
 
@@ -173,108 +175,127 @@ public class Admin {
 
                 }
             }
-
             //
             GlobalVariable.hardware.renderContent();
-        }));
+        }
+        ));
 
-        EventDispatcher.startListening(new GetProcessesResultReceiver(data -> {
-            GlobalVariable.processList.removeAll(GlobalVariable.processList);
-            for (var process : data.processes) {
-                GlobalVariable.processList.add(new ProcessDTO(process.name, process.id, process.path));
-            }
-            GlobalVariable.process.renderProcess(GlobalVariable.processList);
-        }));
-
-        EventDispatcher.startListening(new ChangeUserNameResultReceiver(data -> {
-            System.out.println("Change user name result:");
-            System.out.println("UUID: " + data.uuid);
-            System.out.println("Before name: " + data.beforeName);
-            System.out.println("After name: " + data.afterName);
-            System.out.println();
-            GlobalVariable.listClient.changedName(data.uuid, data.afterName);
-        }));
-
-        EventDispatcher.startListening(new ProcessActionResultReceiver(data -> {
-            JOptionPane.showMessageDialog(GlobalVariable.main, "Endtask " + data.processId + " " + data.result + "  " + data.message);
-
-            GlobalVariable.main.sendRequestGetAllProcess();
-
-            System.out.println("Process action result:");
-            System.out.println("Process ID: " + data.processId);
-            System.out.println("Action: " + data.action);
-            System.out.println("Result: " + data.result);
-            System.out.println("Message: " + data.message);
-            System.out.println();
-        }));
-
-        EventDispatcher.startListening(new LogOutUserReceiver(data -> {
-            System.out.println("Log out user result:");
-            System.out.println("UUID: " + data.deviceId);
-            System.out.println();
-
-            GlobalVariable.listClient.handleUerLogout(data.deviceId);
-
-        }));
-
-        EventDispatcher.startListening(new ForgetPasswordResultReceiver(data -> {
-            System.out.println("Forget password result:");
-            System.out.println("Email: " + data.email);
-            System.out.println("Result: " + data.result);
-            System.out.println();
-        }));
-
-        EventDispatcher.startListening(new ChangeForgetPasswordResultReceiver(data -> {
-            System.out.println("Change forget password result:");
-            System.out.println("Result: " + data.result);
-            System.out.println();
-        }));
-
-        EventDispatcher.startListening(new ChangeKeyLogConfigResultReceiver(data -> {
-            JOptionPane.showMessageDialog(GlobalVariable.main, "Changed keylog config");
-
-            GlobalVariable.selectedClientInfor.setIsWriteLog(data.isWriteLog);
-            GlobalVariable.selectedClientInfor.setWriteLogInterval(data.writeLogInterval);
-            
-            GlobalVariable.clientList.forEach(e->{
-                if(e.getID()==data.uuid){
-                    e.setIsWriteLog(data.isWriteLog);
-                    e.setWriteLogInterval(data.writeLogInterval);
+        EventDispatcher.startListening(
+                new GetProcessesResultReceiver(data -> {
+                    GlobalVariable.processList.removeAll(GlobalVariable.processList);
+                    for (var process : data.processes) {
+                        GlobalVariable.processList.add(new ProcessDTO(process.name, process.id, process.path));
+                    }
+                    GlobalVariable.process.renderProcess(GlobalVariable.processList);
                 }
-            });
-            
-            GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
+                ));
 
-            System.out.println("Change KeyLog config result:");
-            System.out.println("Result: " + data.uuid);
-            System.out.println("Write Log: " + data.isWriteLog);
-            System.out.println("Interval: " + data.writeLogInterval);
-            System.out.println();
-        }));
+        EventDispatcher.startListening(
+                new ChangeUserNameResultReceiver(data -> {
+                    System.out.println("Change user name result:");
+                    System.out.println("UUID: " + data.uuid);
+                    System.out.println("Before name: " + data.beforeName);
+                    System.out.println("After name: " + data.afterName);
+                    System.out.println();
+                    GlobalVariable.listClient.changedName(data.uuid, data.afterName);
+                }
+                ));
 
-        EventDispatcher.startListening(new GetLogResultReceiver(data -> {
-            System.out.println("Get log result:");
-            System.out.println("Result: " + data.log);
-            System.out.println("Is end: " + data.isEnd);
-            System.out.println();
-            GlobalVariable.others.renderKeylogReciver(data.log);
-        }));
+        EventDispatcher.startListening(
+                new ProcessActionResultReceiver(data -> {
+                    JOptionPane.showMessageDialog(GlobalVariable.main, "Endtask " + data.processId + " " + data.result + "  " + data.message);
 
-        EventDispatcher.startListening(new UserActionResultReceiver((data -> {
-            System.out.println("User action result:");
-            System.out.println("Action: " + data.action);
-            System.out.println("Result: " + data.result);
-            System.out.println("Message: " + data.message);
-            System.out.println();
-        })));
+                    GlobalVariable.main.sendRequestGetAllProcess();
+
+                    System.out.println("Process action result:");
+                    System.out.println("Process ID: " + data.processId);
+                    System.out.println("Action: " + data.action);
+                    System.out.println("Result: " + data.result);
+                    System.out.println("Message: " + data.message);
+                    System.out.println();
+                }
+                ));
+
+        EventDispatcher.startListening(
+                new LogOutUserReceiver(data -> {
+                    System.out.println("Log out user result:");
+                    System.out.println("UUID: " + data.deviceId);
+                    System.out.println();
+
+                    GlobalVariable.listClient.handleUerLogout(data.deviceId);
+
+                }
+                ));
+
+        EventDispatcher.startListening(
+                new ForgetPasswordResultReceiver(data -> {
+                    System.out.println("Forget password result:");
+                    System.out.println("Email: " + data.email);
+                    System.out.println("Result: " + data.result);
+                    System.out.println();
+                }
+                ));
+
+        EventDispatcher.startListening(
+                new ChangeForgetPasswordResultReceiver(data -> {
+                    System.out.println("Change forget password result:");
+                    System.out.println("Result: " + data.result);
+                    System.out.println();
+                }
+                ));
+
+        EventDispatcher.startListening(
+                new ChangeKeyLogConfigResultReceiver(data -> {
+                    JOptionPane.showMessageDialog(GlobalVariable.main, "Changed keylog config");
+
+                    GlobalVariable.selectedClientInfor.setIsWriteLog(data.isWriteLog);
+                    GlobalVariable.selectedClientInfor.setWriteLogInterval(data.writeLogInterval);
+
+                    GlobalVariable.clientList.forEach(e -> {
+                        if (e.getID() == data.uuid) {
+                            e.setIsWriteLog(data.isWriteLog);
+                            e.setWriteLogInterval(data.writeLogInterval);
+                        }
+                    });
+
+                    GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
+
+                    System.out.println("Change KeyLog config result:");
+                    System.out.println("Result: " + data.uuid);
+                    System.out.println("Write Log: " + data.isWriteLog);
+                    System.out.println("Interval: " + data.writeLogInterval);
+                    System.out.println();
+                }
+                ));
+
+        EventDispatcher.startListening(
+                new GetLogResultReceiver(data -> {
+                    System.out.println("Get log result:");
+                    System.out.println("Result: " + data.log);
+                    System.out.println("Is end: " + data.isEnd);
+                    System.out.println();
+                    GlobalVariable.others.renderKeylogReciver(data.log);
+                }
+                ));
+
+        EventDispatcher.startListening(
+                new UserActionResultReceiver((data -> {
+                    System.out.println("User action result:");
+                    System.out.println("Action: " + data.action);
+                    System.out.println("Result: " + data.result);
+                    System.out.println("Message: " + data.message);
+                    System.out.println();
+                })));
 
         var shutdownThread = new Thread(() -> {
             var sender = new LogOutAdminSender(tcpClient);
             sender.send(null, new LogOutAdminRequest(GlobalVariable.tokenAdmin));
         });
 
-        Runtime.getRuntime().addShutdownHook(shutdownThread);
-        Thread.currentThread().join();
+        Runtime.getRuntime()
+                .addShutdownHook(shutdownThread);
+        Thread.currentThread()
+                .join();
     }
 
     private static final String SERVER_INFO_FILE = "admin_server_info.dat";

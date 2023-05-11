@@ -104,6 +104,7 @@ public class RegisterGUI extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         inpConfirmPassword = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
+        backToSign = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         wrapperRightPanel = new javax.swing.JPanel();
@@ -184,6 +185,15 @@ public class RegisterGUI extends javax.swing.JFrame {
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel10.setText("Confirm password");
 
+        backToSign.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        backToSign.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        backToSign.setText("Have a account? Sign in.");
+        backToSign.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                backToSignMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -191,6 +201,7 @@ public class RegisterGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(backToSign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
                     .addComponent(labelMessage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSignUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -226,7 +237,9 @@ public class RegisterGUI extends javax.swing.JFrame {
                 .addComponent(labelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
                 .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(119, 119, 119))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(backToSign)
+                .addGap(91, 91, 91))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -247,7 +260,7 @@ public class RegisterGUI extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createSequentialGroup()
                     .addGap(49, 49, 49)
                     .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(7, Short.MAX_VALUE)))
+                    .addContainerGap(3, Short.MAX_VALUE)))
         );
 
         jPanel2.add(jPanel3, java.awt.BorderLayout.LINE_START);
@@ -359,6 +372,12 @@ public class RegisterGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_inpPasswordKeyPressed
 
+    private void backToSignMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backToSignMouseClicked
+        // TODO add your handling code here:
+        this.setVisible(false);
+        GlobalVariable.LoginAdminGUI.setVisible(true);
+    }//GEN-LAST:event_backToSignMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -396,6 +415,7 @@ public class RegisterGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel backToSign;
     private javax.swing.JLabel btnSignUp;
     private javax.swing.JLabel img;
     private javax.swing.JTextField inpConfirmPassword;

@@ -6,11 +6,14 @@ package Client.GUI.Component;
 
 import Client.ClientInstance;
 import Client.GUI.Lib.GlobalVariable;
+import Server.EventDispatcher.EventDispatcher;
+import SocketMessageReceiver.CustomServerReceiver.UserActionResultReceiver;
 import SocketMessageReceiver.DataType.ChangeKeyLogConfigRequest;
 import SocketMessageReceiver.DataType.GetLogRequest;
 import SocketMessageReceiver.DataType.UserActionRequestAdminSide;
 import SocketMessageSender.CustomAdminSender.ChangeKeyLogConfigSender;
 import SocketMessageSender.CustomAdminSender.GetLogSender;
+import SocketMessageSender.CustomAdminSender.UserActionSender;
 import java.util.Calendar;
 import java.util.Date;
 import javax.swing.JOptionPane;
@@ -28,7 +31,15 @@ public class OtherGUI extends javax.swing.JPanel {
     public OtherGUI() {
         initComponents();
         renderData();
+        
+//        otherEvent();
     }
+//    private void otherEvent(){
+//        EventDispatcher.startListening(new SocketMessageReceiver.CustomAdminReceiver.UserActionResultReceiver(data->{
+//            
+//        }));
+//    }
+ 
 
     public void renderData() {
         if (GlobalVariable.selectedClient) {
@@ -65,12 +76,12 @@ public class OtherGUI extends javax.swing.JPanel {
             countDay = 365;
         }
         var keyLogSender = new GetLogSender(ClientInstance.tcpClient);
-        
+
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(Calendar.DAY_OF_MONTH, -countDay);
         Date from = cal.getTime();
-        
+
         var to = new Date();
         System.out.println("admin send request get key log");
         System.out.println(from);
@@ -294,11 +305,12 @@ public class OtherGUI extends javax.swing.JPanel {
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         // TODO add your handling code here:
         System.out.println("Request logout user");
-        new UserActionRequestAdminSide(GlobalVariable.selectedClientInfor.getID(), GlobalVariable.tokenAdmin, UserActionRequestAdminSide.Action.LOG_OUT);
+        new UserActionSender(ClientInstance.tcpClient).send(null, new UserActionRequestAdminSide(GlobalVariable.selectedClientInfor.getID(), GlobalVariable.tokenAdmin, UserActionRequestAdminSide.Action.LOG_OUT));
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void btnShutdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnShutdownActionPerformed
         // TODO add your handling code here:
+        new UserActionSender(ClientInstance.tcpClient).send(null, new UserActionRequestAdminSide(GlobalVariable.selectedClientInfor.getID(), GlobalVariable.tokenAdmin, UserActionRequestAdminSide.Action.SHUTDOWN));
     }//GEN-LAST:event_btnShutdownActionPerformed
 
     private void btnSaveConfigLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveConfigLogActionPerformed

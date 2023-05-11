@@ -37,7 +37,7 @@ public class RowDisk extends javax.swing.JPanel {
 
         float DiskAvailableSize = Float.parseFloat(this.disk.getDiskAvailableSize().split(" ")[0]);
         float roundedDiskAvailableSize = (float) Math.round(DiskAvailableSize * 100) / 100;
-        this.DiskTotalSize.setText(roundedDiskAvailableSize + " GB");
+        this.DiskAvailableSize.setText(roundedDiskAvailableSize + " GB");
 
         float availableMemoryPercent = (DiskUsedSize / DiskTotalSize) * 100;
         float rounded = (float) Math.round(availableMemoryPercent * 100) / 100;

@@ -90,7 +90,8 @@ public class ForgotPasswordAdminIpEmailGUI extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
         labelMessage = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnGetOTP = new javax.swing.JButton();
+        backToSign = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         wrapperRightPanel = new javax.swing.JPanel();
@@ -134,9 +135,23 @@ public class ForgotPasswordAdminIpEmailGUI extends javax.swing.JFrame {
 
         jLabel9.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 0, 0, 0, new java.awt.Color(46, 79, 79)));
 
-        jButton1.setBackground(new java.awt.Color(46, 79, 79));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("GET OTP");
+        btnGetOTP.setBackground(new java.awt.Color(46, 79, 79));
+        btnGetOTP.setForeground(new java.awt.Color(255, 255, 255));
+        btnGetOTP.setText("GET OTP");
+        btnGetOTP.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnGetOTPMouseClicked(evt);
+            }
+        });
+
+        backToSign.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        backToSign.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        backToSign.setText("Back to sign in.");
+        backToSign.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                backToSignMouseClicked(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -145,10 +160,11 @@ public class ForgotPasswordAdminIpEmailGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
+                    .addComponent(btnGetOTP, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
-                        .addGap(81, 81, 81)
+                        .addComponent(backToSign, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labelMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(inpEmail)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -167,9 +183,11 @@ public class ForgotPasswordAdminIpEmailGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(inpEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnGetOTP, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(labelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(backToSign))
                 .addGap(383, 383, 383))
         );
 
@@ -284,6 +302,17 @@ public class ForgotPasswordAdminIpEmailGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_inpEmailKeyPressed
 
+    private void backToSignMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backToSignMouseClicked
+        // TODO add your handling code here:
+        this.setVisible(false);
+        GlobalVariable.LoginAdminGUI.setVisible(true);
+    }//GEN-LAST:event_backToSignMouseClicked
+
+    private void btnGetOTPMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnGetOTPMouseClicked
+        // TODO add your handling code here:
+        sendRequest();
+    }//GEN-LAST:event_btnGetOTPMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -321,9 +350,10 @@ public class ForgotPasswordAdminIpEmailGUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel backToSign;
+    private javax.swing.JButton btnGetOTP;
     private javax.swing.JLabel img;
     private javax.swing.JTextField inpEmail;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel8;

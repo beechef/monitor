@@ -21,6 +21,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 public class TCPServer implements Server {
+
     private static final String LOCAL_HOST = "127.0.0.1";
     private static final int DEFAULT_POOL_SIZE = 3;
     private static final int DEFAULT_MAXIMUM_SIZE = 10;
@@ -46,7 +47,6 @@ public class TCPServer implements Server {
     }
 
     //region Builder
-
     private ThreadPoolExecutor createDefaultExecutor() {
         return new ThreadPoolExecutor(DEFAULT_POOL_SIZE, DEFAULT_MAXIMUM_SIZE, DEFAULT_ALIVE_TIME, TimeUnit.SECONDS, new LinkedBlockingQueue<>(), runnable -> {
             Thread thread = new Thread(runnable);
@@ -82,7 +82,6 @@ public class TCPServer implements Server {
     }
 
     //endregion
-
     private void acceptConnection() {
         _server.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
             @Override
@@ -107,7 +106,9 @@ public class TCPServer implements Server {
 
     private boolean emitMiddleWares(SocketMessage msg) {
         for (MiddlewareSocketMessageEvent middleWare : _middleWares) {
-            if (!middleWare.execute(msg)) return false;
+            if (!middleWare.execute(msg)) {
+                return false;
+            }
         }
 
         return true;
@@ -119,7 +120,9 @@ public class TCPServer implements Server {
 
     private void emitMessage(SocketMessage msg) {
         var canNext = emitMiddleWares(msg);
-        if (canNext) emitEventDispatcher(msg);
+        if (canNext) {
+            emitEventDispatcher(msg);
+        }
     }
 
     private void readData(AsynchronousSocketChannel client, ByteBuffer buffer) {
@@ -192,7 +195,6 @@ public class TCPServer implements Server {
         _onStopEvents.add(event);
     }
 
-
     public void stop() throws IOException, SQLException, ClassNotFoundException {
         _server.close();
 
@@ -207,10 +209,11 @@ public class TCPServer implements Server {
 
     private Queue<ClientBuffer> bufferQueue = new LinkedList<>();
 
-
     @Override
     public void send(Object target, Message msg) {
-        if (!(target instanceof AsynchronousSocketChannel client)) return;
+        if (!(target instanceof AsynchronousSocketChannel client)) {
+            return;
+        }
 
         byte[] msgBytes = msg.toBytes();
         ByteBuffer buffer = _bufferPooling.get();
@@ -240,18 +243,17 @@ public class TCPServer implements Server {
             } else {
                 isSending = false;
             }
+            clientBuffer = null;
             return;
         }
 
         var client = clientBuffer.client;
         var buffer = clientBuffer.buffer;
 
-
         client.write(buffer, null, new CompletionHandler<>() {
             @Override
             public void completed(Integer result, Object attachment) {
                 buffer.clear();
-
                 if (bufferQueue.size() > 0) {
                     send();
                 } else {
@@ -266,7 +268,6 @@ public class TCPServer implements Server {
         });
     }
 
-
     public void onSend(AsynchronousSocketChannel client, Message msg) {
     }
 
@@ -280,6 +281,7 @@ public class TCPServer implements Server {
     }
 
     class ClientBuffer {
+
         public AsynchronousSocketChannel client;
         public ByteBuffer buffer;
 
