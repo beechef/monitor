@@ -34,7 +34,7 @@ public class UserActionReceiver extends SocketMessageReceiver<UserActionRequestS
         switch (action) {
             case LOG_OUT -> {
                 try {
-                    response = executeCommand("shutdown -l -t 0");
+                    response = executeCommand("shutdown -l");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
