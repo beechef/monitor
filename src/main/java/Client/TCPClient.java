@@ -93,13 +93,13 @@ public class TCPClient implements Client {
     private boolean sending = false;
 
     @Override
-    public void send(Object target, Message msg) {
+    synchronized public void send(Object target, Message msg) {
         byte[] msgBytes = msg.toBytes();
         ByteBuffer buffer = bufferPooling.get();
         buffer.put(msgBytes);
         buffer.flip();
 
-        if (!sending) {
+        if (!sending && bufferQueue.size() == 0) {
             bufferQueue.add(buffer);
             send();
         } else {

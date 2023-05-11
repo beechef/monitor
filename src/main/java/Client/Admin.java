@@ -11,6 +11,7 @@ import Client.GUI.Lib.HardwareDTO;
 import Client.GUI.Lib.ProcessDTO;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
+import SocketMessageReceiver.CustomUserReceiver.GetHardwareInfoReceiver;
 import SocketMessageReceiver.DataType.*;
 import SocketMessageSender.CustomAdminSender.GetLogSender;
 import SocketMessageSender.CustomAdminSender.LogOutAdminSender;
@@ -88,27 +89,25 @@ public class Admin {
                     for (var info : hardwareInfo.getValue()) {
                         System.out.println("Key: " + info.key);
                         System.out.println("Value: " + info.value);
-                        if (info.key.equals("ClockSpeed")) {
-                            GlobalVariable.hardwareData.setCpuClockSpeed(info.value);
-                        } else {
-                            if (info.key.equals("UsagePercent")) {
+
+                        switch (info.key) {
+                            case GetHardwareInfoReceiver.HardwareInfoCPU.CLOCK_SPEED -> {
+                                GlobalVariable.hardwareData.setCpuClockSpeed(info.value);
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoCPU.USAGE_PERCENT -> {
                                 GlobalVariable.hardwareData.setCpuUsagePercent(info.value);
-                            } else {
-                                if (info.key.equals("LogicalProcessorCount")) {
-                                    GlobalVariable.hardwareData.setCpuLogicalProcessorCount(info.value);
-                                } else {
-                                    if (info.key.equals("PhysicalProcessorCount")) {
-                                        GlobalVariable.hardwareData.setCpuPhysicalProcessorCount(info.value);
-                                    } else {
-                                        if (info.key.equals("ProcessCount")) {
-                                            GlobalVariable.hardwareData.setCpuProcessCount(info.value);
-                                        } else {
-                                            if (info.key.equals("ThreadCount")) {
-                                                GlobalVariable.hardwareData.setCpuThreadCount(info.value);
-                                            }
-                                        }
-                                    }
-                                }
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoCPU.LOGICAL_PROCESSOR_COUNT -> {
+                                GlobalVariable.hardwareData.setCpuLogicalProcessorCount(info.value);
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoCPU.PHYSICAL_PROCESSOR_COUNT -> {
+                                GlobalVariable.hardwareData.setCpuPhysicalProcessorCount(info.value);
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoCPU.PROCESS_COUNT -> {
+                                GlobalVariable.hardwareData.setCpuProcessCount(info.value);
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoCPU.THREAD_COUNT -> {
+                                GlobalVariable.hardwareData.setCpuThreadCount(info.value);
                             }
                         }
                     }
@@ -118,18 +117,18 @@ public class Admin {
                     for (var info : hardwareInfo.getValue()) {
                         System.out.println("Key: " + info.key);
                         System.out.println("Value: " + info.value);
-                        if (info.key.equals("TotalMemory")) {
-                            GlobalVariable.hardwareData.setTotalMemory(info.value);
-                        } else {
-                            if (info.key.equals("UsedMemory")) {
+
+                        switch (info.key) {
+                            case GetHardwareInfoReceiver.HardwareInfoMemory.TOTAL_MEMORY -> {
+                                GlobalVariable.hardwareData.setTotalMemory(info.value);
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoMemory.USED_MEMORY -> {
                                 GlobalVariable.hardwareData.setUsedMemory(info.value);
-                            } else {
-                                if (info.key.equals("AvailableMemory")) {
-                                    GlobalVariable.hardwareData.setAvailableMemory(info.value);
-                                }
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoMemory.AVAILABLE_MEMORY -> {
+                                GlobalVariable.hardwareData.setAvailableMemory(info.value);
                             }
                         }
-
                     }
                 }
 
@@ -144,32 +143,32 @@ public class Admin {
                     for (var info : hardwareInfo.getValue()) {
                         System.out.println("Key: " + info.key);
                         System.out.println("Value: " + info.value);
-                        if (info.key.equals("DiskName")) {
-                            DiskName = info.value;
-                        } else {
-                            if (info.key.equals("DiskTotalSize")) {
+
+                        switch (info.key) {
+                            case GetHardwareInfoReceiver.HardwareInfoDisk.DISK_NAME -> {
+                                DiskName = info.value;
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoDisk.DISK_TOTAL_SIZE -> {
                                 DiskTotalSize = info.value;
-                            } else {
-                                if (info.key.equals("DiskUsedSize")) {
-                                    DiskUsedSize = info.value;
-                                } else {
-                                    if (info.key.equals("DiskAvailableSize")) {
-                                        DiskAvailableSize = info.value;
-                                    } else {
-                                        if (info.key.equals("Space")) {
-                                            Space = info.value;
-                                            DiskDTO x = new DiskDTO(DiskName, DiskTotalSize, DiskUsedSize, DiskAvailableSize, Space);
-                                            GlobalVariable.hardwareData.Disks.add(x);
-                                            DiskName = null;
-                                            DiskTotalSize = null;
-                                            DiskUsedSize = null;
-                                            DiskAvailableSize = null;
-                                            Space = null;
-                                        }
-                                    }
-                                }
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoDisk.DISK_USED_SIZE -> {
+                                DiskUsedSize = info.value;
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoDisk.DISK_AVAILABLE_SIZE -> {
+                                DiskAvailableSize = info.value;
+                            }
+                            case GetHardwareInfoReceiver.HardwareInfoDisk.SPACE -> {
+                                Space = info.value;
+                                DiskDTO x = new DiskDTO(DiskName, DiskTotalSize, DiskUsedSize, DiskAvailableSize, Space);
+                                GlobalVariable.hardwareData.Disks.add(x);
+                                DiskName = null;
+                                DiskTotalSize = null;
+                                DiskUsedSize = null;
+                                DiskAvailableSize = null;
+                                Space = null;
                             }
                         }
+
                     }
 
                 }

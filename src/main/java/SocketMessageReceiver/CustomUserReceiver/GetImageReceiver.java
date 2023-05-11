@@ -34,7 +34,7 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
     }
 
     @Override
-    protected void onExecute(Sender server, SocketMessageGeneric<GetImageRequestServerSide> socketMsg) {
+    synchronized protected void onExecute(Sender server, SocketMessageGeneric<GetImageRequestServerSide> socketMsg) {
         var adminId = socketMsg.msg.adminId;
         var adminUuid = socketMsg.msg.adminUuid;
 
