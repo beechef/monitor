@@ -196,9 +196,7 @@ public class Admin {
             GlobalVariable.listClient.changedName(data.uuid, data.afterName);
         }));
 
-
         EventDispatcher.startListening(new ProcessActionResultReceiver(data -> {
-
             JOptionPane.showMessageDialog(GlobalVariable.main, "Endtask " + data.processId + " " + data.result + "  " + data.message);
 
             GlobalVariable.main.sendRequestGetAllProcess();
@@ -256,23 +254,22 @@ public class Admin {
             System.out.println();
         })));
 
-
         var shutdownThread = new Thread(() -> {
             var sender = new LogOutAdminSender(tcpClient);
             sender.send(null, new LogOutAdminRequest(GlobalVariable.tokenAdmin));
         });
 
-
         Runtime.getRuntime().addShutdownHook(shutdownThread);
         Thread.currentThread().join();
     }
-
 
     private static final String SERVER_INFO_FILE = "admin_server_info.dat";
 
     private static ServerInfo getServerInfo() {
         File file = new File("./" + SERVER_INFO_FILE);
-        if (!file.exists()) return null;
+        if (!file.exists()) {
+            return null;
+        }
 
         try (var reader = new BufferedReader(new FileReader(file))) {
             var serverIp = reader.readLine();

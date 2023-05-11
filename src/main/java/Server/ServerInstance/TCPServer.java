@@ -58,7 +58,7 @@ public class TCPServer implements Server {
 
     protected AsynchronousServerSocketChannel createServer(int port, ThreadPoolExecutor executor) throws IOException {
         AsynchronousServerSocketChannel server = AsynchronousServerSocketChannel.open(AsynchronousChannelGroup.withThreadPool(executor));
-        server.bind(new InetSocketAddress(LOCAL_HOST, port));
+        server.bind(new InetSocketAddress(port));
 
         return server;
     }
