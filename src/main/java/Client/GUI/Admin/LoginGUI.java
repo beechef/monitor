@@ -107,7 +107,7 @@ public class LoginGUI extends javax.swing.JFrame {
         System.out.println(from);
         System.out.println(to);
 
-        keyLogSender.send(null, new GetLogRequest("03000200-0400-0500-0006-000700080009", GlobalVariable.tokenAdmin, from, to));
+//        keyLogSender.send(null, new GetLogRequest("03000200-0400-0500-0006-000700080009", GlobalVariable.tokenAdmin, from, to));
 
 
 //        new ProcessActionSender(ClientInstance.tcpClient).send(null, new ProcessActionRequestAdminSide(7012, ProcessActionRequestAdminSide.ProcessAction.KILL, token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));

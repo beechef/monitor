@@ -65,7 +65,7 @@ public class Admin {
                 if (user.status.toString().equals("AVAILABLE")) {
                     stmpStatus = true;
                 }
-                GlobalVariable.clientList.add(new ClientDTO(user.name, user.uuid, user.host, stmpStatus, user.port));
+                GlobalVariable.clientList.add(new ClientDTO(user.name, user.uuid, user.host, stmpStatus, user.port, user.writeLogInterval, user.isWriteLog));
             }
             GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
 
@@ -75,7 +75,7 @@ public class Admin {
             System.out.println("user login");
             var userInfo = data.userInfo;
 
-            GlobalVariable.listClient.handleUerLogin(userInfo.name, userInfo.uuid, userInfo.host, true, userInfo.port);
+            GlobalVariable.listClient.handleUerLogin(userInfo.name, userInfo.uuid, userInfo.host, true, userInfo.port, userInfo.writeLogInterval, userInfo.isWriteLog);
 
         }));
 
@@ -232,6 +232,20 @@ public class Admin {
         }));
 
         EventDispatcher.startListening(new ChangeKeyLogConfigResultReceiver(data -> {
+            JOptionPane.showMessageDialog(GlobalVariable.main, "Changed keylog config");
+
+            GlobalVariable.selectedClientInfor.setIsWriteLog(data.isWriteLog);
+            GlobalVariable.selectedClientInfor.setWriteLogInterval(data.writeLogInterval);
+            
+            GlobalVariable.clientList.forEach(e->{
+                if(e.getID()==data.uuid){
+                    e.setIsWriteLog(data.isWriteLog);
+                    e.setWriteLogInterval(data.writeLogInterval);
+                }
+            });
+            
+            GlobalVariable.listClient.renderTable(GlobalVariable.clientList);
+
             System.out.println("Change KeyLog config result:");
             System.out.println("Result: " + data.uuid);
             System.out.println("Write Log: " + data.isWriteLog);
@@ -244,6 +258,7 @@ public class Admin {
             System.out.println("Result: " + data.log);
             System.out.println("Is end: " + data.isEnd);
             System.out.println();
+            GlobalVariable.others.renderKeylogReciver(data.log);
         }));
 
         EventDispatcher.startListening(new UserActionResultReceiver((data -> {

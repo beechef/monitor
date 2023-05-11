@@ -138,7 +138,7 @@ public class ListClientGUI extends javax.swing.JPanel {
         }
     }
 
-    public void handleUerLogin(String name, String uuid, String host, boolean stmpStatus, int port) {
+    public void handleUerLogin(String name, String uuid, String host, boolean stmpStatus, int port,long writeLogInterval, boolean isWriteLog) {
         System.out.println(GlobalVariable.clientList.toString());
         boolean findUser = false;
         for (int i = 0; i < GlobalVariable.clientList.size(); i++) {
@@ -153,7 +153,7 @@ public class ListClientGUI extends javax.swing.JPanel {
         if (findUser) {
             renderTable(GlobalVariable.clientList);
         } else {
-            GlobalVariable.clientList.add(new ClientDTO(name, uuid, host, stmpStatus, port));
+            GlobalVariable.clientList.add(new ClientDTO(name, uuid, host, stmpStatus, port,writeLogInterval,isWriteLog));
             renderTable(GlobalVariable.clientList);
         }
     }

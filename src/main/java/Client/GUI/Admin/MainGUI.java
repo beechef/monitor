@@ -626,7 +626,7 @@ public class MainGUI extends javax.swing.JFrame {
                             GlobalVariable.itemList.get(i).state = true;
                             //handel funcion
                             if (GlobalVariable.itemList.get(i).compContent != null) {
-                                
+
                                 //streaming 
                                 if (GlobalVariable.itemList.get(i).compContent == GlobalVariable.streaming) {
                                     System.out.println("Streaming click");
@@ -638,6 +638,12 @@ public class MainGUI extends javax.swing.JFrame {
                                     }
                                 }
                                 
+                                //other
+                                if (GlobalVariable.itemList.get(i).compContent == GlobalVariable.others) {
+                                    System.out.println("render other gui");
+                                    GlobalVariable.others.renderData();
+                                } 
+
                                 GlobalVariable.itemList.get(i).compContent.setVisible(true);
                                 GlobalVariable.main.validate();
                                 GlobalVariable.main.repaint();

@@ -14,17 +14,46 @@ public class ClientDTO {
     private String IpAdress;
     private boolean status;
     private int port;
+    private boolean isWriteLog=false;
+    private  long writeLogInterval;
 
     public ClientDTO() {
     }
 
-    public ClientDTO(String name, String uuid, String IpAdress, boolean status, int port) {
+    public ClientDTO(String name, String uuid, String IpAdress, boolean status, int port, long writeLogInterval,boolean isWriteLog) {
         this.name = name;
         this.uuid = uuid;
         this.IpAdress = IpAdress;
         this.status = status;
-        this.port=port;
+        this.port = port;
+        this.writeLogInterval = writeLogInterval;
+        this.isWriteLog=isWriteLog;
     }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public long getWriteLogInterval() {
+        return writeLogInterval;
+    }
+
+    public void setIsWriteLog(boolean isWriteLog) {
+        this.isWriteLog = isWriteLog;
+    }
+    public boolean getIsWriteLog() {
+        return isWriteLog;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public void setWriteLogInterval(long writeLogInterval) {
+        this.writeLogInterval = writeLogInterval;
+    }
+
+    
 
     public void setName(String name) {
         this.name = name;
