@@ -115,7 +115,7 @@
                                   <Component id="inpEmail" alignment="1" max="32767" attributes="0"/>
                                   <Component id="jLabel4" alignment="1" max="32767" attributes="0"/>
                                   <Component id="jLabel9" alignment="1" max="32767" attributes="0"/>
-                                  <Component id="jLabel3" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="forgetPassword" alignment="1" max="32767" attributes="0"/>
                                   <Component id="jLabel2" alignment="0" pref="317" max="32767" attributes="0"/>
                                   <Component id="lableMessage" alignment="0" max="32767" attributes="0"/>
                               </Group>
@@ -136,9 +136,9 @@
                               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="inpEmail" min="-2" pref="40" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Component id="forgetPassword" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                               <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="inpPassword" min="-2" pref="40" max="-2" attributes="0"/>
@@ -184,7 +184,7 @@
                         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="inpEmailKeyPressed"/>
                       </Events>
                     </Component>
-                    <Component class="javax.swing.JLabel" name="jLabel3">
+                    <Component class="javax.swing.JLabel" name="forgetPassword">
                       <Properties>
                         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
                           <Font name="Segoe UI" size="16" style="0"/>
@@ -192,6 +192,9 @@
                         <Property name="horizontalAlignment" type="int" value="4"/>
                         <Property name="text" type="java.lang.String" value="Forgotpassword?"/>
                       </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="forgetPasswordMouseClicked"/>
+                      </Events>
                     </Component>
                     <Component class="javax.swing.JLabel" name="jLabel4">
                       <Properties>

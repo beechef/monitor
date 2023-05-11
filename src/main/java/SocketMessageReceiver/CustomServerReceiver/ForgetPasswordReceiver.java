@@ -18,11 +18,14 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.SimpleFormatter;
 
 public class ForgetPasswordReceiver extends SocketMessageReceiver<ForgetPasswordRequest> {
+
     private static final String ADMIN_TABLE = "admin";
     private static final String EMAIL_FIELD = "email";
 
@@ -44,11 +47,10 @@ public class ForgetPasswordReceiver extends SocketMessageReceiver<ForgetPassword
 
         session = Session.getInstance(prop,
                 new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(email, password);
-                    }
-                });
-
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(email, password);
+            }
+        });
 
     }
 
@@ -82,7 +84,7 @@ public class ForgetPasswordReceiver extends SocketMessageReceiver<ForgetPassword
     private void sendEmail(String email, String otp) {
 
         try {
-
+                
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(ForgetPasswordReceiver.email));
             message.setRecipients(
@@ -90,8 +92,10 @@ public class ForgetPasswordReceiver extends SocketMessageReceiver<ForgetPassword
                     InternetAddress.parse(email)
             );
             message.setSubject("Recovery OTP");
-            message.setText("Your OTP is " + otp);
-            message.setText("Expire time is " + getExpireTime());
+            var expiredTime = getExpireTime();
+            var format = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
+            
+            message.setText("Your OTP is " + otp + "\nExpire time is " + format.format(expiredTime));
 
             Transport.send(message);
         } catch (MessagingException e) {
@@ -103,7 +107,6 @@ public class ForgetPasswordReceiver extends SocketMessageReceiver<ForgetPassword
         var calendar = Calendar.getInstance();
         calendar.setTime(new Date());
         calendar.add(Calendar.SECOND, ALIVE_TIME);
-
 
         return calendar.getTime();
     }

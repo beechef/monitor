@@ -4,13 +4,16 @@ import Client.ClientInstance;
 import Client.GUI.Lib.GlobalFunction;
 import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.RoundBorder;
+import Key.JWTKey;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.LoginResultReceiver;
+import SocketMessageReceiver.CustomServerReceiver.LoginReceiver;
 import SocketMessageReceiver.DataType.*;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
 import SocketMessageReceiver.DataType.ProcessAction.ProcessActionRequestAdminSide;
 import SocketMessageSender.CustomAdminSender.*;
 import Utilities.Utilities;
+import io.jsonwebtoken.Jwts;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -79,6 +82,8 @@ public class LoginGUI extends javax.swing.JFrame {
             GlobalVariable.LoginAdminGUI.setVisible(false);
             GlobalVariable.main = new MainGUI();
             GlobalVariable.main.setVisible(true);
+
+
         } catch (IOException ex) {
             Logger.getLogger(LoginGUI.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -86,17 +91,32 @@ public class LoginGUI extends javax.swing.JFrame {
         var token = request.token;
         GlobalVariable.tokenAdmin = request.token;
 
-//        new GetUserSender(ClientInstance.tcpClient).send(null, new GetUserRequest(GetUserRequest.Type.GET_ALL, token));
+        var jwt = Jwts.parserBuilder().setSigningKey(JWTKey.getKey()).build().parseClaimsJws(GlobalVariable.tokenAdmin);
+        GlobalVariable.idAdmin = jwt.getBody().get(LoginReceiver.ID_FIELD, Integer.class).toString();
+
+        GlobalVariable.main.setIdAdmin();
+//        var adminUuid = jwt.getBody().get(LoginReceiver.UUID_FIELD, String.class);
+
+        new GetUserSender(ClientInstance.tcpClient).send(null, new GetUserRequest(GetUserRequest.Type.GET_ALL, token));
 
         new LoginAdminUdpSender(ClientInstance.udpClient).send(null, new LoginAdminUdpRequest(token));
+
+        var keyLogSender = new GetLogSender(ClientInstance.tcpClient);
+        var from = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+        var to = new Date();
+        System.out.println(from);
+        System.out.println(to);
+
+        keyLogSender.send(null, new GetLogRequest("03000200-0400-0500-0006-000700080009", GlobalVariable.tokenAdmin, from, to));
+
 
 //        new ProcessActionSender(ClientInstance.tcpClient).send(null, new ProcessActionRequestAdminSide(7012, ProcessActionRequestAdminSide.ProcessAction.KILL, token, "029B5DFC-C0AA-127C-26F5-50EBF6780955"));
 
 //        new ChangeKeyLogConfigSender(ClientInstance.tcpClient).send(null, new ChangeKeyLogConfigRequest("029B5DFC-C0AA-127C-26F5-50EBF6780955", token, true, 60 * 60));
 
-//        new GetLogSender(ClientInstance.tcpClient).send(null, new GetLogRequest("029B5DFC-C0AA-127C-26F5-50EBF6780955", token, new Date(new Date().getTime() - 1000 * 60 * 60 * 24), new Date()));
+//        new GetLogSender(ClientInstance.tcpClient).send(null, new GetLogRequest("03000200-0400-0500-0006-000700080009", GlobalVariable.tokenAdmin, new Date(new Date().getTime() - 1000 * 60 * 60 * 24), new Date()));
 
-        new UserActionSender(ClientInstance.tcpClient).send(null, new UserActionRequestAdminSide("029B5DFC-C0AA-127C-26F5-50EBF6780955", token, UserActionRequestAdminSide.Action.LOG_OUT));
+//        new UserActionSender(ClientInstance.tcpClient).send(null, new UserActionRequestAdminSide("029B5DFC-C0AA-127C-26F5-50EBF6780955", token, UserActionRequestAdminSide.Action.LOG_OUT));
         //        new Thread(() -> {
 //            while (true) {
 //                var sender = new GetImageSender(ClientInstance.tcpClient);
@@ -159,7 +179,7 @@ public class LoginGUI extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         inpEmail = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        forgetPassword = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         inpPassword = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -205,9 +225,14 @@ public class LoginGUI extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel3.setText("Forgotpassword?");
+        forgetPassword.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        forgetPassword.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        forgetPassword.setText("Forgotpassword?");
+        forgetPassword.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                forgetPasswordMouseClicked(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setText("Email");
@@ -273,7 +298,7 @@ public class LoginGUI extends javax.swing.JFrame {
                                         .addComponent(inpEmail)
                                         .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(forgetPassword, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
                                         .addComponent(lableMessage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(53, 53, 53))
@@ -291,9 +316,9 @@ public class LoginGUI extends javax.swing.JFrame {
                                 .addComponent(jLabel4)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(inpEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(forgetPassword)
+                                .addGap(12, 12, 12)
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(inpPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -442,6 +467,12 @@ public class LoginGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_inpPasswordKeyPressed
 
+    private void forgetPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgetPasswordMouseClicked
+        // TODO add your handling code here:
+        GlobalVariable.LoginAdminGUI.setVisible(false);
+        GlobalVariable.ForgotPassEmailGUI.setVisible(true);
+    }//GEN-LAST:event_forgetPasswordMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -480,12 +511,12 @@ public class LoginGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel btnLogin;
+    private javax.swing.JLabel forgetPassword;
     private javax.swing.JLabel img;
     private javax.swing.JTextField inpEmail;
     private javax.swing.JTextField inpPassword;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;

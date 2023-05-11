@@ -19,6 +19,6 @@ public class SocketMessageGeneric<T> {
     }
 
     private T castMessage(byte[] bytes) throws IOException, ClassNotFoundException {
-        return Utilities.castBytes(bytes);
+        return (T) Utilities.castBytes(bytes);
     }
 }

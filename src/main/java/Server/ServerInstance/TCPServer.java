@@ -161,7 +161,7 @@ public class TCPServer implements Server {
 
     private void removeClient(AsynchronousSocketChannel client, ByteBuffer buffer) throws IOException {
         _clients.remove(client);
-        _bufferPooling.returnPool(buffer);
+//        _bufferPooling.returnPool(buffer);
 
         EventDispatcher.emitEvent(EventName.USER_DISCONNECTED, client);
 

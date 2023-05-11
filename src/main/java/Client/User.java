@@ -29,7 +29,7 @@ import java.net.URL;
 
 public class User {
     public static int adminId;
-
+ 
     public static void main(String[] args) throws IOException, InterruptedException {
         try (ServerSocket ignored = new ServerSocket(9999)) {
             var serverInfo = getServerInfo();
@@ -43,7 +43,7 @@ public class User {
 
             var tcpClient = new TCPClient(host, port);
 
-            tcpClient.setBuffer(1024 * 1024);
+            tcpClient.setBuffer(2048 * 1024);
             tcpClient.start();
 
 //            UDPClient udpClient = new UDPClient("localhost", 4446);

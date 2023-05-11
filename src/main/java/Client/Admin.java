@@ -1,5 +1,7 @@
 package Client;
 
+import Client.GUI.Admin.ForgotPasswordAdminGUI;
+import Client.GUI.Admin.ForgotPasswordAdminIpEmailGUI;
 import Client.GUI.Admin.LoginGUI;
 import Client.GUI.Admin.RegisterGUI;
 import Client.GUI.Lib.ClientDTO;
@@ -9,7 +11,11 @@ import Client.GUI.Lib.HardwareDTO;
 import Client.GUI.Lib.ProcessDTO;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
-import SocketMessageReceiver.DataType.ServerInfo;
+import SocketMessageReceiver.DataType.*;
+import SocketMessageSender.CustomAdminSender.GetLogSender;
+import SocketMessageSender.CustomAdminSender.LogOutAdminSender;
+import SocketMessageSender.CustomAdminSender.UserActionSender;
+import SocketMessageSender.CustomUserSender.LogOutUserSender;
 import jdk.jfr.Event;
 
 import java.io.BufferedReader;
@@ -18,6 +24,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 
 public class Admin {
@@ -33,11 +40,11 @@ public class Admin {
         var port = serverInfo.port;
 
         var tcpClient = new TCPClient(host, port);
-        tcpClient.setBuffer(1024 * 1024);
+        tcpClient.setBuffer(2048 * 1024);
         tcpClient.start();
 
         var udpClient = new UDPClient("localhost", 4446);
-        udpClient.setBuffer(1024 * 1024);
+        udpClient.setBuffer(2048 * 1024);
         udpClient.start();
 
         ClientInstance.tcpClient = tcpClient;
@@ -45,6 +52,8 @@ public class Admin {
 
         GlobalVariable.LoginAdminGUI = new LoginGUI();
         GlobalVariable.RegisterAdminGUI = new RegisterGUI();
+        GlobalVariable.ForgotPasswordAdminGUi = new ForgotPasswordAdminGUI();
+        GlobalVariable.ForgotPassEmailGUI = new ForgotPasswordAdminIpEmailGUI();
         GlobalVariable.LoginAdminGUI.setVisible(true);
 
 //        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
@@ -184,35 +193,9 @@ public class Admin {
             System.out.println("Before name: " + data.beforeName);
             System.out.println("After name: " + data.afterName);
             System.out.println();
+            GlobalVariable.listClient.changedName(data.uuid, data.afterName);
         }));
 
-        var bytes = new ArrayList<Byte>();
-
-        EventDispatcher.startListening(new GetImageResultReceiver((data) -> {
-            if (!data.isEnd) {
-                for (var b : data.image) {
-                    bytes.add(b);
-                }
-            } else {
-                var image = new byte[bytes.size()];
-                for (int i = 0; i < bytes.size(); i++) {
-                    image[i] = bytes.get(i);
-                }
-
-                System.out.println("Image size: " + image.length);
-
-                try {
-                    var imageFile = new java.io.File("image.png");
-                    var imageOutputStream = new java.io.FileOutputStream(imageFile);
-                    imageOutputStream.write(image);
-                    imageOutputStream.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                bytes.clear();
-            }
-        }));
 
         EventDispatcher.startListening(new ProcessActionResultReceiver(data -> {
 
@@ -273,6 +256,14 @@ public class Admin {
             System.out.println();
         })));
 
+
+        var shutdownThread = new Thread(() -> {
+            var sender = new LogOutAdminSender(tcpClient);
+            sender.send(null, new LogOutAdminRequest(GlobalVariable.tokenAdmin));
+        });
+
+
+        Runtime.getRuntime().addShutdownHook(shutdownThread);
         Thread.currentThread().join();
     }
 

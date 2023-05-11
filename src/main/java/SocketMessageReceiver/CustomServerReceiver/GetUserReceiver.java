@@ -99,7 +99,7 @@ public class GetUserReceiver extends SocketMessageReceiver<GetUserRequest> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
+ 
         return existUsers;
     }
 }

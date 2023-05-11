@@ -7,7 +7,7 @@ package Client.GUI.Admin;
 import Client.ClientInstance;
 import Client.GUI.Component.ListClientGUI;
 import Client.GUI.Component.HardwareGUI;
-import Client.GUI.Component.OthersGUI;
+import Client.GUI.Component.OtherGUI;
 import Client.GUI.Component.ProfileGUI;
 import Client.GUI.Component.StreamingGUI;
 import Client.GUI.Component.ProcessGUI;
@@ -18,19 +18,15 @@ import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
 import SocketMessageSender.CustomAdminSender.GetHardwareInfoSender;
 import SocketMessageSender.CustomAdminSender.GetProcessesSender;
-import java.awt.Color;
+
 import java.awt.Cursor;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 
 /**
- *
  * @author Admin
  */
 public class MainGUI extends javax.swing.JFrame {
@@ -48,7 +44,7 @@ public class MainGUI extends javax.swing.JFrame {
         GlobalVariable.hardware = new HardwareGUI();
         GlobalVariable.process = new ProcessGUI();
         GlobalVariable.streaming = new StreamingGUI();
-        GlobalVariable.others = new OthersGUI();
+        GlobalVariable.others = new OtherGUI();
         GlobalVariable.profile = new ProfileGUI();
 
 //        this.content.add(icon1)
@@ -58,7 +54,7 @@ public class MainGUI extends javax.swing.JFrame {
         GlobalVariable.itemList.add(2, new SidebarItemDTO(this.MenuItem2, GlobalVariable.process, false, true));
         GlobalVariable.itemList.add(3, new SidebarItemDTO(this.MenuItem3, GlobalVariable.streaming, false, true));
         GlobalVariable.itemList.add(4, new SidebarItemDTO(this.MenuItem4, GlobalVariable.others, false, true));
-        GlobalVariable.itemList.add(5, new SidebarItemDTO(this.MenuItem5, GlobalVariable.profile, false, false));
+        GlobalVariable.itemList.add(5, new SidebarItemDTO(this.MenuItem5, null, false, false));
         GlobalVariable.itemList.add(6, new SidebarItemDTO(this.MenuItem6, null, false, false));
 
         //add content panel
@@ -86,6 +82,10 @@ public class MainGUI extends javax.swing.JFrame {
         sidebarItemMouseEvent();
         //renderHeader
         renderHeader(this);
+    }
+
+    public void setIdAdmin() {
+        this.idAdmin.setText("   ID: " + GlobalVariable.idAdmin);
     }
 
     /**
@@ -120,7 +120,7 @@ public class MainGUI extends javax.swing.JFrame {
         jLabel12 = new javax.swing.JLabel();
         MenuItem5 = new javax.swing.JPanel();
         icon6 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
+        idAdmin = new javax.swing.JLabel();
         MenuItem6 = new javax.swing.JPanel();
         icon7 = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
@@ -176,6 +176,7 @@ public class MainGUI extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 MenuItem1MouseClicked(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 MenuItem1MouseExited(evt);
             }
@@ -200,6 +201,7 @@ public class MainGUI extends javax.swing.JFrame {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 MenuItem2MouseClicked(evt);
             }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 MenuItem2MouseExited(evt);
             }
@@ -221,6 +223,10 @@ public class MainGUI extends javax.swing.JFrame {
 
         MenuItem3.setOpaque(false);
         MenuItem3.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                OpenStreamingTab(evt);
+            }
+
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 MenuItem3MouseExited(evt);
             }
@@ -281,10 +287,10 @@ public class MainGUI extends javax.swing.JFrame {
         icon6.setPreferredSize(new java.awt.Dimension(42, 25));
         MenuItem5.add(icon6, java.awt.BorderLayout.LINE_START);
 
-        jLabel13.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel13.setText("   ID: 123123");
-        MenuItem5.add(jLabel13, java.awt.BorderLayout.CENTER);
+        idAdmin.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        idAdmin.setForeground(new java.awt.Color(255, 255, 255));
+        idAdmin.setText("   ID: 123123");
+        MenuItem5.add(idAdmin, java.awt.BorderLayout.CENTER);
 
         MenuItem6.setOpaque(false);
         MenuItem6.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -310,51 +316,51 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout SidebarLayout = new javax.swing.GroupLayout(Sidebar);
         Sidebar.setLayout(SidebarLayout);
         SidebarLayout.setHorizontalGroup(
-            SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SidebarLayout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addGroup(SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SidebarLayout.createSequentialGroup()
-                        .addGroup(SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(MenuItem2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(MenuItem6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(MenuItem5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(MenuItem4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
-                            .addComponent(MenuItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(MenuItem1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(MenuItem3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(15, 15, 15))))
+                SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(SidebarLayout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addGroup(SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, SidebarLayout.createSequentialGroup()
+                                                .addGroup(SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                        .addComponent(MenuItem2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(MenuItem6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(MenuItem5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(MenuItem4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                                                        .addComponent(MenuItem, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(MenuItem1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(MenuItem3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                .addGap(15, 15, 15))))
         );
         SidebarLayout.setVerticalGroup(
-            SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(SidebarLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(MenuItem, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40)
-                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(MenuItem1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(MenuItem2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(MenuItem3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(MenuItem4, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
-                .addComponent(jLabel12)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(MenuItem5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(MenuItem6, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(119, Short.MAX_VALUE))
+                SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(SidebarLayout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel5)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MenuItem, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(40, 40, 40)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MenuItem1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MenuItem2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MenuItem3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MenuItem4, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(41, 41, 41)
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MenuItem5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(MenuItem6, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(119, Short.MAX_VALUE))
         );
 
         container.add(Sidebar, java.awt.BorderLayout.LINE_START);
@@ -380,28 +386,25 @@ public class MainGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout HeaderLayout = new javax.swing.GroupLayout(Header);
         Header.setLayout(HeaderLayout);
         HeaderLayout.setHorizontalGroup(
-            HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(HeaderLayout.createSequentialGroup()
-                .addGap(30, 30, 30)
-                .addComponent(ClientName, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 411, Short.MAX_VALUE)
-                .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(ClientID, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
-                    .addComponent(ClientAddress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(30, 30, 30))
+                HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(HeaderLayout.createSequentialGroup()
+                                .addGap(24, 24, 24)
+                                .addComponent(ClientName, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 242, Short.MAX_VALUE)
+                                .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(ClientID, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+                                        .addComponent(ClientAddress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(30, 30, 30))
         );
         HeaderLayout.setVerticalGroup(
-            HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(HeaderLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(HeaderLayout.createSequentialGroup()
-                        .addComponent(ClientID, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(ClientAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 5, Short.MAX_VALUE))
-                    .addComponent(ClientName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                HeaderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(HeaderLayout.createSequentialGroup()
+                                .addGap(2, 2, 2)
+                                .addComponent(ClientID, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(2, 2, 2)
+                                .addComponent(ClientAddress, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(2, 2, 2))
+                        .addComponent(ClientName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jPanel2.add(Header, java.awt.BorderLayout.PAGE_START);
@@ -469,6 +472,22 @@ public class MainGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_MenuItem2MouseClicked
 
+
+    private void OpenStreamingTab(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuItem3MouseClicked
+//        GlobalVariable.streaming.setVisible(true);
+//        GlobalVariable.streaming.init();
+
+    }//GEN-LAST:event_MenuItem3MouseClicked
+
+    public void OpenStream() {
+//        GlobalVariable.streaming.setVisible(true);
+        GlobalVariable.streaming.init();
+    }
+
+    public void CloseStream() {
+        GlobalVariable.streaming.reset();
+    }
+
     public void sendRequestGetAllProcess() {
         var sender = new GetProcessesSender(ClientInstance.tcpClient);
         sender.send(null, new GetProcessesAdminSide(GlobalVariable.tokenAdmin, GlobalVariable.selectedClientInfor.getID()));
@@ -481,7 +500,7 @@ public class MainGUI extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -537,10 +556,10 @@ public class MainGUI extends javax.swing.JFrame {
     private javax.swing.JLabel icon5;
     private javax.swing.JLabel icon6;
     private javax.swing.JLabel icon7;
+    private javax.swing.JLabel idAdmin;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
@@ -607,7 +626,22 @@ public class MainGUI extends javax.swing.JFrame {
                             GlobalVariable.itemList.get(i).state = true;
                             //handel funcion
                             if (GlobalVariable.itemList.get(i).compContent != null) {
+                                
+                                //streaming 
+                                if (GlobalVariable.itemList.get(i).compContent == GlobalVariable.streaming) {
+                                    System.out.println("Streaming click");
+                                    OpenStream();
+                                } else {
+                                    if (GlobalVariable.streaming.isStreaming) {
+                                        System.out.println("close stream");
+                                        CloseStream();
+                                    }
+                                }
+                                
                                 GlobalVariable.itemList.get(i).compContent.setVisible(true);
+                                GlobalVariable.main.validate();
+                                GlobalVariable.main.repaint();
+
                             } else {
                                 System.out.println("logout");
                             }
@@ -646,7 +680,7 @@ public class MainGUI extends javax.swing.JFrame {
 
     }
 
-    private void renderHeader(MainGUI f) {
+    public void renderHeader(MainGUI f) {
         if (GlobalVariable.selectedClient) {
             f.ClientName.setText(GlobalVariable.selectedClientInfor.getName());
             f.ClientID.setText("Client uuid:" + GlobalVariable.selectedClientInfor.getID());

@@ -40,23 +40,23 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
 
         var image = getImage();
         var byteBuffer = ByteBuffer.wrap(image);
-        var chunkSize = 1024 * 1000;
+        var chunkSize = 1000 * 1024;
         var pos = 0;
 
         var sender = new SocketMessageSender.CustomUserSender.GetImageResultSender(server);
         do {
-            var chunk = new byte[chunkSize];
             chunkSize = Math.min(chunkSize, image.length - pos);
+            var chunk = new byte[chunkSize];
 
             byteBuffer.get(pos, chunk, 0, chunkSize);
 
-            sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, chunk, false));
+            sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, chunk, pos < image.length));
 
             pos += chunkSize;
         } while (pos < image.length);
 
 
-        sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, new byte[0], true));
+//        sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, new byte[0], true));
     }
 
     private byte[] getImage() {
@@ -74,7 +74,7 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
             writer.setOutput(ios);
             var param = writer.getDefaultWriteParam();
             param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            param.setCompressionQuality(0.1f);
+            param.setCompressionQuality(0.001f);
 
             writer.write(null, new javax.imageio.IIOImage(image, null, null), param);
             writer.setOutput(ios);

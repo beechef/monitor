@@ -5,9 +5,9 @@ import oshi.SystemInfo;
 import java.io.*;
 
 public class Utilities {
-    public static <T> T castBytes(byte[] bytes) throws IOException, ClassNotFoundException {
+    public static Object castBytes(byte[] bytes) throws IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-        return (T) in.readObject();
+        return in.readObject();
     }
 
     public static byte[] toBytes(Object data) throws IOException {

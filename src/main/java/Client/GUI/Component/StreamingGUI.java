@@ -4,13 +4,28 @@
  */
 package Client.GUI.Component;
 
+import Client.ClientInstance;
 import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.RoundBorder;
-import java.awt.Color;
-import java.awt.Cursor;
+import Server.EventDispatcher.EventDispatcher;
+import SocketMessageReceiver.CustomAdminReceiver.GetImageResultReceiver;
+import SocketMessageReceiver.DataType.GetImage.GetImageRequestAdminSide;
+import SocketMessageReceiver.DataType.GetImage.GetImageResultServerSide;
+import SocketMessageSender.CustomAdminSender.GetImageSender;
+import Utilities.Utilities;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
- *
  * @author Admin
  */
 public class StreamingGUI extends javax.swing.JPanel {
@@ -18,19 +33,221 @@ public class StreamingGUI extends javax.swing.JPanel {
     /**
      * Creates new form StreamingGUI
      */
+    public static Thread streamingThread;
+    public static boolean isStreaming = false;
+    private HashMap<Thread, Boolean> flags = new HashMap<>();
+
+    private GetImageResultServerSide currentImageReciver = null;
+    private GetImageResultServerSide currentImageCapture = null;
+
     public StreamingGUI() {
         initComponents();
         //set jlable color
         this.LabelHeader.setForeground(GlobalVariable.primaryColor);
         //set border rounded
-        setBorderRounded(this);
-        //set hover
-        setHover(this);
+
+        listenEvent();
+    }
+
+    public void reset() {
+        isStreaming = false;
+        flags.put(streamingThread, false);
+
+        streamingThread.interrupt();
+        streamingThread = null;
+        System.out.println("reset streming");
+        panelStream.setVisible(false);
+    }
+
+    public void init() {
+        isStreaming = true;
+        panelStream.setVisible(true);
+
+        if (streamingThread != null) {
+            flags.put(streamingThread, false);
+
+            streamingThread.interrupt();
+            streamingThread = null;
+        }
+
+        streamingThread = new Thread(() -> {
+            var fps = 12;
+            var sender = new GetImageSender(ClientInstance.tcpClient);
+
+            while (true) {
+                if (!flags.get(streamingThread) || streamingThread.isInterrupted() || !isVisible()) {
+                    return;
+                }
+
+                sender.send(null, new GetImageRequestAdminSide(GlobalVariable.tokenAdmin, GlobalVariable.selectedClientInfor.getID()));
+
+                try {
+                    Thread.sleep(1000 / fps);
+                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+                    System.out.println("Streaming is interrupted");
+
+                }
+            }
+        });
+
+        streamingThread.start();
+        flags.put(streamingThread, true);
+    }
+
+    private void listenEvent() {
+        EventDispatcher.startListening(new GetImageResultReceiver(this::render));
+    }
+
+    private final ArrayList<Byte> bytes = new ArrayList<>();
+
+    synchronized private void render(GetImageResultServerSide data) {
+
+        this.currentImageReciver = data;
+        if (data.image.length == 0) {
+            return;
+        }
+
+        for (var b : data.image) {
+            bytes.add(b);
+        }
+
+        if (data.isEnd) {
+            var imageBytes = new byte[bytes.size()];
+            for (int i = 0; i < bytes.size(); i++) {
+                imageBytes[i] = bytes.get(i);
+            }
+
+            var width = panelStream.getWidth();
+            var height = panelStream.getHeight();
+            try {
+                var bais = new ByteArrayInputStream(imageBytes);
+                var image = ImageIO.read(bais);
+
+                panelStream.getGraphics().drawImage(image, 0, 0, width, height, null);
+
+//                panelStream.validate();
+//                panelStream.repaint();
+                GlobalVariable.main.validate();
+//                GlobalVariable.main.repaint();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.printf("Wrong Message");
+            }
+            bytes.clear();
+        }
+    }
+
+    private void renderCapture() {
+        GetImageResultServerSide data = currentImageReciver;
+        currentImageCapture = currentImageReciver;
+
+        if (data.image.length == 0) {
+            return;
+        }
+
+        for (var b : data.image) {
+            bytes.add(b);
+        }
+
+        if (data.isEnd) {
+            var imageBytes = new byte[bytes.size()];
+            for (int i = 0; i < bytes.size(); i++) {
+                imageBytes[i] = bytes.get(i);
+            }
+
+            var width = panelPicture.getWidth();
+            var height = panelPicture.getHeight();
+            try {
+                var bais = new ByteArrayInputStream(imageBytes);
+                var image = ImageIO.read(bais);
+
+                panelPicture.getGraphics().drawImage(image, 0, 0, width, height, null);
+
+//                panelStream.validate();
+//                panelStream.repaint();
+                GlobalVariable.main.validate();
+//                GlobalVariable.main.repaint();
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.printf("Wrong Message");
+            }
+            bytes.clear();
+        }
+    }
+
+    private void saveImage() {
+        JFileChooser fileChooser = new JFileChooser();
+        int userSelection = fileChooser.showSaveDialog(panelPicture);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            String filename = GlobalVariable.currentPath + "/src/main/java/LocalStorageApp/" + GlobalVariable.selectedClientInfor.getID() + ".png"; // đường dẫn của tập tin
+            File file = new File(filename);
+
+            int i = 1;
+            while (file.exists()) {
+                filename = "LocalStorageApp/" + GlobalVariable.selectedClientInfor.getID() + i + ".png";
+                file = new File(filename);
+                i++;
+            }
+
+            try {
+                BufferedImage image = new BufferedImage(panelPicture.getWidth(), panelPicture.getHeight(), BufferedImage.TYPE_INT_RGB);
+                Graphics2D graphics2D = image.createGraphics();
+                panelPicture.print(graphics2D);
+                ImageIO.write(image, "png", file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Failed to save image.");
+            }
+        }
+    }
+
+    private void saveImage(String path, String fileName) {
+
+        if (currentImageCapture == null) {
+            return;
+        }
+        if (currentImageCapture.image.length == 0) {
+            return;
+        }
+
+        byte[] imageBytes = new byte[currentImageCapture.image.length];
+        for (int i = 0; i < currentImageCapture.image.length; i++) {
+            imageBytes[i] = currentImageCapture.image[i];
+        }
+
+        try {
+            ByteArrayInputStream bais = new ByteArrayInputStream(imageBytes);
+            BufferedImage image = ImageIO.read(bais);
+
+            File directory = new File(path);
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
+
+            File file = new File(path + "/" + fileName + ".png");
+            int i = 1;
+            while (file.exists()) {
+                file = new File(path + "/" + fileName + "-" + i + ".png");
+                i++;
+            }
+
+            ImageIO.write(image, "png", file);
+
+            JOptionPane.showMessageDialog(GlobalVariable.main, "Save imgae success");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.printf("Wrong Message");
+            JOptionPane.showMessageDialog(GlobalVariable.main, "Save imgae falure");
+
+        }
     }
 
     /**
      * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
+     * WARNING: Do NOT modify this code. Th e content of this method is always
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
@@ -40,19 +257,15 @@ public class StreamingGUI extends javax.swing.JPanel {
         LabelHeader = new javax.swing.JLabel();
         panelStream = new javax.swing.JPanel();
         panelPicture = new javax.swing.JPanel();
-        wrapperBtnSave = new javax.swing.JPanel();
-        btnSave = new javax.swing.JLabel();
-        warpperBtnCapture = new javax.swing.JPanel();
-        btnCapture = new javax.swing.JLabel();
-        wrapperBtnCancel = new javax.swing.JPanel();
-        btnCancel = new javax.swing.JLabel();
+        btnCapture = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
         LabelHeader.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         LabelHeader.setText("Streaming");
 
-        panelStream.setOpaque(false);
+        panelStream.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout panelStreamLayout = new javax.swing.GroupLayout(panelStream);
         panelStream.setLayout(panelStreamLayout);
@@ -62,100 +275,50 @@ public class StreamingGUI extends javax.swing.JPanel {
         );
         panelStreamLayout.setVerticalGroup(
             panelStreamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 278, Short.MAX_VALUE)
+            .addGap(0, 347, Short.MAX_VALUE)
         );
 
-        panelPicture.setOpaque(false);
+        panelPicture.setBackground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout panelPictureLayout = new javax.swing.GroupLayout(panelPicture);
         panelPicture.setLayout(panelPictureLayout);
         panelPictureLayout.setHorizontalGroup(
             panelPictureLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 522, Short.MAX_VALUE)
         );
         panelPictureLayout.setVerticalGroup(
             panelPictureLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        wrapperBtnSave.setOpaque(false);
-
-        btnSave.setBackground(new java.awt.Color(46, 79, 79));
-        btnSave.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        btnSave.setForeground(new java.awt.Color(255, 255, 255));
-        btnSave.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnSave.setText("Save");
-        btnSave.setOpaque(true);
-
-        javax.swing.GroupLayout wrapperBtnSaveLayout = new javax.swing.GroupLayout(wrapperBtnSave);
-        wrapperBtnSave.setLayout(wrapperBtnSaveLayout);
-        wrapperBtnSaveLayout.setHorizontalGroup(
-            wrapperBtnSaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(wrapperBtnSaveLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnSave, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        wrapperBtnSaveLayout.setVerticalGroup(
-            wrapperBtnSaveLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wrapperBtnSaveLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        warpperBtnCapture.setOpaque(false);
-
         btnCapture.setBackground(new java.awt.Color(46, 79, 79));
-        btnCapture.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
         btnCapture.setForeground(new java.awt.Color(255, 255, 255));
-        btnCapture.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btnCapture.setText("Capture");
-        btnCapture.setOpaque(true);
-        btnCapture.setPreferredSize(new java.awt.Dimension(74, 20));
+        btnCapture.setToolTipText("");
+        btnCapture.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnCaptureMouseClicked(evt);
+            }
+        });
+        btnCapture.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCaptureActionPerformed(evt);
+            }
+        });
 
-        javax.swing.GroupLayout warpperBtnCaptureLayout = new javax.swing.GroupLayout(warpperBtnCapture);
-        warpperBtnCapture.setLayout(warpperBtnCaptureLayout);
-        warpperBtnCaptureLayout.setHorizontalGroup(
-            warpperBtnCaptureLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, warpperBtnCaptureLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCapture, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-        warpperBtnCaptureLayout.setVerticalGroup(
-            warpperBtnCaptureLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, warpperBtnCaptureLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCapture, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
-
-        wrapperBtnCancel.setOpaque(false);
-
-        btnCancel.setBackground(new java.awt.Color(46, 79, 79));
-        btnCancel.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        btnCancel.setForeground(new java.awt.Color(255, 255, 255));
-        btnCancel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnCancel.setText("Cancel");
-        btnCancel.setOpaque(true);
-
-        javax.swing.GroupLayout wrapperBtnCancelLayout = new javax.swing.GroupLayout(wrapperBtnCancel);
-        wrapperBtnCancel.setLayout(wrapperBtnCancelLayout);
-        wrapperBtnCancelLayout.setHorizontalGroup(
-            wrapperBtnCancelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(wrapperBtnCancelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnCancel, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        wrapperBtnCancelLayout.setVerticalGroup(
-            wrapperBtnCancelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, wrapperBtnCancelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        btnSave.setBackground(new java.awt.Color(20, 108, 148));
+        btnSave.setForeground(new java.awt.Color(255, 255, 255));
+        btnSave.setText("Save");
+        btnSave.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                btnSaveMouseClicked(evt);
+            }
+        });
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -166,24 +329,16 @@ public class StreamingGUI extends javax.swing.JPanel {
                 .addComponent(LabelHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addGap(100, 100, 100)
+                .addGap(134, 134, 134)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
+                    .addComponent(panelStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(panelPicture, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 319, Short.MAX_VALUE)
-                                .addComponent(wrapperBtnSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(wrapperBtnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(12, 12, 12))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(warpperBtnCapture, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(34, 34, 34)
-                                .addComponent(panelPicture, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(195, 195, 195))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(panelStream, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(100, 100, 100))))
+                            .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnCapture, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(160, 160, 160))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,85 +351,41 @@ public class StreamingGUI extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panelPicture, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(warpperBtnCapture, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 153, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(wrapperBtnSave, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(wrapperBtnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14))
+                        .addComponent(btnCapture, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 127, Short.MAX_VALUE)))
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCaptureActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCaptureActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnCaptureActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnCaptureMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCaptureMouseClicked
+        // TODO add your handling code here:
+
+        renderCapture();
+    }//GEN-LAST:event_btnCaptureMouseClicked
+
+    private void btnSaveMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSaveMouseClicked
+        // TODO add your handling code here:
+        System.out.println("save img");
+        saveImage(GlobalVariable.currentPath + "/src/main/java/LocalStorageApp", GlobalVariable.selectedClientInfor.getID());
+    }//GEN-LAST:event_btnSaveMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LabelHeader;
-    private javax.swing.JLabel btnCancel;
-    private javax.swing.JLabel btnCapture;
-    private javax.swing.JLabel btnSave;
+    private javax.swing.JButton btnCapture;
+    private javax.swing.JButton btnSave;
     private javax.swing.JPanel panelPicture;
     private javax.swing.JPanel panelStream;
-    private javax.swing.JPanel warpperBtnCapture;
-    private javax.swing.JPanel wrapperBtnCancel;
-    private javax.swing.JPanel wrapperBtnSave;
     // End of variables declaration//GEN-END:variables
 
-    private void setBorderRounded(StreamingGUI aThis) {
-        aThis.wrapperBtnCancel.setBorder(new RoundBorder(6, Color.BLACK));
-        aThis.btnCancel.setBackground(Color.BLACK);
-
-        aThis.wrapperBtnSave.setBorder(new RoundBorder(6, Color.BLUE));
-        aThis.btnSave.setBackground(Color.BLUE);
-
-        aThis.warpperBtnCapture.setBorder(new RoundBorder(6, GlobalVariable.primaryColor));
-
-        aThis.panelPicture.setBorder(new RoundBorder(6, Color.GRAY));
-        aThis.panelStream.setBorder(new RoundBorder(6, Color.gray));
-    }
-
-    private void setHover(StreamingGUI aThis) {
-        aThis.wrapperBtnCancel.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                //request pick client
-                aThis.wrapperBtnCancel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                aThis.wrapperBtnCancel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
-        
-        
-        aThis.warpperBtnCapture.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                //request pick client
-                aThis.warpperBtnCapture.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                aThis.warpperBtnCapture.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
-        
-        
-        aThis.wrapperBtnSave.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                //request pick client
-                aThis.wrapperBtnSave.setCursor(new Cursor(Cursor.HAND_CURSOR));
-
-            }
-
-            @Override
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                aThis.wrapperBtnSave.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            }
-        });
-    }
 }

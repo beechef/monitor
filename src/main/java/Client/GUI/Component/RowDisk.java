@@ -5,6 +5,7 @@
 package Client.GUI.Component;
 
 import Client.GUI.Lib.DiskDTO;
+import Client.GUI.Lib.GlobalVariable;
 
 /**
  *
@@ -15,17 +16,35 @@ public class RowDisk extends javax.swing.JPanel {
     /**
      * Creates new form RowDisk
      */
-    
     private DiskDTO disk;
-    
+
     public RowDisk(DiskDTO disk) {
-        this.disk=disk;
+        this.disk = disk;
         initComponents();
         setData();
     }
-    
-    private void setData(){
+
+    private void setData() {
+        this.DiskName.setText(this.disk.getDiskName());
         
+        float DiskTotalSize = Float.parseFloat(this.disk.getDiskTotalSize().split(" ")[0]);
+        float roundedDiskTotalSize = (float) Math.round(DiskTotalSize * 100) / 100;
+        this.DiskTotalSize.setText(roundedDiskTotalSize + " GB");
+
+        float DiskUsedSize = Float.parseFloat(this.disk.getDiskUsedSize().split(" ")[0]);
+        float roundedDiskUsedSize = (float) Math.round(DiskUsedSize * 100) / 100;
+        this.DiskTotalSize.setText(roundedDiskUsedSize + " GB");
+
+        float DiskAvailableSize = Float.parseFloat(this.disk.getDiskAvailableSize().split(" ")[0]);
+        float roundedDiskAvailableSize = (float) Math.round(DiskAvailableSize * 100) / 100;
+        this.DiskTotalSize.setText(roundedDiskAvailableSize + " GB");
+
+        float availableMemoryPercent = (DiskUsedSize / DiskTotalSize) * 100;
+        float rounded = (float) Math.round(availableMemoryPercent * 100) / 100;
+
+        this.DiskUsedSizePercent.setText(rounded + " %");
+        this.DiskAvailableSizePercent.setText(100 - rounded + " %");
+
     }
 
     /**
@@ -37,7 +56,7 @@ public class RowDisk extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel24 = new javax.swing.JLabel();
+        DiskName = new javax.swing.JLabel();
         jPanel7 = new javax.swing.JPanel();
         jLabel27 = new javax.swing.JLabel();
         DiskTotalSize = new javax.swing.JLabel();
@@ -50,12 +69,14 @@ public class RowDisk extends javax.swing.JPanel {
 
         setBackground(new java.awt.Color(236, 242, 255));
         setBorder(javax.swing.BorderFactory.createMatteBorder(1, 0, 0, 0, new java.awt.Color(0, 0, 0)));
-        setMaximumSize(new java.awt.Dimension(32767, 125));
-        setMinimumSize(new java.awt.Dimension(125, 125));
+        setMaximumSize(new java.awt.Dimension(32767, 135));
+        setMinimumSize(new java.awt.Dimension(125, 135));
+        setName("135"); // NOI18N
+        setPreferredSize(new java.awt.Dimension(704, 135));
 
-        jLabel24.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel24.setText("Disk :");
-        jLabel24.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
+        DiskName.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        DiskName.setText("Disk :");
+        DiskName.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 0, 0)));
 
         jPanel7.setOpaque(false);
 
@@ -128,14 +149,14 @@ public class RowDisk extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(DiskName, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(DiskName)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
@@ -146,10 +167,10 @@ public class RowDisk extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel DiskAvailableSize;
     private javax.swing.JLabel DiskAvailableSizePercent;
+    private javax.swing.JLabel DiskName;
     private javax.swing.JLabel DiskTotalSize;
     private javax.swing.JLabel DiskUsedSize;
     private javax.swing.JLabel DiskUsedSizePercent;
-    private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel27;
     private javax.swing.JLabel jLabel58;
     private javax.swing.JLabel jLabel61;

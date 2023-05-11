@@ -9,6 +9,11 @@ public class GetImageRequestAdminSide implements Serializable, AdminUserRequest 
     public String token;
     public String userUuid;
 
+    public GetImageRequestAdminSide(String tokenAdmin, String id) {
+        this.token=tokenAdmin;
+        this.userUuid=id;
+    }
+
 
     @Override
     public String getToken() {

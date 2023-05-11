@@ -11,10 +11,13 @@ import Client.GUI.Lib.GlobalFunction;
 import Client.GUI.Lib.GlobalVariable;
 import Client.GUI.Lib.RoundBorder;
 import Server.EventDispatcher.EventDispatcher;
+import SocketMessageReceiver.CustomAdminReceiver.ChangeForgetPasswordResultReceiver;
 import SocketMessageReceiver.CustomAdminReceiver.RegisterResultReceiver;
+import SocketMessageReceiver.DataType.ChangeForgetPasswordRequest;
+import SocketMessageReceiver.DataType.ChangeForgetPasswordResult;
 import SocketMessageReceiver.DataType.RegisterRequest;
 import SocketMessageReceiver.DataType.RegisterResultRequest;
-import SocketMessageSender.CustomAdminSender.RegisterSender;
+import SocketMessageSender.CustomAdminSender.ChangeForgetPasswordSender;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -22,16 +25,16 @@ import java.awt.event.KeyEvent;
 /**
  * @author Admin
  */
-public class RegisterGUI extends javax.swing.JFrame {
+public class ForgotPasswordAdminGUI extends javax.swing.JFrame {
 
     /**
      * Creates new form LoginGUI
      */
     Color primaryColor = new java.awt.Color(46, 79, 79);
 
-    private final RegisterSender sender;
+    private final ChangeForgetPasswordSender sender;
 
-    public RegisterGUI() {
+    public ForgotPasswordAdminGUI() {
         initComponents();
         this.img.setBorder(new RoundBorder(10, Color.ORANGE));
         this.wrapperRightPanel.setBorder(new RoundBorder(10, primaryColor));
@@ -39,17 +42,16 @@ public class RegisterGUI extends javax.swing.JFrame {
         this.labelMessage.setForeground(GlobalVariable.WarningColor);
 
         registerEvent();
-        sender = new RegisterSender(ClientInstance.tcpClient);
+        sender = new ChangeForgetPasswordSender(ClientInstance.tcpClient);
     }
 
     private void registerEvent() {
-        EventDispatcher.startListening(new RegisterResultReceiver(this::receiveResult));
+        EventDispatcher.startListening(new ChangeForgetPasswordResultReceiver(this::receiveResult));
     }
 
-    private void receiveResult(RegisterResultRequest request) {
+    private void receiveResult(ChangeForgetPasswordResult request) {
         if (request.result.toString().equals("SUCCESS")) {
-            GlobalVariable.RegisterAdminGUI.setVisible(false);
-//            GlobalVariable.LoginAdminGUI.setText(this.inpEmail.getText(), this.inpPassword.getText());
+            this.setVisible(false);
             GlobalVariable.LoginAdminGUI.setVisible(true);
         } else {
             this.labelMessage.setText(request.result.toString());
@@ -57,14 +59,14 @@ public class RegisterGUI extends javax.swing.JFrame {
     }
 
     private void sendRequest() {
-        var email = inpEmail.getText();
+        var otp = inpOTP.getText();
         var password = inpPassword.getText();
         var confirmPassword = inpConfirmPassword.getText();
         
         
         //validate 
-        if (!GlobalFunction.validateEmail(email)) {
-            this.labelMessage.setText("Please enter correct email format");
+        if (otp.length()<=0) {
+            this.labelMessage.setText("Please enter OTP code");
             return;
         }
 
@@ -77,8 +79,8 @@ public class RegisterGUI extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Password and confirm password not match");
             return;
         }
-
-        sender.send(null, new RegisterRequest(email, password));
+        
+        sender.send(null,new ChangeForgetPasswordRequest(GlobalVariable.emailOTP, otp, password));
     }
 
     /**
@@ -95,15 +97,15 @@ public class RegisterGUI extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        inpEmail = new javax.swing.JTextField();
+        inpOTP = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         inpPassword = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        btnSignUp = new javax.swing.JLabel();
         labelMessage = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         inpConfirmPassword = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         wrapperRightPanel = new javax.swing.JPanel();
@@ -127,20 +129,20 @@ public class RegisterGUI extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
         jLabel1.setText("Create an account");
 
-        inpEmail.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(46, 79, 79)));
-        inpEmail.addActionListener(new java.awt.event.ActionListener() {
+        inpOTP.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(46, 79, 79)));
+        inpOTP.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inpEmailActionPerformed(evt);
+                inpOTPActionPerformed(evt);
             }
         });
-        inpEmail.addKeyListener(new java.awt.event.KeyAdapter() {
+        inpOTP.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                inpEmailKeyPressed(evt);
+                inpOTPKeyPressed(evt);
             }
         });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel4.setText("Email");
+        jLabel4.setText("OTP");
 
         inpPassword.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(46, 79, 79)));
         inpPassword.addActionListener(new java.awt.event.ActionListener() {
@@ -155,19 +157,7 @@ public class RegisterGUI extends javax.swing.JFrame {
         });
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel5.setText("Password");
-
-        btnSignUp.setBackground(new java.awt.Color(46, 79, 79));
-        btnSignUp.setFont(new java.awt.Font("Segoe UI", 1, 20)); // NOI18N
-        btnSignUp.setForeground(new java.awt.Color(255, 255, 255));
-        btnSignUp.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        btnSignUp.setText("Sign Up");
-        btnSignUp.setOpaque(true);
-        btnSignUp.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnSignUpMouseClicked(evt);
-            }
-        });
+        jLabel5.setText("New password");
 
         labelMessage.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
         labelMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -180,9 +170,19 @@ public class RegisterGUI extends javax.swing.JFrame {
                 inpConfirmPasswordActionPerformed(evt);
             }
         });
+        inpConfirmPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inpConfirmPasswordKeyPressed(evt);
+            }
+        });
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel10.setText("Confirm password");
+        jLabel10.setText("Confirm new password");
+
+        jButton1.setBackground(new java.awt.Color(46, 79, 79));
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton1.setForeground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Reset");
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -191,12 +191,12 @@ public class RegisterGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
                     .addComponent(labelMessage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSignUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(inpPassword)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(inpEmail)
+                    .addComponent(inpOTP)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(inpConfirmPassword)
@@ -213,7 +213,7 @@ public class RegisterGUI extends javax.swing.JFrame {
                 .addGap(50, 50, 50)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inpEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(inpOTP, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -224,9 +224,9 @@ public class RegisterGUI extends javax.swing.JFrame {
                 .addComponent(inpConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(labelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
-                .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(119, 119, 119))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(147, 147, 147))
         );
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -281,6 +281,7 @@ public class RegisterGUI extends javax.swing.JFrame {
         jLabel8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         img.setBackground(new java.awt.Color(255, 255, 255));
+        img.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         img.setText("img");
 
         javax.swing.GroupLayout wrapperRightPanelLayout = new javax.swing.GroupLayout(wrapperRightPanel);
@@ -333,31 +334,34 @@ public class RegisterGUI extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_inpPasswordActionPerformed
 
-    private void inpEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inpEmailActionPerformed
+    private void inpOTPActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inpOTPActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_inpEmailActionPerformed
+    }//GEN-LAST:event_inpOTPActionPerformed
 
     private void inpConfirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inpConfirmPasswordActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_inpConfirmPasswordActionPerformed
 
-    private void btnSignUpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignUpMouseClicked
-        sendRequest();
-    }//GEN-LAST:event_btnSignUpMouseClicked
-
-    private void inpEmailKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inpEmailKeyPressed
+    private void inpOTPKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inpOTPKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             this.inpPassword.requestFocus();
         }
-    }//GEN-LAST:event_inpEmailKeyPressed
+    }//GEN-LAST:event_inpOTPKeyPressed
 
     private void inpPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inpPasswordKeyPressed
         // TODO add your handling code here:
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            sendRequest();
+            this.inpConfirmPassword.requestFocus();
         }
     }//GEN-LAST:event_inpPasswordKeyPressed
+
+    private void inpConfirmPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inpConfirmPasswordKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            sendRequest();
+        }
+    }//GEN-LAST:event_inpConfirmPasswordKeyPressed
 
     /**
      * @param args the command line arguments
@@ -390,17 +394,17 @@ public class RegisterGUI extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RegisterGUI().setVisible(true);
+                new ForgotPasswordAdminGUI().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel btnSignUp;
     private javax.swing.JLabel img;
     private javax.swing.JTextField inpConfirmPassword;
-    private javax.swing.JTextField inpEmail;
+    private javax.swing.JTextField inpOTP;
     private javax.swing.JTextField inpPassword;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel4;

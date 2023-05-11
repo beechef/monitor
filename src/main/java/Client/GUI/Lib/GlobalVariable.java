@@ -1,11 +1,13 @@
 package Client.GUI.Lib;
 
+import Client.GUI.Admin.ForgotPasswordAdminGUI;
+import Client.GUI.Admin.ForgotPasswordAdminIpEmailGUI;
 import Client.GUI.Admin.LoginGUI;
 import Client.GUI.Admin.MainGUI;
 import Client.GUI.Admin.RegisterGUI;
 import Client.GUI.Component.HardwareGUI;
 import Client.GUI.Component.ListClientGUI;
-import Client.GUI.Component.OthersGUI;
+import Client.GUI.Component.OtherGUI;
 import Client.GUI.Component.ProcessGUI;
 import Client.GUI.Component.ProfileGUI;
 import Client.GUI.Component.StreamingGUI;
@@ -34,12 +36,16 @@ public class GlobalVariable {
 
     //selected client
     public static boolean selectedClient = false;
-    public static ClientDTO selectedClientInfor=null;
+    public static ClientDTO selectedClientInfor = null;
 
     public static LoginGUI LoginAdminGUI;
     public static MainGUI main = null;
     public static RegisterGUI RegisterAdminGUI;
     public static LoginUserGUI LoginUserGUI;
+    public static ForgotPasswordAdminGUI ForgotPasswordAdminGUi;
+    
+    public static ForgotPasswordAdminIpEmailGUI ForgotPassEmailGUI;
+    public static String emailOTP=null;
 
     //init sidebar item list
     public static List<SidebarItemDTO> itemList = new ArrayList<>();
@@ -49,7 +55,7 @@ public class GlobalVariable {
     public static HardwareGUI hardware;
     public static ProcessGUI process;
     public static StreamingGUI streaming;
-    public static OthersGUI others;
+    public static OtherGUI others;
     public static ProfileGUI profile;
 
     //sidebar icon url
@@ -69,8 +75,9 @@ public class GlobalVariable {
     public static String getCurrentPath() {
         return currentPath;
     }
-    
-    public static String tokenAdmin=null;
+
+    public static String tokenAdmin = null;
+    public static String idAdmin = null;
 
     //list client
     public static List<ClientDTO> clientList = new ArrayList<>();
@@ -81,9 +88,8 @@ public class GlobalVariable {
     public static List<ProcessDTO> processList = new ArrayList<>();
     //stmp arr process
     public static List<ProcessDTO> processListStmp = new ArrayList<>();
-    
-    
+
     //hardware data
-    public static HardwareDTO hardwareData=null;
+    public static HardwareDTO hardwareData = null;
 
 }

@@ -13,15 +13,16 @@ public class QueuePooling<T> implements Pooling<T> {
 
     @Override
     public T get() {
-        if (data.isEmpty()) data.add(_factory.create());
+//        if (data.isEmpty()) data.add(_factory.create());
 
-        return data.remove();
+//        return data.remove();
+        return _factory.create();
     }
 
     @Override
     public void returnPool(T item) {
         if (item == null) return;
 
-        data.add(item);
+//        data.add(item);
     }
 }

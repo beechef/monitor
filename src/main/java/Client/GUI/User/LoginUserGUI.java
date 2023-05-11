@@ -40,7 +40,7 @@ public class LoginUserGUI extends javax.swing.JFrame {
         var adminId = Integer.parseInt(this.idAminField.getText());
         var uuid = Utilities.getUUID();
 
-        User.adminId = adminId;
+        User.adminId = adminId; 
         sender.send(null, new LoginUserRequest(adminId, uuid));
     }
 
