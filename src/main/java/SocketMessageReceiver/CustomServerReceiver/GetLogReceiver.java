@@ -79,7 +79,7 @@ public class GetLogReceiver extends SocketMessageReceiver<GetLogRequest> {
             var end = Math.min(start + LIMIT_LOG_SIZE, logSize);
 
             var chunk = log.substring(start, end);
-            sender.send(admin.tcpSocket, new GetLogResult(chunk, i == splitSize - 1));
+            sender.send(admin.tcpSocket, new GetLogResult(socketMsg.msg.userUuid, chunk, i == splitSize - 1));
         }
     }
 }

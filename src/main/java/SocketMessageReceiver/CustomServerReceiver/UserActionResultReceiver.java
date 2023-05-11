@@ -26,7 +26,7 @@ public class UserActionResultReceiver extends SocketMessageReceiver<UserActionRe
         if (admin == null) return;
 
         var sender = new UserActionResultSender(server);
-        var result = new UserActionResultServerSide(socketMsg.msg.action, socketMsg.msg.result, socketMsg.msg.message);
+        var result = new UserActionResultServerSide(socketMsg.msg.uuid, socketMsg.msg.action, socketMsg.msg.result, socketMsg.msg.message);
         sender.send(admin.tcpSocket, result);
     }
 }

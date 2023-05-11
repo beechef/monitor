@@ -10,12 +10,14 @@ public class UserActionResultUserSide extends AdminRequest implements Serializab
         FAILED,
     }
 
+    public String uuid;
     public Result result;
     public UserActionRequestAdminSide.Action action;
     public String message;
 
-    public UserActionResultUserSide(int adminId, String adminUuid, Result result, UserActionRequestAdminSide.Action action, String message) {
+    public UserActionResultUserSide(int adminId, String adminUuid, String uuid, Result result, UserActionRequestAdminSide.Action action, String message) {
         super(adminId, adminUuid);
+        this.uuid = uuid;
         this.result = result;
         this.action = action;
         this.message = message;

@@ -34,6 +34,7 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
 
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<GetHardwareInfoServerSide> socketMsg) {
+        var uuid = Utilities.getUUID();
         var hardwareTypes = socketMsg.msg.hardwareTypes;
         var hardwareInfos = new HashMap<GetHardwareInfoAdminSide.HardwareType, ArrayList<KeyPair<String, String>>>();
 
@@ -45,7 +46,7 @@ public class GetHardwareInfoReceiver extends SocketMessageReceiver<GetHardwareIn
         }
 
         var sender = new GetHardwareInfoResultSender(server);
-        sender.send(socketMsg.sender, new GetHardwareInfoResultUserSide(socketMsg.msg.adminId, socketMsg.msg.adminUuid, hardwareInfos));
+        sender.send(socketMsg.sender, new GetHardwareInfoResultUserSide(socketMsg.msg.adminId, socketMsg.msg.adminUuid, uuid, hardwareInfos));
     }
 
     interface HardwareInfo {

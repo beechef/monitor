@@ -8,6 +8,7 @@ import Server.UserController;
 import SocketMessageReceiver.DataType.GetImage.GetImageRequestServerSide;
 import SocketMessageReceiver.DataType.GetImage.GetImageResultUserSide;
 import SocketMessageReceiver.SocketMessageReceiver;
+import Utilities.Utilities;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
@@ -37,6 +38,7 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
     synchronized protected void onExecute(Sender server, SocketMessageGeneric<GetImageRequestServerSide> socketMsg) {
         var adminId = socketMsg.msg.adminId;
         var adminUuid = socketMsg.msg.adminUuid;
+        var uuid = Utilities.getUUID();
 
         var image = getImage();
         var byteBuffer = ByteBuffer.wrap(image);
@@ -50,7 +52,7 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
 
             byteBuffer.get(pos, chunk, 0, chunkSize);
 
-            sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, chunk, pos < image.length));
+            sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, chunk, pos < image.length, uuid));
 
             pos += chunkSize;
         } while (pos < image.length);

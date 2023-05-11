@@ -26,7 +26,7 @@ public class GetImageResultReceiver extends SocketMessageReceiver<GetImageResult
         var sender = new GetImageResultSender(server);
 
         if (admin != null) {
-            sender.send(admin.tcpSocket, new GetImageResultServerSide(socketMsg.msg.image, socketMsg.msg.isEnd));
+            sender.send(admin.tcpSocket, new GetImageResultServerSide(socketMsg.msg.image, socketMsg.msg.isEnd, socketMsg.msg.uuid));
         }
     }
 }
