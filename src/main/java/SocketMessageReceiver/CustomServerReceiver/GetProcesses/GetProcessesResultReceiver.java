@@ -30,7 +30,7 @@ public class GetProcessesResultReceiver extends SocketMessageReceiver<GetProcess
 
         if (admin != null) {
             var sender = new GetProcessesResultSender(server);
-            sender.send(admin.tcpSocket, new GetProcessesResultServerSide(processes));
+            sender.send(admin.tcpSocket, new GetProcessesResultServerSide(socketMsg.msg.uuid, processes));
         }
     }
 }

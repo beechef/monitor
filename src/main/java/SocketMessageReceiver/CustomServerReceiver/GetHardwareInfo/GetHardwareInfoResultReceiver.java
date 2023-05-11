@@ -30,7 +30,7 @@ public class GetHardwareInfoResultReceiver extends SocketMessageReceiver<GetHard
 
         if (admin != null) {
             var sender = new GetHardwareInfoResultSender(server);
-            sender.send(admin.tcpSocket, new GetHardwareInfoResultServerSide(hardwareInfos));
+            sender.send(admin.tcpSocket, new GetHardwareInfoResultServerSide(socketMsg.msg.uuid, hardwareInfos));
         }
     }
 }

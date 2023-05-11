@@ -10,6 +10,7 @@ import SocketMessageReceiver.DataType.ProcessAction.ProcessActionResultUserSide;
 import SocketMessageReceiver.SocketMessageReceiver;
 import SocketMessageReceiver.SocketMessageReceiverCallBack;
 import SocketMessageSender.CustomUserSender.ProcessActionResultSender;
+import Utilities.Utilities;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class ProcessActionReceiver extends SocketMessageReceiver<ProcessActionRe
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<ProcessActionRequestServerSide> socketMsg) {
         var data = socketMsg.msg;
+        var uuid = Utilities.getUUID();
         var adminId = data.adminId;
         var adminUuid = data.adminUuid;
 
@@ -57,7 +59,7 @@ public class ProcessActionReceiver extends SocketMessageReceiver<ProcessActionRe
                         }
                     }
 
-                    sender.send(null, new ProcessActionResultUserSide(adminId, adminUuid, data.processId, data.action, message.toString(), result));
+                    sender.send(null, new ProcessActionResultUserSide(adminId, adminUuid, uuid, data.processId, data.action, message.toString(), result));
 
                 } catch (IOException e) {
                     e.printStackTrace();

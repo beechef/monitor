@@ -7,6 +7,7 @@ import SocketMessageReceiver.DataType.UserActionRequestServerSide;
 import SocketMessageReceiver.DataType.UserActionResultUserSide;
 import SocketMessageReceiver.SocketMessageReceiver;
 import SocketMessageSender.CustomUserSender.UserActionResultSender;
+import Utilities.Utilities;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class UserActionReceiver extends SocketMessageReceiver<UserActionRequestS
     @Override
     protected void onExecute(Sender server, SocketMessageGeneric<UserActionRequestServerSide> socketMsg) {
         var action = socketMsg.msg.action;
+        var uuid = Utilities.getUUID();
         var adminId = socketMsg.msg.adminId;
         var adminUuid = socketMsg.msg.adminUuid;
 
@@ -50,7 +52,7 @@ public class UserActionReceiver extends SocketMessageReceiver<UserActionRequestS
         }
 
         if (response == null) return;
-        sender.send(null, new UserActionResultUserSide(adminId, adminUuid,
+        sender.send(null, new UserActionResultUserSide(adminId, adminUuid, uuid,
                 response.isSuccess ? UserActionResultUserSide.Result.SUCCESS : UserActionResultUserSide.Result.FAILED,
                 action, response.message));
     }

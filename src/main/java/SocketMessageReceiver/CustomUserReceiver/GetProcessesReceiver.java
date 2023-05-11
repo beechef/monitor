@@ -8,6 +8,7 @@ import SocketMessageReceiver.DataType.GetProcessesResult.GetProcessesResultUserS
 import SocketMessageReceiver.DataType.ProcessInfo;
 import SocketMessageReceiver.SocketMessageReceiver;
 import SocketMessageSender.CustomUserSender.GetProcessesResultSender;
+import Utilities.Utilities;
 import oshi.SystemInfo;
 
 public class GetProcessesReceiver extends SocketMessageReceiver<GetProcessesServerSide> {
@@ -25,6 +26,7 @@ public class GetProcessesReceiver extends SocketMessageReceiver<GetProcessesServ
     protected void onExecute(Sender server, SocketMessageGeneric<GetProcessesServerSide> socketMsg) {
         var adminId = socketMsg.msg.adminId;
         var adminUuid = socketMsg.msg.adminUuid;
+        var uuid = Utilities.getUUID();
 
         var operatingSystem = new SystemInfo().getOperatingSystem();
         var processes = operatingSystem.getProcesses();
@@ -62,7 +64,7 @@ public class GetProcessesReceiver extends SocketMessageReceiver<GetProcessesServ
             var processInfoChunk = new ProcessInfo[index - startIndex];
             System.arraycopy(processInfos, startIndex, processInfoChunk, 0, index - startIndex);
 
-            sender.send(socketMsg.sender, new GetProcessesResultUserSide(adminId, adminUuid, processInfoChunk));
+            sender.send(socketMsg.sender, new GetProcessesResultUserSide(adminId, adminUuid, uuid, processInfoChunk));
         }
     }
 }
