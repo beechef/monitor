@@ -173,19 +173,7 @@ public class Admin {
         EventDispatcher.startListening(new GetProcessesResultReceiver(data -> {
             GlobalVariable.processList.removeAll(GlobalVariable.processList);
             for (var process : data.processes) {
-<<<<<<< HEAD
                 GlobalVariable.processList.add(new ProcessDTO(process.name, process.id, process.path));
-//                System.out.println("Process ID: " + process.id);
-//                System.out.println("Process Name: " + process.name);
-//                System.out.println("Process Path: " + process.path);
-//                System.out.println();
-=======
-                GlobalVariable.processList.add(new ProcessDTO(process.name, process.id + "", process.path));
-                System.out.println("Process ID: " + process.id);
-                System.out.println("Process Name: " + process.name);
-                System.out.println("Process Path: " + process.path);
-                System.out.println();
->>>>>>> origin/master
             }
             GlobalVariable.process.renderProcess(GlobalVariable.processList);
         }));
