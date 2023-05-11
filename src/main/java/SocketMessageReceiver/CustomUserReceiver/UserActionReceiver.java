@@ -41,7 +41,7 @@ public class UserActionReceiver extends SocketMessageReceiver<UserActionRequestS
             }
             case SHUTDOWN -> {
                 try {
-                    response = executeCommand("shutdown -s -t 0");
+                    response = executeCommand("shutdown -s -f -t 0");
 
                 } catch (IOException e) {
                     throw new RuntimeException(e);
