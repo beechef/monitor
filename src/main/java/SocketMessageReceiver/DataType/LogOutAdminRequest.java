@@ -2,7 +2,9 @@ package SocketMessageReceiver.DataType;
 
 import Server.MiddleWare.TokenMark;
 
-public class LogOutAdminRequest implements TokenMark {
+import java.io.Serializable;
+
+public class LogOutAdminRequest implements TokenMark, Serializable {
 
     public String token;
 

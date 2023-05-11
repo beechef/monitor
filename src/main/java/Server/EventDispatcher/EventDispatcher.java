@@ -42,6 +42,13 @@ public class EventDispatcher {
         getEvents(head, subHead).remove(event);
     }
 
+    public static void stopListening(SocketMessageEvent event) {
+        var head = event.getHeadByte();
+        var subHead = event.getSubHeadByte();
+        getEvents(head, subHead).remove(event);
+    }
+
+
     public static void stopListening(String event, ExecutableData<Object> data) {
         getEvents(event).remove(data);
     }
@@ -61,7 +68,8 @@ public class EventDispatcher {
     public static void emitEvent(Sender server, byte head, byte subHead, SocketMessage data) {
         ArrayList<SocketMessageEvent> events = getEvents(head, subHead);
 
-        for (SocketMessageEvent event : events) {
+        for (int i = 0; i < events.size(); i++) {
+            SocketMessageEvent event = events.get(i);
             event.execute(server, data);
         }
     }
