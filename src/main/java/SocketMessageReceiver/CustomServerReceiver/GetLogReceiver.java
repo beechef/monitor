@@ -51,7 +51,7 @@ public class GetLogReceiver extends SocketMessageReceiver<GetLogRequest> {
         try {
             var results = DatabaseConnector.select(USER_LOG_TABLE, new String[]{LOG}, conditions);
 
-            while (results.next()) log.append(results.getString(LOG));
+            while (!results.isClosed() && results.next()) log.append(results.getString(LOG));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

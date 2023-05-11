@@ -234,8 +234,18 @@ public class TCPServer implements Server {
         isSending = true;
 
         var clientBuffer = bufferQueue.remove();
+        if (clientBuffer == null) {
+            if (bufferQueue.size() > 0) {
+                send();
+            } else {
+                isSending = false;
+            }
+            return;
+        }
+
         var client = clientBuffer.client;
         var buffer = clientBuffer.buffer;
+
 
         client.write(buffer, null, new CompletionHandler<>() {
             @Override
