@@ -18,7 +18,6 @@ Client\GUI\Component\RowTableClient$3.class
 Client\GUI\Component\HeaderTableClient.class
 Client\GUI\Component\ListClientGUI$1.class
 Server\EventDispatcher\SocketMessageEvent.class
-Client\GUI\Component\OthersGUI$3.class
 Client\GUI\Component\ProcessGUI$1.class
 SocketMessageReceiver\DataType\RegisterResultRequest$Result.class
 Client\GUI\Admin\LoginGUI$4.class
@@ -49,7 +48,6 @@ SocketMessageReceiver\DataType\RegisterResultRequest.class
 Client\Admin.class
 Server\EventDispatcher\MiddlewareSocketMessageEvent.class
 Server\ServerInstance\Sender.class
-Client\GUI\Component\OthersGUI$2.class
 Client\GUI\Admin\MainGUI$2.class
 SocketMessageSender\CustomAdminSender\LoginSender.class
 Server\ServerInstance\Message.class
@@ -57,7 +55,6 @@ Server\EventDispatcher\EventDispatcher.class
 Server\MiddleWare\EncryptPassword.class
 Client\GUI\Component\RowTableProcess$4.class
 Client\GUI\Component\ListClientGUI.class
-Client\GUI\User\LoginGUI.class
 Client\GUI\Component\RowTableClient$4.class
 SocketMessageReceiver\CustomAdminReceiver\GetUserResultReceiver.class
 Utilities\Utilities.class
@@ -75,7 +72,6 @@ Server\EventDispatcher\EventHead\EventHeadByte$UserData.class
 Client\GUI\Component\ProcessGUI.class
 SocketMessageSender\CustomAdminSender\RegisterSender.class
 Client\GUI\Admin\MainGUI$1.class
-Client\GUI\Component\OthersGUI$1.class
 Server\Database\KeyPair.class
 Client\GUI\Component\ProfileGUI.class
 Client\GUI\Lib\ProcessDTO.class
@@ -91,7 +87,6 @@ Client\GUI\Admin\RegisterGUI$1.class
 Client\GUI\Component\HeaderTableClient$4.class
 Server\EventDispatcher\EventName.class
 Server\EventDispatcher\ExecutableData.class
-Client\GUI\Component\OthersGUI.class
 Client\GUI\Component\SearchPanel$1.class
 Client\GUI\Component\MyScrollBarUI.class
 Client\GUI\Component\RowTableClient$7.class
@@ -99,7 +94,6 @@ Server\EventDispatcher\SocketMessage.class
 Server\ServerInstance\Server.class
 Client\GUI\Component\RowTableClient$10.class
 Client\GUI\Admin\LoginGUI.class
-Client\User$1.class
 Client\GUI\Component\RowTableProcess$1.class
 SocketMessageReceiver\CustomServerReceiver\RegisterReceiver.class
 SocketMessageSender\CustomUserSender\LoginSender.class
@@ -128,7 +122,6 @@ SocketMessageReceiver\SocketMessageReceiverCallBack.class
 Client\GUI\Admin\RegisterGUI$5.class
 Server\ServerInstance\TCPServer$3.class
 Client\GUI\Admin\MainGUI$5.class
-Client\GUI\User\LoginGUI$1.class
 Server\EventDispatcher\SocketMessageGeneric.class
 Client\GUI\Component\RowTableClient$12.class
 Client\GUI\Component\StreamingGUI.class
@@ -151,7 +144,6 @@ Client\GUI\Component\MyScrollBarUI$1.class
 Server\UserController.class
 Client\GUI\Component\RowTableClient$13.class
 Client\GUI\Component\StreamingGUI$3.class
-Client\GUI\User\LoginGUI$2.class
 Server\Database\DatabaseConnector.class
 Client\GUI\Lib\RoundBorder.class
 SocketMessageReceiver\SocketMessageReceiver.class

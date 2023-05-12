@@ -4,7 +4,10 @@ import Server.EventDispatcher.*;
 import Server.ServerInstance.Pooling.BufferPooling;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.InetSocketAddress;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousServerSocketChannel;
@@ -133,7 +136,7 @@ public class TCPServer implements Server {
 
                 if (numBytes == -1) {
                     try {
-                        removeClient(client, buffer);
+                        removeClient(client);
                     } catch (IOException ignored) {
                     }
                     return;
@@ -150,19 +153,20 @@ public class TCPServer implements Server {
                 }
 
                 buffer.clear();
+                destroyBuffer(buffer);
             }
 
             @Override
             public void failed(Throwable exc, Void attachment) {
                 try {
-                    removeClient(client, buffer);
+                    removeClient(client);
                 } catch (IOException ignored) {
                 }
             }
         });
     }
 
-    private void removeClient(AsynchronousSocketChannel client, ByteBuffer buffer) throws IOException {
+    private void removeClient(AsynchronousSocketChannel client) throws IOException {
         _clients.remove(client);
 //        _bufferPooling.returnPool(buffer);
 
@@ -207,7 +211,7 @@ public class TCPServer implements Server {
         }
     }
 
-    private Queue<ClientBuffer> bufferQueue = new LinkedList<>();
+    private final Queue<ClientBuffer> bufferQueue = new LinkedList<>();
 
     @Override
     public void send(Object target, Message msg) {
@@ -223,7 +227,7 @@ public class TCPServer implements Server {
 
         var clientBuffer = new ClientBuffer(client, buffer);
 
-        if (bufferQueue.size() == 0 && !isSending) {
+        if (bufferQueue.isEmpty() && !isSending) {
             bufferQueue.add(clientBuffer);
             send();
         } else {
@@ -238,12 +242,11 @@ public class TCPServer implements Server {
 
         var clientBuffer = bufferQueue.remove();
         if (clientBuffer == null) {
-            if (bufferQueue.size() > 0) {
+            if (!bufferQueue.isEmpty()) {
                 send();
             } else {
                 isSending = false;
             }
-            clientBuffer = null;
             return;
         }
 
@@ -254,7 +257,9 @@ public class TCPServer implements Server {
             @Override
             public void completed(Integer result, Object attachment) {
                 buffer.clear();
-                if (bufferQueue.size() > 0) {
+                destroyBuffer(buffer);
+
+                if (!bufferQueue.isEmpty()) {
                     send();
                 } else {
                     isSending = false;
@@ -279,6 +284,28 @@ public class TCPServer implements Server {
     public int getBuffer() {
         return _buffer;
     }
+    
+    public static void destroyBuffer(Buffer buffer) {
+    if(buffer.isDirect()) {
+        try {
+            if(!buffer.getClass().getName().equals("java.nio.DirectByteBuffer")) {
+                Field attField = buffer.getClass().getDeclaredField("att");
+                attField.setAccessible(true);
+                buffer = (Buffer) attField.get(buffer);
+            }
+
+            buffer.clear();
+            Method cleanerMethod = buffer.getClass().getMethod("cleaner");
+            cleanerMethod.setAccessible(true);
+            Object cleaner = cleanerMethod.invoke(buffer);
+            Method cleanMethod = cleaner.getClass().getMethod("clean");
+            cleanMethod.setAccessible(true);
+            cleanMethod.invoke(cleaner);
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
 
     class ClientBuffer {
 

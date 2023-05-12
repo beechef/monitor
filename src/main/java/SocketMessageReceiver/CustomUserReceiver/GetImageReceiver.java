@@ -1,5 +1,6 @@
 package SocketMessageReceiver.CustomUserReceiver;
 
+import Client.TCPClient;
 import Server.EventDispatcher.EventHead.EventHeadByte;
 import Server.EventDispatcher.SocketMessageGeneric;
 import Server.ServerInstance.Pooling.BufferPooling;
@@ -24,6 +25,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServerSide> {
+
     @Override
     public byte getHeadByte() {
         return EventHeadByte.USER_DATA;
@@ -57,7 +59,8 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
             pos += chunkSize;
         } while (pos < image.length);
 
-
+        byteBuffer.clear();
+        TCPClient.destroyBuffer(byteBuffer);
 //        sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, new byte[0], true));
     }
 
@@ -82,8 +85,14 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
             writer.setOutput(ios);
 
             javax.imageio.ImageIO.write(image, "png", bos);
+            var data = bos.toByteArray();
 
-            return bos.toByteArray();
+            image.flush();
+            bos.close();
+            ios.close();
+
+            image = null;
+            return data;
 
         } catch (AWTException | IOException e) {
             throw new RuntimeException(e);

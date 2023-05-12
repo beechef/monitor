@@ -11,6 +11,7 @@ import Client.GUI.Lib.HardwareDTO;
 import Client.GUI.Lib.ProcessDTO;
 import Server.EventDispatcher.EventDispatcher;
 import SocketMessageReceiver.CustomAdminReceiver.*;
+import SocketMessageReceiver.CustomServerReceiver.LogOutAdminReceiver;
 import SocketMessageReceiver.CustomUserReceiver.GetHardwareInfoReceiver;
 import SocketMessageReceiver.DataType.*;
 import SocketMessageSender.CustomAdminSender.GetLogSender;
@@ -41,7 +42,7 @@ public class Admin {
         var port = serverInfo.port;
 
         var tcpClient = new TCPClient(host, port);
-        tcpClient.setBuffer(2048 * 1024);
+        tcpClient.setBuffer(1024 * 1024);
         tcpClient.start();
 
         var udpClient = new UDPClient("localhost", 4446);
@@ -60,6 +61,7 @@ public class Admin {
 //        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
         EventDispatcher.startListening(new GetUserResultReceiver(data -> {
             System.out.println("load user");
+            
             for (var user : data.userInfos) {
 
                 boolean stmpStatus = false;
@@ -277,6 +279,8 @@ public class Admin {
                     GlobalVariable.others.renderKeylogReciver(data.log);
                 }
                 ));
+
+        
 
         EventDispatcher.startListening(
                 new UserActionResultReceiver((data -> {

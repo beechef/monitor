@@ -112,8 +112,12 @@ public class StreamingGUI extends javax.swing.JPanel {
     private final ArrayList<Byte> bytes = new ArrayList<>();
 
     synchronized private void render(GetImageResultServerSide data) {
-
+        if (data.uuid == null ? GlobalVariable.selectedClientInfor.getID() != null : !data.uuid.equals(GlobalVariable.selectedClientInfor.getID())) {
+            return;
+        }
         this.currentImageReciver = data;
+        currentImageCapture = currentImageReciver;
+
         if (data.image.length == 0) {
             return;
         }
@@ -149,8 +153,10 @@ public class StreamingGUI extends javax.swing.JPanel {
     }
 
     private void renderCapture() {
-        GetImageResultServerSide data = currentImageReciver;
-        currentImageCapture = currentImageReciver;
+        if (this.currentImageCapture == null) {
+            return;
+        }
+        GetImageResultServerSide data = currentImageCapture;
 
         if (data.image.length == 0) {
             return;
@@ -187,6 +193,9 @@ public class StreamingGUI extends javax.swing.JPanel {
     }
 
     private void saveImage() {
+        if (this.currentImageCapture == null) {
+            return;
+        }
         JFileChooser fileChooser = new JFileChooser();
         int userSelection = fileChooser.showSaveDialog(panelPicture);
 
@@ -379,7 +388,9 @@ public class StreamingGUI extends javax.swing.JPanel {
 
     private void btnCaptureMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnCaptureMouseClicked
         // TODO add your handling code here:
-
+        if (this.currentImageReciver == null) {
+            return;
+        }
         renderCapture();
     }//GEN-LAST:event_btnCaptureMouseClicked
 

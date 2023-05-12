@@ -24,7 +24,7 @@ public class Main {
         ForgetPasswordReceiver.login(email, password);
 
         TCPServer tcpServer = new TCPServer(4445);
-        tcpServer.setBuffer(2048 * 1024);
+        tcpServer.setBuffer(1024 * 1024);
 
         tcpServer.addOnStart(Key.JWTKey::readKey);
         tcpServer.addOnStart(DatabaseConnector::connect);

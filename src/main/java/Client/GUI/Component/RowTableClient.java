@@ -19,12 +19,15 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 
 /**
  *
@@ -34,6 +37,7 @@ public class RowTableClient extends javax.swing.JPanel {
 
     private ClientDTO client;
     private final int uuidLength = 5;
+    private StreamingUserGUI streamingUserGUI = null;
 
     public ClientDTO getClient() {
         return client;
@@ -212,11 +216,11 @@ public class RowTableClient extends javax.swing.JPanel {
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         // TODO add your handling code here:
-        if(this.client.getStatus()){
+        if (this.client.getStatus()) {
             try {
-                System.out.println("selected client :"+ this.client.toString());
-                GlobalVariable.selectedClient=true;
-                GlobalVariable.selectedClientInfor=this.client;
+                System.out.println("selected client :" + this.client.toString());
+                GlobalVariable.selectedClient = true;
+                GlobalVariable.selectedClientInfor = this.client;
                 //rerender
                 GlobalVariable.main.renderSidebar();
                 GlobalVariable.main.validate();
@@ -256,10 +260,24 @@ public class RowTableClient extends javax.swing.JPanel {
 
             @Override
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                System.out.println("render new jfarme");
-//                System.out.println(GlobalVariable.listClient.toString());
-//                GlobalVariable.main.validate();
-//                GlobalVariable.main.repaint();
+                System.out.println("render streaming client");
+                if (!client.getStatus()) {
+                    return;
+                }
+                if (streamingUserGUI == null) {
+                    streamingUserGUI = new StreamingUserGUI(client);
+                    streamingUserGUI.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);//streamingUserGUI.reset();
+                    streamingUserGUI.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            streamingUserGUI.reset();
+                        }
+                    });
+                    streamingUserGUI.setVisible(true);
+                } else {
+                    streamingUserGUI.init();
+                    streamingUserGUI.setVisible(true);
+                }
 
             }
         });

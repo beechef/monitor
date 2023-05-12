@@ -16,8 +16,10 @@ import Client.GUI.Lib.RoundBorder;
 import Client.GUI.Lib.SidebarItemDTO;
 import SocketMessageReceiver.DataType.GetHardwareInfo.GetHardwareInfoAdminSide;
 import SocketMessageReceiver.DataType.GetProcesses.GetProcessesAdminSide;
+import SocketMessageReceiver.DataType.LogOutAdminRequest;
 import SocketMessageSender.CustomAdminSender.GetHardwareInfoSender;
 import SocketMessageSender.CustomAdminSender.GetProcessesSender;
+import SocketMessageSender.CustomAdminSender.LogOutAdminSender;
 
 import java.awt.Cursor;
 import java.io.IOException;
@@ -74,6 +76,8 @@ public class MainGUI extends javax.swing.JFrame {
         renderHeader(this);
 
     }
+    
+    
 
     public void renderSidebar() throws IOException {
         //active menu item
@@ -450,6 +454,10 @@ public class MainGUI extends javax.swing.JFrame {
 
     private void MenuItem1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuItem1MouseClicked
         // click to hardware
+        sendRequestGetHardWare();
+
+    }//GEN-LAST:event_MenuItem1MouseClicked
+    public void sendRequestGetHardWare(){
         if (GlobalVariable.selectedClient) {
             System.out.println("Amin request get hardware of user uuid: " + GlobalVariable.selectedClientInfor.getID());
             var sender = new GetHardwareInfoSender(ClientInstance.tcpClient);
@@ -460,9 +468,7 @@ public class MainGUI extends javax.swing.JFrame {
 
             sender.send(null, new GetHardwareInfoAdminSide(hardwareTypes, GlobalVariable.selectedClientInfor.getID(), GlobalVariable.tokenAdmin));
         }
-
-    }//GEN-LAST:event_MenuItem1MouseClicked
-
+    }
     private void MenuItem2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MenuItem2MouseClicked
         // click to process
         if (GlobalVariable.selectedClient) {
@@ -623,6 +629,7 @@ public class MainGUI extends javax.swing.JFrame {
                     }
                     for (int i = 0; i < GlobalVariable.itemList.size(); i++) {
                         if (e == GlobalVariable.itemList.get(i) && e.clientRequest && GlobalVariable.selectedClient || e == GlobalVariable.itemList.get(i) && !e.clientRequest) {
+             
                             GlobalVariable.itemList.get(i).state = true;
                             //handel funcion
                             if (GlobalVariable.itemList.get(i).compContent != null) {
@@ -649,7 +656,19 @@ public class MainGUI extends javax.swing.JFrame {
                                 GlobalVariable.main.repaint();
 
                             } else {
-                                System.out.println("logout");
+                                if (GlobalVariable.itemList.get(i).compTitle==GlobalVariable.main.MenuItem6) {
+                                    System.out.println("handle logout");
+//                                    new LoginAdminUdpSender(ClientInstance.udpClient).send(null, new LoginAdminUdpRequest(token));
+                                    new LogOutAdminSender(ClientInstance.tcpClient).send(null, new LogOutAdminRequest(GlobalVariable.tokenAdmin) );
+                                    GlobalVariable.main.setVisible(false);
+                                    
+                                    GlobalVariable.LoginAdminGUI.setVisible(true);
+//                                    GlobalVariable.others.renderData();
+                                }
+                                if (GlobalVariable.itemList.get(i).compTitle==GlobalVariable.main.MenuItem5) {
+                                    return;
+//                                    GlobalVariable.others.renderData();
+                                }
                             }
                             //end handel function
                         } else {

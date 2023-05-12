@@ -82,6 +82,9 @@ public class LoginGUI extends javax.swing.JFrame {
             GlobalVariable.LoginAdminGUI.setVisible(false);
             GlobalVariable.main = new MainGUI();
             GlobalVariable.main.setVisible(true);
+            //reset 
+            GlobalVariable.tokenAdmin =null;
+            GlobalVariable.clientList.removeAll(GlobalVariable.clientList);
 
 
         } catch (IOException ex) {
@@ -101,11 +104,11 @@ public class LoginGUI extends javax.swing.JFrame {
 
         new LoginAdminUdpSender(ClientInstance.udpClient).send(null, new LoginAdminUdpRequest(token));
 
-        var keyLogSender = new GetLogSender(ClientInstance.tcpClient);
-        var from = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
-        var to = new Date();
-        System.out.println(from);
-        System.out.println(to);
+//        var keyLogSender = new GetLogSender(ClientInstance.tcpClient);
+//        var from = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+//        var to = new Date();
+//        System.out.println(from);
+//        System.out.println(to);
 
 //        keyLogSender.send(null, new GetLogRequest("03000200-0400-0500-0006-000700080009", GlobalVariable.tokenAdmin, from, to));
 

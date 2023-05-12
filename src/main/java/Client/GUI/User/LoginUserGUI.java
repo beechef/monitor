@@ -3,6 +3,9 @@ package Client.GUI.User;
 import Client.ClientInstance;
 import Client.GUI.Lib.RoundBorder;
 import Client.User;
+import Server.EventDispatcher.EventDispatcher;
+import SocketMessageReceiver.CustomAdminReceiver.LoginUserResultReceiver;
+import SocketMessageReceiver.CustomUserReceiver.UserActionReceiver;
 import SocketMessageReceiver.DataType.LoginUserRequest;
 import SocketMessageSender.CustomUserSender.LoginSender;
 import Utilities.Utilities;
@@ -10,6 +13,7 @@ import Utilities.Utilities;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 /**
  * @author Admin
@@ -19,7 +23,6 @@ public class LoginUserGUI extends javax.swing.JFrame {
     /**
      * Creates new form LoginGUI
      */
-
     private LoginSender sender;
 
     Color primaryColor = new java.awt.Color(46, 79, 79);
@@ -34,15 +37,26 @@ public class LoginUserGUI extends javax.swing.JFrame {
 //        handelSetMessage(this.message);
 
 //        this.idAminField.setMargin(new Insets(0,10,0,10));
+//        LoginEvent()
     }
 
     private void sendRequest() {
-        var adminId = Integer.parseInt(this.idAminField.getText());
-        var uuid = Utilities.getUUID();
 
-        User.adminId = adminId; 
-        sender.send(null, new LoginUserRequest(adminId, uuid));
+        try {
+            var adminId = Integer.parseInt(this.idAminField.getText());
+            var uuid = Utilities.getUUID();
+            User.adminId = adminId;
+            sender.send(null, new LoginUserRequest(adminId, uuid));
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "ID admin không hợp lệ", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+
     }
+//    private void LoginEvent() {
+//        EventDispatcher.startListening(new LoginUserResultReceiver((LoginUserResultRequest  data)->{
+//            System.out.println(data);
+//    }));
+//    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -266,7 +280,6 @@ public class LoginUserGUI extends javax.swing.JFrame {
             sendRequest();
         }
     }//GEN-LAST:event_idAminFieldKeyPressed
-
 
     /**
      * @param args the command line arguments
