@@ -98,14 +98,14 @@ public class RegisterGUI extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         inpEmail = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        inpPassword = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         btnSignUp = new javax.swing.JLabel();
         labelMessage = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        inpConfirmPassword = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         backToSign = new javax.swing.JLabel();
+        inpPassword = new javax.swing.JPasswordField();
+        inpConfirmPassword = new javax.swing.JPasswordField();
         jPanel4 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
         wrapperRightPanel = new javax.swing.JPanel();
@@ -144,18 +144,6 @@ public class RegisterGUI extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setText("Email");
 
-        inpPassword.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(46, 79, 79)));
-        inpPassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inpPasswordActionPerformed(evt);
-            }
-        });
-        inpPassword.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                inpPasswordKeyPressed(evt);
-            }
-        });
-
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel5.setText("Password");
 
@@ -176,13 +164,6 @@ public class RegisterGUI extends javax.swing.JFrame {
 
         jLabel9.setBorder(javax.swing.BorderFactory.createMatteBorder(2, 0, 0, 0, new java.awt.Color(46, 79, 79)));
 
-        inpConfirmPassword.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(46, 79, 79)));
-        inpConfirmPassword.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                inpConfirmPasswordActionPerformed(evt);
-            }
-        });
-
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel10.setText("Confirm password");
 
@@ -195,6 +176,18 @@ public class RegisterGUI extends javax.swing.JFrame {
             }
         });
 
+        inpPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inpPasswordKeyPressed(evt);
+            }
+        });
+
+        inpConfirmPassword.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                inpConfirmPasswordKeyPressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
@@ -202,16 +195,18 @@ public class RegisterGUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(inpConfirmPassword)
+                    .addComponent(inpPassword)
                     .addComponent(backToSign, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 317, Short.MAX_VALUE)
-                    .addComponent(labelMessage, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel6Layout.createSequentialGroup()
+                        .addGap(96, 96, 96)
+                        .addComponent(labelMessage, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(btnSignUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(inpPassword)
                     .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(inpEmail)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(inpConfirmPassword)
                     .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(53, 53, 53))
         );
@@ -229,12 +224,12 @@ public class RegisterGUI extends javax.swing.JFrame {
                 .addGap(30, 30, 30)
                 .addComponent(jLabel5)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inpPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addComponent(inpPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
                 .addComponent(jLabel10)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(inpConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(inpConfirmPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(labelMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32)
                 .addComponent(btnSignUp, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -343,17 +338,9 @@ public class RegisterGUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void inpPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inpPasswordActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_inpPasswordActionPerformed
-
     private void inpEmailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inpEmailActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_inpEmailActionPerformed
-
-    private void inpConfirmPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inpConfirmPasswordActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_inpConfirmPasswordActionPerformed
 
     private void btnSignUpMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSignUpMouseClicked
         sendRequest();
@@ -366,18 +353,25 @@ public class RegisterGUI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_inpEmailKeyPressed
 
-    private void inpPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inpPasswordKeyPressed
-        // TODO add your handling code here:
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            sendRequest();
-        }
-    }//GEN-LAST:event_inpPasswordKeyPressed
-
     private void backToSignMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_backToSignMouseClicked
         // TODO add your handling code here:
         this.setVisible(false);
         GlobalVariable.LoginAdminGUI.setVisible(true);
     }//GEN-LAST:event_backToSignMouseClicked
+
+    private void inpPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inpPasswordKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            this.inpConfirmPassword.requestFocus();
+        }
+    }//GEN-LAST:event_inpPasswordKeyPressed
+
+    private void inpConfirmPasswordKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_inpConfirmPasswordKeyPressed
+        // TODO add your handling code here:
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            sendRequest();
+        }
+    }//GEN-LAST:event_inpConfirmPasswordKeyPressed
 
     /**
      * @param args the command line arguments
@@ -419,9 +413,9 @@ public class RegisterGUI extends javax.swing.JFrame {
     private javax.swing.JLabel backToSign;
     private javax.swing.JLabel btnSignUp;
     private javax.swing.JLabel img;
-    private javax.swing.JTextField inpConfirmPassword;
+    private javax.swing.JPasswordField inpConfirmPassword;
     private javax.swing.JTextField inpEmail;
-    private javax.swing.JTextField inpPassword;
+    private javax.swing.JPasswordField inpPassword;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel4;
