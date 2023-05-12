@@ -5,9 +5,13 @@ import oshi.SystemInfo;
 import java.io.*;
 
 public class Utilities {
+
     public static Object castBytes(byte[] bytes) throws IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-        return in.readObject();
+        var obj = in.readObject();
+        
+        in.close();
+        return obj;
     }
 
     public static byte[] toBytes(Object data) throws IOException {
@@ -16,8 +20,12 @@ public class Utilities {
 
         out.writeObject(data);
         out.flush();
-
-        return bos.toByteArray();
+        
+        var bytes = bos.toByteArray();
+        out.close();
+        bos.close();
+        
+        return bytes;
     }
 
     public static String getUUID() {
@@ -35,4 +43,3 @@ public class Utilities {
         return hz / Math.pow(10, 9);
     }
 }
-

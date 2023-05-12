@@ -657,7 +657,7 @@ public class MainGUI extends javax.swing.JFrame {
 
                             } else {
                                 if (GlobalVariable.itemList.get(i).compTitle==GlobalVariable.main.MenuItem6) {
-                                    System.out.println("handle logout");
+                                    System.out.println("handle logout" + GlobalVariable.tokenAdmin);
 //                                    new LoginAdminUdpSender(ClientInstance.udpClient).send(null, new LoginAdminUdpRequest(token));
                                     new LogOutAdminSender(ClientInstance.tcpClient).send(null, new LogOutAdminRequest(GlobalVariable.tokenAdmin) );
                                     GlobalVariable.main.setVisible(false);

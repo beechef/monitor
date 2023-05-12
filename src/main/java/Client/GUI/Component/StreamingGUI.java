@@ -39,6 +39,8 @@ public class StreamingGUI extends javax.swing.JPanel {
 
     private GetImageResultServerSide currentImageReciver = null;
     private GetImageResultServerSide currentImageCapture = null;
+    private GetImageResultReceiver receiver = new GetImageResultReceiver(this::render);
+
 
     public StreamingGUI() {
         initComponents();
@@ -73,6 +75,8 @@ public class StreamingGUI extends javax.swing.JPanel {
             streamingThread = null;
         }
 
+        System.out.println("Init");
+
         streamingThread = new Thread(() -> {
             var fps = 12;
             var sender = new GetImageSender(ClientInstance.tcpClient);
@@ -102,16 +106,17 @@ public class StreamingGUI extends javax.swing.JPanel {
     }
 
     private void listenEvent() {
-        EventDispatcher.startListening(new GetImageResultReceiver(this::render));
+        EventDispatcher.startListening(receiver);
     }
 
     private void removeEvent() {
-        EventDispatcher.stopListening(new GetImageResultReceiver(this::render));
+        EventDispatcher.stopListening(receiver);
     }
 
     private final ArrayList<Byte> bytes = new ArrayList<>();
 
     synchronized private void render(GetImageResultServerSide data) {
+        if (!isVisible()) return;
         if (data.uuid == null ? GlobalVariable.selectedClientInfor.getID() != null : !data.uuid.equals(GlobalVariable.selectedClientInfor.getID())) {
             return;
         }

@@ -112,6 +112,12 @@ public class UserController {
         }
     }
 
+    public static void removeAdmin(int adminId, String uuid){
+        if (admins.containsKey(adminId)) {
+            admins.get(adminId).removeIf(x -> x.uuid.equals(uuid));
+        }
+    }
+
     public static ArrayList<UserInfo> getUsers(int adminId) {
         return users.get(adminId);
     }

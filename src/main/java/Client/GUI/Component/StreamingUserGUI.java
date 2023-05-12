@@ -12,6 +12,7 @@ import SocketMessageReceiver.CustomAdminReceiver.GetImageResultReceiver;
 import SocketMessageReceiver.DataType.GetImage.GetImageRequestAdminSide;
 import SocketMessageReceiver.DataType.GetImage.GetImageResultServerSide;
 import SocketMessageSender.CustomAdminSender.GetImageSender;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 /**
- *
  * @author Admin
  */
 public class StreamingUserGUI extends javax.swing.JFrame {
@@ -32,6 +32,7 @@ public class StreamingUserGUI extends javax.swing.JFrame {
     public static Thread streamingThread;
     public static boolean isStreaming = false;
     private HashMap<Thread, Boolean> flags = new HashMap<>();
+    private GetImageResultReceiver receiver = new GetImageResultReceiver(this::render);
 
     public StreamingUserGUI(ClientDTO client) {
         this.client = client;
@@ -44,6 +45,7 @@ public class StreamingUserGUI extends javax.swing.JFrame {
         panelStream.setVisible(true);
 
         listenEvent();
+        System.out.println("Init");
 
         if (streamingThread != null) {
             flags.put(streamingThread, false);
@@ -81,12 +83,13 @@ public class StreamingUserGUI extends javax.swing.JFrame {
     }
 
     private void listenEvent() {
-        EventDispatcher.startListening(new GetImageResultReceiver(this::render));
+        EventDispatcher.startListening(receiver);
     }
 
     private final ArrayList<Byte> bytes = new ArrayList<>();
 
     synchronized private void render(GetImageResultServerSide data) {
+        if (!isVisible()) return;
         if (data.uuid == null ? this.client.getID() != null : !data.uuid.equals(this.client.getID())) {
             return;
         }
@@ -115,7 +118,7 @@ public class StreamingUserGUI extends javax.swing.JFrame {
 //                panelStream.validate();
 //                panelStream.repaint();
                 GlobalVariable.main.validate();
-                image.flush();
+//                image.flush();
 //                GlobalVariable.main.repaint();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -138,7 +141,7 @@ public class StreamingUserGUI extends javax.swing.JFrame {
     }
 
     private void removeEvent() {
-        EventDispatcher.stopListening(new GetImageResultReceiver(this::render));
+        EventDispatcher.stopListening(receiver);
     }
 
     /**
@@ -158,12 +161,12 @@ public class StreamingUserGUI extends javax.swing.JFrame {
         javax.swing.GroupLayout panelStreamLayout = new javax.swing.GroupLayout(panelStream);
         panelStream.setLayout(panelStreamLayout);
         panelStreamLayout.setHorizontalGroup(
-            panelStreamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 502, Short.MAX_VALUE)
+                panelStreamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 502, Short.MAX_VALUE)
         );
         panelStreamLayout.setVerticalGroup(
-            panelStreamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 327, Short.MAX_VALUE)
+                panelStreamLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 327, Short.MAX_VALUE)
         );
 
         getContentPane().add(panelStream, "card2");
@@ -178,7 +181,7 @@ public class StreamingUserGUI extends javax.swing.JFrame {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

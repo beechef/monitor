@@ -294,6 +294,8 @@ public class Admin {
         var shutdownThread = new Thread(() -> {
             var sender = new LogOutAdminSender(tcpClient);
             sender.send(null, new LogOutAdminRequest(GlobalVariable.tokenAdmin));
+            
+            System.out.println("End Thread" + GlobalVariable.tokenAdmin);
         });
 
         Runtime.getRuntime()

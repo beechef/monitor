@@ -214,7 +214,7 @@ public class TCPServer implements Server {
     private final Queue<ClientBuffer> bufferQueue = new LinkedList<>();
 
     @Override
-    public void send(Object target, Message msg) {
+     public void send(Object target, Message msg) {
         if (!(target instanceof AsynchronousSocketChannel client)) {
             return;
         }
@@ -238,39 +238,57 @@ public class TCPServer implements Server {
     private boolean isSending = false;
 
     private void send() {
-        isSending = true;
+        try {
+            isSending = true;
 
-        var clientBuffer = bufferQueue.remove();
-        if (clientBuffer == null) {
+            if (bufferQueue.isEmpty()) {
+//                isSending = false;
+                return;
+            }
+
+            var clientBuffer = bufferQueue.remove();
+            if (clientBuffer == null) {
+//                if (!bufferQueue.isEmpty()) {
+//                    send();
+//                } else {
+//                    isSending = false;
+//                }
+                return;
+            }
+
+            var client = clientBuffer.client;
+            var buffer = clientBuffer.buffer;
+
+            client.write(buffer, null, new CompletionHandler<>() {
+                @Override
+                public void completed(Integer result, Object attachment) {
+                    buffer.clear();
+                    destroyBuffer(buffer);
+
+                    if (!bufferQueue.isEmpty()) {
+                        send();
+                    } else {
+                        isSending = false;
+                    }
+                }
+
+                @Override
+                public void failed(Throwable exc, Object attachment) {
+                    buffer.clear();
+                    destroyBuffer(buffer);
+
+                    if (!bufferQueue.isEmpty()) {
+                        send();
+                    } else {
+                        isSending = false;
+                    }
+                }
+            });
+        } catch (Exception e) {
             if (!bufferQueue.isEmpty()) {
                 send();
-            } else {
-                isSending = false;
             }
-            return;
         }
-
-        var client = clientBuffer.client;
-        var buffer = clientBuffer.buffer;
-
-        client.write(buffer, null, new CompletionHandler<>() {
-            @Override
-            public void completed(Integer result, Object attachment) {
-                buffer.clear();
-                destroyBuffer(buffer);
-
-                if (!bufferQueue.isEmpty()) {
-                    send();
-                } else {
-                    isSending = false;
-                }
-            }
-
-            @Override
-            public void failed(Throwable exc, Object attachment) {
-
-            }
-        });
     }
 
     public void onSend(AsynchronousSocketChannel client, Message msg) {
@@ -284,28 +302,28 @@ public class TCPServer implements Server {
     public int getBuffer() {
         return _buffer;
     }
-    
-    public static void destroyBuffer(Buffer buffer) {
-    if(buffer.isDirect()) {
-        try {
-            if(!buffer.getClass().getName().equals("java.nio.DirectByteBuffer")) {
-                Field attField = buffer.getClass().getDeclaredField("att");
-                attField.setAccessible(true);
-                buffer = (Buffer) attField.get(buffer);
-            }
 
-            buffer.clear();
-            Method cleanerMethod = buffer.getClass().getMethod("cleaner");
-            cleanerMethod.setAccessible(true);
-            Object cleaner = cleanerMethod.invoke(buffer);
-            Method cleanMethod = cleaner.getClass().getMethod("clean");
-            cleanMethod.setAccessible(true);
-            cleanMethod.invoke(cleaner);
-        } catch(Exception e) {
-            e.printStackTrace();
+    public static void destroyBuffer(Buffer buffer) {
+        if (buffer.isDirect()) {
+            try {
+                if (!buffer.getClass().getName().equals("java.nio.DirectByteBuffer")) {
+                    Field attField = buffer.getClass().getDeclaredField("att");
+                    attField.setAccessible(true);
+                    buffer = (Buffer) attField.get(buffer);
+                }
+
+                buffer.clear();
+                Method cleanerMethod = buffer.getClass().getMethod("cleaner");
+                cleanerMethod.setAccessible(true);
+                Object cleaner = cleanerMethod.invoke(buffer);
+                Method cleanMethod = cleaner.getClass().getMethod("clean");
+                cleanMethod.setAccessible(true);
+                cleanMethod.invoke(cleaner);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-}
 
     class ClientBuffer {
 
