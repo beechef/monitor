@@ -25,13 +25,13 @@ public class DatabaseConnector {
     private static final String UPDATE_QUERY = "UPDATE %s SET %s WHERE %s";
 
     private static Connection connection;
-    private static Statement cachedStatement;
+//    private static Statement cachedStatement;
 
     public static void connect() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
 
         connection = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-        cachedStatement = connection.createStatement();
+//        Statement cachedStatement = connection.createStatement();
 
         System.out.printf("Connect Successful to %s:%d - Database Name: %s", HOST_NAME, PORT, DB_NAME);
         System.out.println();
@@ -66,7 +66,8 @@ public class DatabaseConnector {
         var query = String.format(SELECT_QUERY, fieldsToString(fields), tableName, conditionsToString(conditions));
 
         System.out.println(query);
-        return cachedStatement.executeQuery(query);
+        var statement = connection.createStatement();
+        return statement.executeQuery(query);
     }
 
     private static KeyPair<String, String> combineInsertFieldValues(List<KeyPair<String, String>> fieldValues, String separate) {
@@ -111,25 +112,28 @@ public class DatabaseConnector {
         var query = String.format(INSERT_QUERY, tableName, combinedFieldValues.key, combinedFieldValues.value);
 
         System.out.println(query);
-        return cachedStatement.execute(query);
+        var statement = connection.createStatement();
+        return statement.execute(query);
     }
 
     public static boolean delete(String tableName, Condition[] conditions) throws SQLException {
         var query = String.format(DELETE_QUERY, tableName, conditionsToString(conditions));
 
         System.out.println(query);
-        return cachedStatement.execute(query);
+        var statement = connection.createStatement();
+        return statement.execute(query);
     }
 
     public static boolean update(String tableName, List<KeyPair<String, String>> fieldValues, Condition[] conditions) throws SQLException {
         var query = String.format(UPDATE_QUERY, tableName, combineFieldValues(fieldValues, ","), conditionsToString(conditions));
 
         System.out.println(query);
-        return cachedStatement.execute(query);
+        var statement = connection.createStatement();
+        return statement.execute(query);
     }
 
     public static void stop() throws SQLException {
-        cachedStatement.close();
+//        cachedStatement.close();
         connection.close();
     }
 }

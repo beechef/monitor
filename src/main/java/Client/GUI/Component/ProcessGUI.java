@@ -213,7 +213,7 @@ public class ProcessGUI extends javax.swing.JPanel {
                             GlobalVariable.processListStmp.removeAll(GlobalVariable.processListStmp);
 
                             GlobalVariable.processList.forEach(e -> {
-                                if (e.getName().contains(searchPanel.InputSearch.getText())) {
+                                if (e.getName().toUpperCase().contains(searchPanel.InputSearch.getText().toUpperCase())) {
                                     GlobalVariable.processListStmp.add(e);
                                 }
                             });

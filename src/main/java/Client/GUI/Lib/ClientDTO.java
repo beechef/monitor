@@ -9,25 +9,31 @@ package Client.GUI.Lib;
  * @author Admin
  */
 public class ClientDTO {
+
     private String name;
     private String uuid;
     private String IpAdress;
     private boolean status;
     private int port;
-    private boolean isWriteLog=false;
-    private  long writeLogInterval;
+    private boolean isWriteLog = false;
+    private long writeLogInterval;
 
     public ClientDTO() {
     }
 
-    public ClientDTO(String name, String uuid, String IpAdress, boolean status, int port, long writeLogInterval,boolean isWriteLog) {
+    public ClientDTO(String name, String uuid, String IpAdress, boolean status, int port, long writeLogInterval, boolean isWriteLog) {
         this.name = name;
         this.uuid = uuid;
-        this.IpAdress = IpAdress;
+        if (this.IpAdress== null) {
+            this.IpAdress = "             ";
+        } else {
+            this.IpAdress = IpAdress;
+
+        }
         this.status = status;
         this.port = port;
         this.writeLogInterval = writeLogInterval;
-        this.isWriteLog=isWriteLog;
+        this.isWriteLog = isWriteLog;
     }
 
     public String getUuid() {
@@ -41,6 +47,7 @@ public class ClientDTO {
     public void setIsWriteLog(boolean isWriteLog) {
         this.isWriteLog = isWriteLog;
     }
+
     public boolean getIsWriteLog() {
         return isWriteLog;
     }
@@ -53,8 +60,6 @@ public class ClientDTO {
         this.writeLogInterval = writeLogInterval;
     }
 
-    
-
     public void setName(String name) {
         this.name = name;
     }
@@ -66,7 +71,6 @@ public class ClientDTO {
     public int getPort() {
         return port;
     }
-    
 
     public void setID(String uuid) {
         this.uuid = uuid;
@@ -101,7 +105,4 @@ public class ClientDTO {
         return "ClientDTO{" + "name=" + name + ", uuid=" + uuid + ", IpAdress=" + IpAdress + ", status=" + status + ", port=" + port + '}';
     }
 
- 
-    
-    
 }

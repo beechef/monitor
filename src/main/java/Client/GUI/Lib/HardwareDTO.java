@@ -27,6 +27,7 @@ public class HardwareDTO {
     public static List<DiskDTO> Disks = new ArrayList<>();
 
     public HardwareDTO() {
+        Disks.removeAll(Disks);
     }
     
     

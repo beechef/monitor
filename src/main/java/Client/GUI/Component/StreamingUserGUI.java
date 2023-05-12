@@ -55,7 +55,7 @@ public class StreamingUserGUI extends javax.swing.JFrame {
         }
 
         streamingThread = new Thread(() -> {
-            var fps = 12;
+            var fps = 6;
             var sender = new GetImageSender(ClientInstance.tcpClient);
 
             while (true) {

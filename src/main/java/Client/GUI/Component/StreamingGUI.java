@@ -78,7 +78,7 @@ public class StreamingGUI extends javax.swing.JPanel {
         System.out.println("Init");
 
         streamingThread = new Thread(() -> {
-            var fps = 12;
+            var fps = 6;
             var sender = new GetImageSender(ClientInstance.tcpClient);
 
             while (true) {

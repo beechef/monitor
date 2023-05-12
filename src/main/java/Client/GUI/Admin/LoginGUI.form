@@ -117,10 +117,7 @@
                                   <Component id="jLabel9" alignment="1" max="32767" attributes="0"/>
                                   <Component id="forgetPassword" alignment="1" max="32767" attributes="0"/>
                                   <Component id="jLabel2" alignment="0" pref="317" max="32767" attributes="0"/>
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <EmptySpace min="-2" pref="96" max="-2" attributes="0"/>
-                                      <Component id="lableMessage" max="32767" attributes="0"/>
-                                  </Group>
+                                  <Component id="lableMessage" alignment="1" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="53" max="-2" attributes="0"/>
                           </Group>

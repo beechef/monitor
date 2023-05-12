@@ -8,10 +8,8 @@ public class Utilities {
 
     public static Object castBytes(byte[] bytes) throws IOException, ClassNotFoundException {
         ObjectInputStream in = new ObjectInputStream(new ByteArrayInputStream(bytes));
-        var obj = in.readObject();
-        
-        in.close();
-        return obj;
+
+        return in.readObject();
     }
 
     public static byte[] toBytes(Object data) throws IOException {
@@ -20,11 +18,11 @@ public class Utilities {
 
         out.writeObject(data);
         out.flush();
-        
+
         var bytes = bos.toByteArray();
         out.close();
         bos.close();
-        
+
         return bytes;
     }
 

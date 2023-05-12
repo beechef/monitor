@@ -200,6 +200,7 @@ public class Admin {
                     System.out.println("After name: " + data.afterName);
                     System.out.println();
                     GlobalVariable.listClient.changedName(data.uuid, data.afterName);
+                    JOptionPane.showMessageDialog(GlobalVariable.main, "Changed name success ");
                 }
                 ));
 
