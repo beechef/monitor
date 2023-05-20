@@ -45,7 +45,6 @@ public class StreamingUserGUI extends javax.swing.JFrame {
         panelStream.setVisible(true);
 
         listenEvent();
-        System.out.println("Init");
 
         if (streamingThread != null) {
             flags.put(streamingThread, false);
@@ -54,8 +53,11 @@ public class StreamingUserGUI extends javax.swing.JFrame {
             streamingThread = null;
         }
 
+        System.out.println("Init");
+
+
         streamingThread = new Thread(() -> {
-            var fps = 6;
+            var fps = 12;
             var sender = new GetImageSender(ClientInstance.tcpClient);
 
             while (true) {

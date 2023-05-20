@@ -37,7 +37,7 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
     }
 
     @Override
-    synchronized protected void onExecute(Sender server, SocketMessageGeneric<GetImageRequestServerSide> socketMsg) {
+    protected void onExecute(Sender server, SocketMessageGeneric<GetImageRequestServerSide> socketMsg) {
         var adminId = socketMsg.msg.adminId;
         var adminUuid = socketMsg.msg.adminUuid;
         var uuid = Utilities.getUUID();
@@ -61,7 +61,6 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
 
         byteBuffer.clear();
         TCPClient.destroyBuffer(byteBuffer);
-//        sender.send(socketMsg.sender, new GetImageResultUserSide(adminId, adminUuid, new byte[0], true));
     }
 
     private byte[] getImage() {
@@ -70,6 +69,8 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
             var capture = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
 
             var image = robot.createScreenCapture(capture);
+//            () -> Utilities.ImageUtil
+//            Utilities.ImageUtil
 
             var bos = new ByteArrayOutputStream();
             var writers = ImageIO.getImageWritersByFormatName("png");
@@ -82,17 +83,17 @@ public class GetImageReceiver extends SocketMessageReceiver<GetImageRequestServe
             param.setCompressionQuality(0.001f);
 
             writer.write(null, new javax.imageio.IIOImage(image, null, null), param);
-            writer.setOutput(ios);
+            var compressedImg = Utilities.compressImage(bos.toByteArray(), 0.1f);
+//            writer.setOutput(ios);
 
-            javax.imageio.ImageIO.write(image, "png", bos);
-            var data = bos.toByteArray();
+//            javax.imageio.ImageIO.write(image, "png", bos);
+//            var data = bos.toByteArray();
 
             image.flush();
             bos.close();
             ios.close();
 
-            image = null;
-            return data;
+            return compressedImg;
 
         } catch (AWTException | IOException e) {
             throw new RuntimeException(e);

@@ -2,6 +2,7 @@ package Server.ServerInstance;
 
 import Server.EventDispatcher.*;
 import Server.ServerInstance.Pooling.BufferPooling;
+import Server.ServerInstance.Pooling.QueuePooling;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -14,14 +15,8 @@ import java.nio.channels.AsynchronousServerSocketChannel;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class TCPServer implements Server {
 
@@ -211,10 +206,9 @@ public class TCPServer implements Server {
         }
     }
 
-    private final Queue<ClientBuffer> bufferQueue = new LinkedList<>();
 
     @Override
-     public void send(Object target, Message msg) {
+    public void send(Object target, Message msg) {
         if (!(target instanceof AsynchronousSocketChannel client)) {
             return;
         }
@@ -225,70 +219,66 @@ public class TCPServer implements Server {
         buffer.put(msgBytes);
         buffer.flip();
 
-        var clientBuffer = new ClientBuffer(client, buffer);
-
-        if (bufferQueue.isEmpty() && !isSending) {
-            bufferQueue.add(clientBuffer);
-            send();
+        if (isEmptyQueue(client)) {
+            queue.get(client).add(buffer);
+            send(client);
         } else {
-            bufferQueue.add(clientBuffer);
+            queue.get(client).add(buffer);
         }
     }
 
-    private boolean isSending = false;
+    private HashMap<AsynchronousSocketChannel, ArrayList<ByteBuffer>> queue = new HashMap<>();
 
-    private void send() {
+    private boolean isEmptyQueue(AsynchronousSocketChannel client) {
+        if (!queue.containsKey(client)) {
+            queue.put(client, new ArrayList<>());
+            return true;
+        }
+
+        return queue.get(client).isEmpty();
+    }
+
+    private void send(AsynchronousSocketChannel client) {
+        var bufferQueue = queue.get(client);
+        if (bufferQueue.isEmpty()) return;
+
+        var buffer = bufferQueue.get(0);
+
         try {
-            isSending = true;
-
-            if (bufferQueue.isEmpty()) {
-//                isSending = false;
-                return;
-            }
-
-            var clientBuffer = bufferQueue.remove();
-            if (clientBuffer == null) {
-//                if (!bufferQueue.isEmpty()) {
-//                    send();
-//                } else {
-//                    isSending = false;
-//                }
-                return;
-            }
-
-            var client = clientBuffer.client;
-            var buffer = clientBuffer.buffer;
-
             client.write(buffer, null, new CompletionHandler<>() {
                 @Override
                 public void completed(Integer result, Object attachment) {
-                    buffer.clear();
-                    destroyBuffer(buffer);
+                    if (bufferQueue.isEmpty()) return;
 
-                    if (!bufferQueue.isEmpty()) {
-                        send();
-                    } else {
-                        isSending = false;
+                    if (buffer != null){{
+                        buffer.clear();
+                        destroyBuffer(buffer);
+                    }}
+
+                    bufferQueue.remove(buffer);
+
+                    if (!isEmptyQueue(client)) {
+                        send(client);
                     }
+
                 }
 
                 @Override
                 public void failed(Throwable exc, Object attachment) {
-                    buffer.clear();
-                    destroyBuffer(buffer);
-
-                    if (!bufferQueue.isEmpty()) {
-                        send();
-                    } else {
-                        isSending = false;
+                    if (!isEmptyQueue(client)) {
+                        send(client);
                     }
                 }
             });
         } catch (Exception e) {
-            if (!bufferQueue.isEmpty()) {
-                send();
-            }
+            e.printStackTrace();
+//            if (client == null) return;
+//
+//            if (!isEmptyQueue(client)) {
+//                send(client);
+//            }
         }
+
     }
 
     public void onSend(AsynchronousSocketChannel client, Message msg) {
@@ -325,14 +315,4 @@ public class TCPServer implements Server {
         }
     }
 
-    class ClientBuffer {
-
-        public AsynchronousSocketChannel client;
-        public ByteBuffer buffer;
-
-        public ClientBuffer(AsynchronousSocketChannel client, ByteBuffer buffer) {
-            this.client = client;
-            this.buffer = buffer;
-        }
-    }
 }

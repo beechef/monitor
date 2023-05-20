@@ -34,7 +34,7 @@ public class StreamingGUI extends javax.swing.JPanel {
      * Creates new form StreamingGUI
      */
     public static Thread streamingThread;
-    public static boolean isStreaming = false;
+    public boolean isStreaming = false;
     private HashMap<Thread, Boolean> flags = new HashMap<>();
 
     private GetImageResultServerSide currentImageReciver = null;
@@ -78,7 +78,7 @@ public class StreamingGUI extends javax.swing.JPanel {
         System.out.println("Init");
 
         streamingThread = new Thread(() -> {
-            var fps = 6;
+            var fps = 12;
             var sender = new GetImageSender(ClientInstance.tcpClient);
 
             while (true) {

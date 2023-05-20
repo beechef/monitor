@@ -36,7 +36,7 @@ public class LoginGUI extends javax.swing.JFrame {
 
     public LoginGUI() {
         initComponents();
-        this.img.setBorder(new RoundBorder(10, Color.ORANGE));
+        this.img.setBorder(new RoundBorder(10, Color.WHITE));
         this.wrapperRightPanel.setBorder(new RoundBorder(10, primaryColor));
         this.lableMessage.setForeground(GlobalVariable.WarningColor);
         sender = new LoginSender(ClientInstance.tcpClient);

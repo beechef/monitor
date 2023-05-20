@@ -49,20 +49,14 @@ public class User {
             tcpClient.setBuffer(1024 * 1024);
             tcpClient.start();
 
-//            UDPClient udpClient = new UDPClient("localhost", 4446);
-//            udpClient.setBuffer(1024 * 1024);
-//            udpClient.start();
             ClientInstance.tcpClient = tcpClient;
-//            ClientInstance.udpClient = udpClient;
 
             GlobalVariable.LoginUserGUI = new LoginUserGUI();
             GlobalVariable.LoginUserGUI.setVisible(true);
 
-//            var loginTcpSender = new LoginSender(tcpClient);
             var uuid = Utilities.getUUID();
 
             EventDispatcher.startListening(new LoginUserResultReceiver((loginUserResult) -> {
-//                GlobalVariable.LoginUserGUI.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
                 JOptionPane.showMessageDialog(GlobalVariable.LoginUserGUI, "Connect success");
                 if (!loginUserResult.userInfo.isWriteLog) {
                     return;

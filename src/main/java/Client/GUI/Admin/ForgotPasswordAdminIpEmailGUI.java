@@ -38,7 +38,7 @@ public class ForgotPasswordAdminIpEmailGUI extends javax.swing.JFrame {
 
     public ForgotPasswordAdminIpEmailGUI() {
         initComponents();
-        this.img.setBorder(new RoundBorder(10, Color.ORANGE));
+        this.img.setBorder(new RoundBorder(10, Color.white));
         this.wrapperRightPanel.setBorder(new RoundBorder(10, primaryColor));
 
         registerEvent();

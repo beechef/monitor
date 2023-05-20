@@ -46,7 +46,7 @@ public class Admin {
         tcpClient.start();
 
         var udpClient = new UDPClient("localhost", 4446);
-        udpClient.setBuffer(2048 * 1024);
+        udpClient.setBuffer(512 * 1024);
         udpClient.start();
 
         ClientInstance.tcpClient = tcpClient;
@@ -58,7 +58,6 @@ public class Admin {
         GlobalVariable.ForgotPassEmailGUI = new ForgotPasswordAdminIpEmailGUI();
         GlobalVariable.LoginAdminGUI.setVisible(true);
 
-//        java.awt.EventQueue.invokeLater(() -> new LoginGUI().setVisible(true));
         EventDispatcher.startListening(new GetUserResultReceiver(data -> {
             System.out.println("load user");
             

@@ -40,7 +40,7 @@ public class Main {
         tcpServer.start();
 
         UDPServer udpServer = new UDPServer(4446);
-        udpServer.setBuffer(1024 * 1024);
+        udpServer.setBuffer(512 * 1024);
 
         udpServer.start();
 

@@ -76,8 +76,8 @@ public class MainGUI extends javax.swing.JFrame {
         renderHeader(this);
 
     }
-    
-    
+
+
 
     public void renderSidebar() throws IOException {
         //active menu item
@@ -629,27 +629,28 @@ public class MainGUI extends javax.swing.JFrame {
                     }
                     for (int i = 0; i < GlobalVariable.itemList.size(); i++) {
                         if (e == GlobalVariable.itemList.get(i) && e.clientRequest && GlobalVariable.selectedClient || e == GlobalVariable.itemList.get(i) && !e.clientRequest) {
-             
+
                             GlobalVariable.itemList.get(i).state = true;
                             //handel funcion
                             if (GlobalVariable.itemList.get(i).compContent != null) {
 
-                                //streaming 
+                                //streaming
                                 if (GlobalVariable.itemList.get(i).compContent == GlobalVariable.streaming) {
                                     System.out.println("Streaming click");
-                                    OpenStream();
+
+                                    if (!GlobalVariable.streaming.isStreaming) OpenStream();
                                 } else {
                                     if (GlobalVariable.streaming.isStreaming) {
                                         System.out.println("close stream");
                                         CloseStream();
                                     }
                                 }
-                                
+
                                 //other
                                 if (GlobalVariable.itemList.get(i).compContent == GlobalVariable.others) {
                                     System.out.println("render other gui");
                                     GlobalVariable.others.renderData();
-                                } 
+                                }
 
                                 GlobalVariable.itemList.get(i).compContent.setVisible(true);
                                 GlobalVariable.main.validate();
@@ -661,7 +662,7 @@ public class MainGUI extends javax.swing.JFrame {
 //                                    new LoginAdminUdpSender(ClientInstance.udpClient).send(null, new LoginAdminUdpRequest(token));
                                     new LogOutAdminSender(ClientInstance.tcpClient).send(null, new LogOutAdminRequest(GlobalVariable.tokenAdmin) );
                                     GlobalVariable.main.setVisible(false);
-                                    
+
                                     GlobalVariable.LoginAdminGUI.setVisible(true);
 //                                    GlobalVariable.others.renderData();
                                 }

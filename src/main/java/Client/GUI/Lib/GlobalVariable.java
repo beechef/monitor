@@ -70,6 +70,7 @@ public class GlobalVariable {
     public static final String urlCloseIcon = "/src/main/java/Client/GUI/Image/close.png";
     public static final String urlIconArrow = "/src/main/java/Client/GUI/Image/arrow.png";
     public static final String urlIconAction = "/src/main/java/Client/GUI/Image/icon_action.png";
+    public static final String urlIconBgr="/src/main/java/Client/GUI/Image/bgr-final.png";
 
     //Main farme
     public static String getCurrentPath() {

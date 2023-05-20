@@ -29,7 +29,7 @@ public class LoginUserGUI extends javax.swing.JFrame {
 
     public LoginUserGUI() {
         initComponents();
-        this.img.setBorder(new RoundBorder(10, Color.ORANGE));
+        this.img.setBorder(new RoundBorder(10, Color.white));
         this.wrapperRightPanel.setBorder(new RoundBorder(10, primaryColor));
 
         sender = new LoginSender(ClientInstance.tcpClient);
